@@ -3,4 +3,7 @@ project(ShmoCodebase C)
 
 set(CMAKE_C_STANDARD 23)
 
-add_executable(ShmoCodebase main.c)
+add_executable(ShmoCodebase src/main.c
+        src/base.c)
+target_include_directories(ShmoCodebase PUBLIC include)
+target_compile_definitions(ShmoCodebase PUBLIC ENABLE_ASSERT=1)
