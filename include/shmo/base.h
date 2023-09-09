@@ -111,10 +111,12 @@ typedef void void_func_t(void);
 # define assert(C)
 #endif
 
-#define stringify_(S) #S
-#define stringify(S) stringify_(S)
-#define glue_(A, B) A##B
-#define glue(A, B) glue_(A, B)
+#define local_fn static inline
+
+#define STRINGIFY_(S) #S
+#define STRINGIFY(S) STRINGIFY_(S)
+#define GLUE_(A, B) A##B
+#define GLUE(A, B) GLUE_(A, B)
 
 #define array_count(A) (sizeof(A)/sizeof(*(A)))
 
@@ -124,22 +126,12 @@ typedef void void_func_t(void);
 #define member(T, M) (((T*)0)->M)
 #define offsetof_member(T, M) int_from_ptr(&member(T, M))
 
-#define min(A, B) (((A)<(B))?(A):(B))
-#define max(A, B) (((A)>(B))?(A):(B))
-#define clamp(A, X, B) (((X)<(A))?(A):\
+#define MIN(A, B) (((A)<(B))?(A):(B))
+#define MAX(A, B) (((A)>(B))?(A):(B))
+#define CLAMP(A, X, B) (((X)<(A))?(A):\
                        ((B)<(X))?(B):(X))
-#define clamp_top(A, B) min(A, B)
-#define clamp_bot(A, B) max(A, B)
-
-#if defined(__cplusplus)
-# define c_link_begin extern "C" {
-# define c_link_end }
-# define c_link extern "C"
-#else
-# define c_link_begin
-# define c_link_end
-# define c_link
-#endif
+#define CLAMP_TOP(A, B) MIN(A, B)
+#define CLAMP_BOT(A, B) MAX(A, B)
 
 #include <string.h>
 #define memory_zero(Dest, Size) memset((Dest), 0, (Size))
@@ -234,6 +226,11 @@ f32 inv_lerp_f32(f32 a, f32 b, f32 x);
 f64 lerp_f64(f64 a, f64 b, f64 t);
 f64 inv_lerp_f64(f64 a, f64 b, f64 x);
 
+i32 round_up_i32(i32 num, i32 multiple);
+i64 round_up_i64(i64 num, i64 multiple);
+u32 round_up_u32(u32 num, u32 multiple);
+u64 round_up_u64(u64 num, u64 multiple);
+
 #if !defined(DONT_USE_MATH_MACROS)
 # define DONT_USE_MATH_MACROS 0
 #endif
@@ -242,38 +239,54 @@ f64 inv_lerp_f64(f64 a, f64 b, f64 x);
 
 # define fabs(X) _Generic((X), \
     f32 : fabs_f32(X),         \
-    f64 : fabs_f64(X),         \
-    i32 : fabs_f32((f32)X))
+    f64 : fabs_f64(X))
 
 # define sqrt(X) _Generic((X), \
     f32 : sqrt_f32(X),         \
-    f64 : sqrt_f64(X),         \
-    i32 : sqrt_f32((f32)(X))
+    f64 : sqrt_f64(X))
+
+# define sin(X) _Generic((X), \
+    f32 : sin_f32(X),         \
+    f64 : sin_f64(X))
+
+# define cos(X) _Generic((X), \
+    f32 : cos_f32(X),         \
+    f64 : cos_f64(X))
+
+# define tan(X) _Generic((X), \
+    f32 : tan_f32(X),         \
+    f64 : tan_f64(X))
+
+# define lerp(A, B, T) _Generic((A), \
+    f32 : lerp_f32(A, B, T),         \
+    f64 : lerp_f64(A, B, T))
+
+# define inv_lerp(A, B, X) _Generic((A), \
+    f32 : inv_lerp_f32(A, B, X),         \
+    f64 : inv_lerp_f64(A, B, X))
 
 #endif
 
 // ========================================
 // Compound Types
 
-typedef union {
+typedef union vec2i32_t {
     struct {
         i32 x;
         i32 y;
     };
     i32 v[2];
 } vec2i32_t;
-vec2i32_t vec2i32(i32 x, i32 y);
 
-typedef union {
+typedef union vec2f32_t {
     struct {
         f32 x;
         f32 y;
     };
     f32 v[2];
 } vec2f32_t;
-vec2f32_t vec2f32(f32 x, f32 y);
 
-typedef union {
+typedef union vec3f32_t {
     struct {
         f32 x;
         f32 y;
@@ -281,9 +294,8 @@ typedef union {
     };
     f32 v[3];
 } vec3f32_t;
-vec3f32_t vec3f32(f32 x, f32 y, f32 z);
 
-typedef union {
+typedef union vec4f32_t {
     struct {
         f32 x;
         f32 y;
@@ -292,17 +304,16 @@ typedef union {
     };
     f32 v[4];
 } vec4f32_t;
-vec4f32_t vec4f32(f32 x, f32 y, f32 z, f32 w);
 
-typedef union {
+typedef union itv1f32_t {
     struct {
         f32 min;
         f32 max;
     };
     f32 v[2];
-} inv1f32_t;
+} itv1f32_t;
 
-typedef union {
+typedef union itv1u64_t {
     struct {
         u64 min;
         u64 max;
@@ -312,9 +323,9 @@ typedef union {
         u64 opl;
     };
     u64 v[2];
-} inv1u64_t;
+} itv1u64_t;
 
-typedef union {
+typedef union itv2f32_t {
     struct {
         vec2f32_t min;
         vec2f32_t max;
@@ -331,9 +342,9 @@ typedef union {
     };
     vec2f32_t p[2];
     f32 v[4];
-} inv2f32_t;
+} itv2f32_t;
 
-typedef union {
+typedef union itv2i32_t {
     struct {
         vec2i32_t min;
         vec2i32_t max;
@@ -350,6 +361,39 @@ typedef union {
     };
     vec2i32_t p[2];
     i32 v[4];
-} inv2i32_t;
+} itv2i32_t;
+
+// ========================================
+// Compound Type Functions
+
+vec2i32_t vec2i32(i32 x, i32 y);
+vec2f32_t vec2f32(f32 x, f32 y);
+vec3f32_t vec3f32(f32 x, f32 y, f32 z);
+vec4f32_t vec4f32(f32 x, f32 y, f32 z, f32 w);
+itv1f32_t itv1f32(f32 min, f32 max);
+itv1u64_t itv1u64(u64 min, u64 max);
+itv2f32_t itv2f32(vec2f32_t min, vec2f32_t max);
+itv2i32_t itv2i32(vec2i32_t min, vec2i32_t max);
+
+// ========================================
+// Compound Type Redefinitions
+
+typedef vec2i32_t point_t;
+typedef vec2f32_t vec2_t;
+typedef vec3f32_t vec3_t;
+typedef vec4f32_t vec4_t;
+typedef itv2f32_t rect_t;
+typedef itv2i32_t box_t;
+typedef itv1f32_t range_t;
+typedef itv1u64_t interval_t;
+
+local_fn point_t point(i32 x, i32 y) { return vec2i32(x, y); }
+local_fn vec2_t vec2(f32 x, f32 y) { return vec2f32(x, y); }
+local_fn vec3_t vec3(f32 x, f32 y, f32 z) { return vec3f32(x, y, z); }
+local_fn vec4_t vec4(f32 x, f32 y, f32 z, f32 w) { return vec4f32(x, y, z, w); }
+local_fn rect_t rect(vec2_t min, vec2_t max) { return itv2f32(min, max); }
+local_fn box_t box(point_t min, point_t max) { return itv2i32(min, max); }
+local_fn range_t range(f32 min, f32 max) { return itv1f32(min, max); }
+local_fn interval_t interval(u64 min, u64 max) { return itv1u64(min, max); }
 
 #endif //SHMOCODEBASE_BASE_H

@@ -102,17 +102,53 @@ f64 inv_lerp_f64(f64 a, f64 b, f64 x) {
 }
 
 vec2i32_t vec2i32(i32 x, i32 y) {
-    return (vec2i32_t){ x, y };
+    return (vec2i32_t){ .x = x, .y = y };
 }
 
 vec2f32_t vec2f32(f32 x, f32 y) {
-    return (vec2f32_t){ x, y };
+    return (vec2f32_t){ .x = x, .y = y };
 }
 
 vec3f32_t vec3f32(f32 x, f32 y, f32 z) {
-    return (vec3f32_t){ x, y, z };
+    return (vec3f32_t){ .x = x, .y = y, .z = z };
 }
 
 vec4f32_t vec4f32(f32 x, f32 y, f32 z, f32 w) {
-    return (vec4f32_t){ x, y, z, w };
+    return (vec4f32_t){ .x = x, .y = y, .z = z, .w = w };
+}
+
+itv1f32_t itv1f32(f32 min, f32 max) {
+    return (itv1f32_t) { .min = min, .max = max };
+}
+
+itv1u64_t itv1u64(u64 min, u64 max) {
+    return (itv1u64_t) { .min = min, .max = max };
+}
+
+itv2f32_t itv2f32(vec2f32_t min, vec2f32_t max) {
+    return (itv2f32_t) { .min = min, .max = max };
+}
+
+itv2i32_t itv2i32(vec2i32_t min, vec2i32_t max) {
+    return (itv2i32_t) { .min = min, .max = max };
+}
+
+i32 round_up_i32(i32 num, i32 multiple) {
+    assert(multiple);
+    return ((num + multiple - 1) / multiple) * multiple;
+}
+
+i64 round_up_i64(i64 num, i64 multiple) {
+    assert(multiple);
+    return ((num + multiple - 1) / multiple) * multiple;
+}
+
+u32 round_up_u32(u32 num, u32 multiple) {
+    assert(multiple);
+    return ((num + multiple - 1) / multiple) * multiple;
+}
+
+u64 round_up_u64(u64 num, u64 multiple) {
+    assert(multiple);
+    return ((num + multiple - 1) / multiple) * multiple;
 }
