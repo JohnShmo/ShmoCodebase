@@ -17,6 +17,9 @@ typedef enum arena_block_size_t {
     ARENA_BLOCK_256,
     ARENA_BLOCK_512,
     ARENA_BLOCK_1024,
+    ARENA_BLOCK_2048,
+    ARENA_BLOCK_4096,
+    ARENA_BLOCK_8192,
     ARENA_BLOCK_LARGE,
     ARENA_BLOCK_COUNT_
 } arena_block_size_t;
@@ -28,7 +31,9 @@ typedef struct arena_t {
 
 void arena_create(arena_t *a);
 void arena_destroy(arena_t *a);
-void *arena_alloc(arena_t *a, size_t n);
+void *arena_malloc(arena_t *a, size_t n);
+void *arena_calloc(arena_t *a, size_t n, size_t size);
+void *arena_realloc(arena_t *a, void *p, size_t n);
 void arena_free(arena_t *a, void *p);
 
 #endif //SHMOCODEBASE_ARENA_H

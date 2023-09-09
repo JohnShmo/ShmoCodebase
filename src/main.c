@@ -1,10 +1,13 @@
-#include "shmo/arena.h"
+#include "shmo/darray.h"
 #include <stdio.h>
 
 int main() {
-    arena_t arena;
-    arena_create(&arena);
 
-    arena_destroy(&arena);
+    darray_t arr;
+    darray_create(&arr, sizeof(i32), stdalloc);
+
+    darray_reserve(&arr, 10);
+
+    darray_destroy(&arr);
     return 0;
 }

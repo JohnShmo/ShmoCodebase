@@ -6,6 +6,8 @@ set(CMAKE_C_STANDARD 23)
 add_executable(ShmoCodebase src/main.c
         src/base.c
         src/arena.c
+        src/allocator.c
+        src/darray.c
 )
 target_include_directories(ShmoCodebase PUBLIC include)
 target_compile_definitions(ShmoCodebase PUBLIC ENABLE_ASSERT=1)

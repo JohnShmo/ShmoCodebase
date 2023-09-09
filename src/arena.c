@@ -5,7 +5,7 @@
 #include "shmo/arena.h"
 #include <stdlib.h>
 
-#define ARENA_MIN_PAGE_SIZE (1024ULL * 4ULL)
+#define ARENA_MIN_PAGE_SIZE (1024ULL * 8ULL)
 
 struct arena_block_header_t {
     size_t size;
@@ -58,6 +58,12 @@ local_fn arena_block_size_t arena_get_block_size(size_t n) {
         return ARENA_BLOCK_512;
     else if (n <= 1024)
         return ARENA_BLOCK_1024;
+    else if (n <= 2048)
+        return ARENA_BLOCK_2048;
+    else if (n <= 4096)
+        return ARENA_BLOCK_4096;
+    else if (n <= 8192)
+        return ARENA_BLOCK_8192;
     else
         return ARENA_BLOCK_LARGE;
 }
@@ -76,6 +82,12 @@ local_fn size_t arena_calculate_final_block_size(size_t n, arena_block_size_t bl
             return (size_t)512;
         case ARENA_BLOCK_1024:
             return (size_t)1024;
+        case ARENA_BLOCK_2048:
+            return (size_t)2048;
+        case ARENA_BLOCK_4096:
+            return (size_t)4096;
+        case ARENA_BLOCK_8192:
+            return (size_t)8192;
         case ARENA_BLOCK_LARGE:
             return n;
         default:
@@ -113,7 +125,7 @@ void arena_destroy(arena_t *a) {
     }
 }
 
-void *arena_alloc(arena_t *a, size_t n) {
+void *arena_malloc(arena_t *a, size_t n) {
     assert(a);
     assert(n);
     n = (size_t)round_up_u64((u64)n + (u64)sizeof(arena_block_header_t), 32ULL);
@@ -161,6 +173,40 @@ void *arena_alloc(arena_t *a, size_t n) {
 
     u8 *result = fetched + sizeof(arena_block_header_t);
     return result;
+}
+
+void *arena_calloc(arena_t *a, size_t n, size_t size) {
+    assert(a);
+    assert(n);
+    assert(size);
+    n = n * size;
+    void *result = arena_malloc(a, n);
+    assert(result);
+    memory_zero(result, n);
+    return result;
+}
+
+void *arena_realloc(arena_t *a, void *p, size_t n) {
+    assert(a);
+    assert(n);
+
+    if (!p) {
+        void *result = arena_malloc(a, n);
+        assert(result);
+        return result;
+    }
+
+    arena_block_header_t *header = ((arena_block_header_t *)p) - 1;
+    if (header->size - sizeof(arena_block_header_t) >= n) {
+        return p;
+    }
+
+    void *new_loc = arena_malloc(a, n);
+    assert(new_loc);
+    memory_copy(new_loc, p, n);
+
+    arena_free(a, p);
+    return new_loc;
 }
 
 void arena_free(arena_t *a, void *p) {
