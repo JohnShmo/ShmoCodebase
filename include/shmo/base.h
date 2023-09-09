@@ -397,4 +397,20 @@ local_fn box_t box(point_t min, point_t max) { return itv2i32(min, max); }
 local_fn range_t range(f32 min, f32 max) { return itv1f32(min, max); }
 local_fn interval_t interval(u64 min, u64 max) { return itv1u64(min, max); }
 
+// ========================================
+// Bytes Type
+
+typedef struct bytes_t {
+    void *data;
+    size_t size;
+} bytes_t;
+
+typedef bool (*compare_func_t)(bytes_t, bytes_t);
+typedef u64 (*hash_func_t)(bytes_t);
+
+#define bytes_of(X) ((bytes_t) { .data = &(X), .size = sizeof(X) })
+#define bytes_of_str(X) ((bytes_t) { .data = (X), .size = strlen(X) })
+#define bytes_to(T, Bytes) *((T *)(Bytes).data)
+#define bytes_to_str(Bytes) ((char *)(Bytes).data)
+
 #endif //SHMOCODEBASE_BASE_H

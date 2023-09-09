@@ -8,6 +8,7 @@ add_executable(ShmoCodebase src/main.c
         src/arena.c
         src/allocator.c
         src/darray.c
+        src/table.c
 )
 target_include_directories(ShmoCodebase PUBLIC include)
 target_compile_definitions(ShmoCodebase PUBLIC ENABLE_ASSERT=1)
