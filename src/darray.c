@@ -226,13 +226,21 @@ bool darray_empty(darray_t *da) {
 }
 
 size_t darray_size(darray_t *da) {
+    assert(da);
     return da->size;
 }
 
 size_t darray_capacity(darray_t *da) {
+    assert(da);
     return da->capacity;
 }
 
 size_t darray_element_size(darray_t *da) {
+    assert(da);
     return da->element_size;
+}
+
+void *darray_data(darray_t *da) {
+    assert(da);
+    return da->data;
 }
