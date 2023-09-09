@@ -20,6 +20,7 @@ void darray_destroy(darray_t *da);
 void darray_reserve(darray_t *da, size_t n);
 void darray_resize(darray_t *da, size_t n, const void *fillval);
 void darray_shrink(darray_t *da);
+void darray_clear(darray_t *da);
 void darray_pushb(darray_t *da, const void *val);
 void darray_popb(darray_t *da);
 void darray_pushf(darray_t *da, const void *val);
@@ -29,9 +30,11 @@ void darray_remove(darray_t *da, size_t index);
 void *darray_back(darray_t *da);
 void *darray_front(darray_t *da);
 void *darray_at(darray_t *da, size_t index);
+void darray_set(darray_t *da, size_t index, const void *val);
 bool darray_empty(darray_t *da);
 size_t darray_size(darray_t *da);
 size_t darray_capacity(darray_t *da);
 size_t darray_element_size(darray_t *da);
+void *darray_data(darray_t *da);
 
 #endif //SHMOCODEBASE_DARRAY_H
