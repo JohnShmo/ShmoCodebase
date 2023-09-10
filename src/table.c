@@ -18,31 +18,6 @@ local_fn void table_free_bucket(table_t *tb, table_bucket_t *b) {
     darray_destroy(&b->pairs);
 }
 
-local_fn u64 default_hash(bytes_t v) {
-    const u64 p = 16777619; // magic number 1
-    u64 hash = 2166136261;  // magic number 2
-    for (size_t i = 0; i < v.size; ++i) {
-        hash = (hash ^ ((u8 *)v.data)[i]) * p;
-    }
-    return hash;
-}
-
-local_fn bool default_compare(bytes_t lhs, bytes_t rhs) {
-    assert(lhs.data);
-    assert(lhs.size);
-    assert(rhs.data);
-    assert(rhs.size);
-    if (lhs.size != rhs.size) {
-        return false;
-    }
-    for (size_t i = 0; i < lhs.size; ++i) {
-        if (((u8 *)lhs.data)[i] != ((u8 *)rhs.data)[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
 local_fn u64 table_hash(table_t *tb, bytes_t key) {
     assert(tb);
     assert(key.data);
@@ -148,13 +123,13 @@ void table_create(table_t *tb, hash_func_t hash_func, compare_func_t compare_fun
     if (hash_func) {
         tb->hash_func = hash_func;
     } else {
-        tb->hash_func = default_hash;
+        tb->hash_func = hash_default;
     }
 
     if (compare_func) {
         tb->compare_func = compare_func;
     } else {
-        tb->compare_func = default_compare;
+        tb->compare_func = compare_default;
     }
 
     if (allocator) {

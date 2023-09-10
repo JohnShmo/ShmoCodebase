@@ -1,27 +1,41 @@
-#include "shmo/darray.h"
+#include "shmo/table.h"
 #include <stdio.h>
 
 int main() {
+    arena_t a;
+    arena_create(&a);
+    heap_allocator_t alloc = heap_allocator_arena(&a);
 
-    darray_t arr;
-    darray_create(&arr, sizeof(i32), stdalloc);
+    table_t t;
+    table_create(&t, hash_string, compare_string, &alloc);
 
-    darray_pushb(&arr, &((i32){10}));
-    darray_pushf(&arr, &((i32){1}));
-    darray_pushf(&arr, &((i32){2}));
-    darray_pushf(&arr, &((i32){3}));
-    darray_pushf(&arr, &((i32){4}));
-    darray_pushf(&arr, &((i32){5}));
-    darray_remove(&arr, 2);
-    darray_insert(&arr, 2, &((i32){999}));
+    table_set(&t, bytes_of_str("Mark"), bytes_of_str("cool guy"));
+    table_set(&t, bytes_of_str("Dave"), bytes_of_str("super cool guy"));
+    table_set(&t, bytes_of_str("Maria"), bytes_of_str("cool girl"));
+    table_set(&t, bytes_of_str("Dog"), bytes_of_str("goodest boy"));
+    table_set(&t, bytes_of_str("1"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("2"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("3"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("4"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("5"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("6"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("7"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("8"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("9"), bytes_of_str("foo"));
+    table_set(&t, bytes_of_str("10"), bytes_of_str("bar"));
+    table_set(&t, bytes_of_str("11"), bytes_of_str("bar"));
+    table_set(&t, bytes_of_str("12"), bytes_of_str("bar"));
+    table_set(&t, bytes_of_str("13"), bytes_of_str("bar"));
+    table_set(&t, bytes_of_str("14"), bytes_of_str("bar"));
+    table_set(&t, bytes_of_str("15"), bytes_of_str("bar"));
+    table_set(&t, bytes_of_str("16"), bytes_of_str("bar"));
 
-    printf("size = %llu\n", darray_size(&arr));
-    printf("capacity = %llu\n", darray_capacity(&arr));
+    printf("%s = %s\n", "Mark", bytes_to_str(table_get(&t, bytes_of_str("Mark"))));
+    printf("%s = %s\n", "Dave", bytes_to_str(table_get(&t, bytes_of_str("Dave"))));
+    printf("%s = %s\n", "Maria", bytes_to_str(table_get(&t, bytes_of_str("Maria"))));
+    printf("%s = %s\n", "Dog", bytes_to_str(table_get(&t, bytes_of_str("Dog"))));
 
-    for (i32 i = 0; i < darray_size(&arr); ++i) {
-        printf("[%d] = %d\n", i, *(i32*) darray_at(&arr, i));
-    }
-
-    darray_destroy(&arr);
+    table_destroy(&t);
+    arena_destroy(&a);
     return 0;
 }

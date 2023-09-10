@@ -401,15 +401,20 @@ local_fn interval_t interval(u64 min, u64 max) { return itv1u64(min, max); }
 // Bytes Type
 
 typedef struct bytes_t {
-    void *data;
+    u8 *data;
     size_t size;
 } bytes_t;
 
 typedef bool (*compare_func_t)(bytes_t, bytes_t);
 typedef u64 (*hash_func_t)(bytes_t);
 
-#define bytes_of(X) ((bytes_t) { .data = &(X), .size = sizeof(X) })
-#define bytes_of_str(X) ((bytes_t) { .data = (X), .size = strlen(X) })
+u64 hash_default(bytes_t v);
+bool compare_default(bytes_t lhs, bytes_t rhs);
+u64 hash_string(bytes_t v);
+bool compare_string(bytes_t lhs, bytes_t rhs);
+
+#define bytes_of(X) ((bytes_t) { .data = (u8 *)&(X), .size = sizeof(X) })
+#define bytes_of_str(X) ((bytes_t) { .data = (u8 *)(X), .size = strlen(X) + 1 })
 #define bytes_to(T, Bytes) *((T *)(Bytes).data)
 #define bytes_to_str(Bytes) ((char *)(Bytes).data)
 
