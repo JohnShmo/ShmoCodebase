@@ -23,8 +23,6 @@ typedef struct table_t {
     heap_allocator_t *allocator;
 } table_t;
 
-
-
 void table_create(table_t *tb, hash_func_t hash_func, compare_func_t compare_func, heap_allocator_t *allocator);
 void table_destroy(table_t *tb);
 void table_set(table_t *tb, bytes_t key, bytes_t val);
