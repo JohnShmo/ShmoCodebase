@@ -271,32 +271,32 @@ u64 round_up_u64(u64 num, u64 multiple);
 // ========================================
 // Compound Types
 
-typedef union vec2i32_t {
+typedef union v2i_t {
     struct {
         i32 x;
         i32 y;
     };
     i32 v[2];
-} vec2i32_t;
+} v2i_t;
 
-typedef union vec2f32_t {
+typedef union v2f_t {
     struct {
         f32 x;
         f32 y;
     };
     f32 v[2];
-} vec2f32_t;
+} v2f_t;
 
-typedef union vec3f32_t {
+typedef union v3f_t {
     struct {
         f32 x;
         f32 y;
         f32 z;
     };
     f32 v[3];
-} vec3f32_t;
+} v3f_t;
 
-typedef union vec4f32_t {
+typedef union v4f_t {
     struct {
         f32 x;
         f32 y;
@@ -304,98 +304,52 @@ typedef union vec4f32_t {
         f32 w;
     };
     f32 v[4];
-} vec4f32_t;
+} v4f_t;
 
-typedef union itv1f32_t {
-    struct {
-        f32 min;
-        f32 max;
-    };
-    f32 v[2];
-} itv1f32_t;
-
-typedef union itv1u64_t {
+typedef union r1u_t {
     struct {
         u64 min;
         u64 max;
     };
-    struct {
-        u64 first;
-        u64 opl;
-    };
-    u64 v[2];
-} itv1u64_t;
+    u64 r[2];
+} r1u_t;
 
-typedef union itv2f32_t {
+typedef union r1f_t {
     struct {
-        vec2f32_t min;
-        vec2f32_t max;
+        f32 min;
+        f32 max;
     };
-    struct {
-        vec2f32_t p0;
-        vec2f32_t p1;
-    };
-    struct {
-        f32 x0;
-        f32 y0;
-        f32 x1;
-        f32 y1;
-    };
-    vec2f32_t p[2];
-    f32 v[4];
-} itv2f32_t;
+    f32 r[2];
+} r1f_t;
 
-typedef union itv2i32_t {
+typedef union r2i_t {
     struct {
-        vec2i32_t min;
-        vec2i32_t max;
+        v2i_t min;
+        v2i_t max;
     };
+    v2i_t r[2];
+} r2i_t;
+
+typedef union r2f_t {
     struct {
-        vec2i32_t p0;
-        vec2i32_t p1;
+        v2f_t min;
+        v2f_t max;
     };
-    struct {
-        i32 x0;
-        i32 y0;
-        i32 x1;
-        i32 y1;
-    };
-    vec2i32_t p[2];
-    i32 v[4];
-} itv2i32_t;
+    v2f_t r[2];
+} r2f_t;
 
 // ========================================
-// Compound Type Functions
+// Compound Type Constructors
 
-vec2i32_t vec2i32(i32 x, i32 y);
-vec2f32_t vec2f32(f32 x, f32 y);
-vec3f32_t vec3f32(f32 x, f32 y, f32 z);
-vec4f32_t vec4f32(f32 x, f32 y, f32 z, f32 w);
-itv1f32_t itv1f32(f32 min, f32 max);
-itv1u64_t itv1u64(u64 min, u64 max);
-itv2f32_t itv2f32(vec2f32_t min, vec2f32_t max);
-itv2i32_t itv2i32(vec2i32_t min, vec2i32_t max);
+v2i_t v2i(i32 x, i32 y);
+v2f_t v2f(f32 x, f32 y);
+v3f_t v3f(f32 x, f32 y, f32 z);
+v4f_t v4f(f32 x, f32 y, f32 z, f32 w);
 
-// ========================================
-// Compound Type Redefinitions
-
-typedef vec2i32_t point_t;
-typedef vec2f32_t vec2_t;
-typedef vec3f32_t vec3_t;
-typedef vec4f32_t vec4_t;
-typedef itv2f32_t rect_t;
-typedef itv2i32_t box_t;
-typedef itv1f32_t range_t;
-typedef itv1u64_t interval_t;
-
-local_fn point_t point(i32 x, i32 y) { return vec2i32(x, y); }
-local_fn vec2_t vec2(f32 x, f32 y) { return vec2f32(x, y); }
-local_fn vec3_t vec3(f32 x, f32 y, f32 z) { return vec3f32(x, y, z); }
-local_fn vec4_t vec4(f32 x, f32 y, f32 z, f32 w) { return vec4f32(x, y, z, w); }
-local_fn rect_t rect(vec2_t min, vec2_t max) { return itv2f32(min, max); }
-local_fn box_t box(point_t min, point_t max) { return itv2i32(min, max); }
-local_fn range_t range(f32 min, f32 max) { return itv1f32(min, max); }
-local_fn interval_t interval(u64 min, u64 max) { return itv1u64(min, max); }
+r1u_t r1u(u64 min, u64 max);
+r1f_t r1f(f32 min, f32 max);
+r2i_t r2i(v2i_t min, v2i_t max);
+r2f_t r2f(v2f_t min, v2f_t max);
 
 // ========================================
 // Utilities
