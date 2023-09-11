@@ -12,7 +12,10 @@ typedef struct table_pair_t {
     void *val;
 } table_pair_t;
 
-typedef struct table_bucket_t table_bucket_t;
+typedef struct table_bucket_t {
+    table_pair_t pair;
+    struct table_bucket_t *next;
+} table_bucket_t;
 
 typedef struct table_t {
     size_t size;
@@ -44,5 +47,16 @@ void table_shrink(table_t *tb);
 size_t table_size(const table_t *tb);
 bool table_empty(const table_t *tb);
 bool table_contains(const table_t *tb, const void *key);
+
+typedef struct table_itr_t {
+    table_t *table;
+    size_t slot;
+    table_bucket_t *bucket;
+} table_itr_t;
+
+table_itr_t table_itr(table_t *tb);
+table_itr_t table_itr_next(table_itr_t itr);
+bool table_itr_end(table_itr_t itr);
+table_pair_t *table_itr_get(table_itr_t itr);
 
 #endif //SHMOCODEBASE_TABLE_H

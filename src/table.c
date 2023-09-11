@@ -4,11 +4,6 @@
 
 #include "shmo/table.h"
 
-struct table_bucket_t {
-    table_pair_t pair;
-    table_bucket_t *next;
-};
-
 local_fn void table_bucket_create(table_bucket_t *bucket,
                                   const void *key,
                                   size_t key_size,
@@ -263,4 +258,55 @@ bool table_contains(const table_t *tb, const void *key) {
     assert(tb);
     assert(key);
     return table_lookup(tb, key) != nullptr;
+}
+
+table_itr_t table_itr(table_t *tb) {
+    assert(tb);
+
+    table_itr_t itr;
+    itr.table = tb;
+    itr.slot = 0;
+    itr.bucket = nullptr;
+
+    return table_itr_next(itr);
+}
+
+table_itr_t table_itr_next(table_itr_t itr) {
+    assert(itr.table);
+    if (table_empty(itr.table)) {
+        return itr;
+    }
+
+    size_t slot = itr.slot;
+    table_bucket_t *bucket;
+
+    if (itr.bucket) {
+        bucket = itr.bucket->next;
+    } else {
+        bucket = itr.table->slots[slot];
+    }
+
+    while (!bucket) {
+        slot++;
+        if (slot >= itr.table->slot_count) {
+            break;
+        }
+        bucket = itr.table->slots[slot];
+    }
+
+    itr.slot = slot;
+    itr.bucket = bucket;
+
+    return itr;
+}
+
+bool table_itr_end(table_itr_t itr) {
+    assert(itr.table);
+    return itr.slot >= itr.table->slot_count;
+}
+
+table_pair_t *table_itr_get(table_itr_t itr) {
+    assert(itr.table);
+    assert(itr.bucket);
+    return &(itr.bucket->pair);
 }

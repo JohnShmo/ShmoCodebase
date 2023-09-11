@@ -155,7 +155,7 @@ r2f_t r2f(v2f_t min, v2f_t max) {
 
 u64 hash_cstr(const void *v) {
     assert(v);
-    const char *str = v;
+    const char *str = *(const char **)v;
     size_t len = strlen(str);
     const u64 p = 16777619; // magic number 1
     u64 hash = 2166136261;  // magic number 2
@@ -168,5 +168,5 @@ u64 hash_cstr(const void *v) {
 i32 compare_cstr(const void *lhs, const void *rhs) {
     assert(lhs);
     assert(rhs);
-    return strcmp((const char *)lhs, (const char *)rhs);
+    return strcmp(*(const char **)lhs, *(const char **)rhs);
 }
