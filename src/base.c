@@ -153,52 +153,20 @@ u64 round_up_u64(u64 num, u64 multiple) {
     return ((num + multiple - 1) / multiple) * multiple;
 }
 
-u64 hash_default(bytes_t v) {
-    assert(v.data);
-    assert(v.size);
+u64 hash_cstr(const void *v) {
+    assert(v);
+    const char *str = v;
+    size_t len = strlen(str);
     const u64 p = 16777619; // magic number 1
     u64 hash = 2166136261;  // magic number 2
-    for (size_t i = 0; i < v.size; ++i) {
-        hash = (hash ^ ((u8 *)v.data)[i]) * p;
+    for (size_t i = 0; i < len; ++i) {
+        hash = hash ^ (str[i]) * p;
     }
     return hash;
 }
 
-bool compare_default(bytes_t lhs, bytes_t rhs) {
-    assert(lhs.data);
-    assert(lhs.size);
-    assert(rhs.data);
-    assert(rhs.size);
-    if (lhs.size != rhs.size) {
-        return false;
-    }
-    for (size_t i = 0; i < lhs.size; ++i) {
-        if (((u8 *)lhs.data)[i] != ((u8 *)rhs.data)[i]) {
-            return false;
-        }
-    }
-    return true;
-}
-
-u64 hash_string(bytes_t v) {
-    assert(v.data);
-    assert(v.size);
-    if (v.data[v.size - 1] == '\0') {
-        v.size -= 1;
-    }
-    return hash_default(v);
-}
-
-bool compare_string(bytes_t lhs, bytes_t rhs) {
-    assert(lhs.data);
-    assert(lhs.size);
-    assert(rhs.data);
-    assert(rhs.size);
-    if (lhs.data[lhs.size - 1] == '\0') {
-        lhs.size -= 1;
-    }
-    if (rhs.data[rhs.size - 1] == '\0') {
-        rhs.size -= 1;
-    }
-    return compare_default(lhs, rhs);
+i32 compare_cstr(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    return strcmp((const char *)lhs, (const char *)rhs);
 }

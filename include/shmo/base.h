@@ -398,24 +398,12 @@ local_fn range_t range(f32 min, f32 max) { return itv1f32(min, max); }
 local_fn interval_t interval(u64 min, u64 max) { return itv1u64(min, max); }
 
 // ========================================
-// Bytes Type
+// Utilities
 
-typedef struct bytes_t {
-    u8 *data;
-    size_t size;
-} bytes_t;
+typedef i32 (*compare_func_t)(const void *, const void *);
+typedef u64 (*hash_func_t)(const void *);
 
-typedef bool (*compare_func_t)(bytes_t, bytes_t);
-typedef u64 (*hash_func_t)(bytes_t);
-
-u64 hash_default(bytes_t v);
-bool compare_default(bytes_t lhs, bytes_t rhs);
-u64 hash_string(bytes_t v);
-bool compare_string(bytes_t lhs, bytes_t rhs);
-
-#define bytes_of(X) ((bytes_t) { .data = (u8 *)&(X), .size = sizeof(X) })
-#define bytes_of_str(X) ((bytes_t) { .data = (u8 *)(X), .size = strlen(X) + 1 })
-#define bytes_to(T, Bytes) *((T *)(Bytes).data)
-#define bytes_to_str(Bytes) ((char *)(Bytes).data)
+i32 compare_cstr(const void *lhs, const void *rhs);
+u64 hash_cstr(const void *v);
 
 #endif //SHMOCODEBASE_BASE_H

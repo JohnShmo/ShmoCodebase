@@ -220,27 +220,27 @@ void darray_set(darray_t *da, size_t index, const void *val) {
     }
 }
 
-bool darray_empty(darray_t *da) {
+bool darray_empty(const darray_t *da) {
     assert(da);
     return da->size == 0;
 }
 
-size_t darray_size(darray_t *da) {
+size_t darray_size(const darray_t *da) {
     assert(da);
     return da->size;
 }
 
-size_t darray_capacity(darray_t *da) {
+size_t darray_capacity(const darray_t *da) {
     assert(da);
     return da->capacity;
 }
 
-size_t darray_element_size(darray_t *da) {
+size_t darray_element_size(const darray_t *da) {
     assert(da);
     return da->element_size;
 }
 
-void *darray_data(darray_t *da) {
+const void *darray_data(const darray_t *da) {
     assert(da);
     return da->data;
 }
