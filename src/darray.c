@@ -23,6 +23,8 @@ darray_t *darray_create(size_t element_size, heap_allocator_t *allocator) {
     da->element_size = element_size;
     da->data = nullptr;
     da->allocator = allocator;
+
+    return da;
 }
 
 void darray_destroy(darray_t *da) {
@@ -212,6 +214,14 @@ void *darray_at(darray_t *da, size_t index) {
     return ((u8 *)da->data) + index;
 }
 
+const void *darray_const_at(const darray_t *da, size_t index) {
+    assert(da);
+    assert(da->size);
+
+    index = index * da->element_size;
+    return ((u8 *)da->data) + index;
+}
+
 void darray_set(darray_t *da, size_t index, const void *val) {
     assert(da);
     assert(da->size);
@@ -239,12 +249,12 @@ size_t darray_capacity(const darray_t *da) {
     return da->capacity;
 }
 
-size_t darray_element_size(const darray_t *da) {
+void *darray_data(darray_t *da) {
     assert(da);
-    return da->element_size;
+    return da->data;
 }
 
-const void *darray_data(const darray_t *da) {
+const void *darray_const_data(const darray_t *da) {
     assert(da);
     return da->data;
 }

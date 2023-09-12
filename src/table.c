@@ -134,6 +134,8 @@ table_t *table_create(size_t key_size,
     tb->hash_func = hash_func;
     tb->compare_func = compare_func;
     tb->allocator = allocator;
+
+    return tb;
 }
 
 void table_destroy(table_t *tb) {

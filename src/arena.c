@@ -111,6 +111,7 @@ arena_t *arena_create(void) {
     for (i32 i = 0; i < ARENA_BLOCK_COUNT_; ++i) {
         a->free_blocks[i] = nullptr;
     }
+    return a;
 }
 
 void arena_destroy(arena_t *a) {

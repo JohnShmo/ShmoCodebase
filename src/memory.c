@@ -15,7 +15,7 @@ ref_t *ref_create(size_t n_bytes, destructor_func_t destructor_func, heap_alloca
     r->count = 1;
     r->p = heap_malloc(allocator, n_bytes);
     assert(r->p);
-    return r->p;
+    return r;
 }
 
 void ref_inc(ref_t *r) {
