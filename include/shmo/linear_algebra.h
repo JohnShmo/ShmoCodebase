@@ -7,13 +7,13 @@
 
 #include "base.h"
 
-void vec_add(f32 *dest, const f32 *a, const f32 *b, size_t n);
-void vec_sub(f32 *dest, const f32 *a, const f32 *b, size_t n);
-f32 vec_dot(const f32 *a, const f32 *b, size_t n);
-void vec_mul(f32 *dest, const f32 *a, f32 b, size_t n);
-void vec_div(f32 *dest, const f32 *a, f32 b, size_t n);
-f32 vec_len(const f32 *a, size_t n);
-void vec_norm(f32 *dest, const f32 *a, size_t n);
+void vec_add(size_t n, f32 dest[n], const f32 a[n], const f32 b[n]);
+void vec_sub(size_t n, f32 dest[n], const f32 a[n], const f32 b[n]);
+f32 vec_dot(size_t n, const f32 a[n], const f32 b[n]);
+void vec_mul(size_t n, f32 dest[n], const f32 a[n], f32 b);
+void vec_div(size_t n, f32 dest[n], const f32 a[n], f32 b);
+f32 vec_len(size_t n, const f32 a[n]);
+void vec_norm(size_t n, f32 dest[n], const f32 a[n]);
 
 v2f_t v2f_add(v2f_t a, v2f_t b);
 v2f_t v2f_sub(v2f_t a, v2f_t b);
