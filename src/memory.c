@@ -4,12 +4,12 @@
 
 #include "shmo/memory.h"
 
-void *ref_create(ref_t *r, size_t n_bytes, destructor_func_t destructor_func, heap_allocator_t *allocator) {
-    assert(r);
+ref_t *ref_create(size_t n_bytes, destructor_func_t destructor_func, heap_allocator_t *allocator) {
     assert(n_bytes);
     if (allocator == nullptr) {
         allocator = stdalloc;
     }
+    ref_t *r = heap_malloc(allocator, sizeof(ref_t));
     r->destructor_func = destructor_func;
     r->allocator = allocator;
     r->count = 1;
@@ -35,6 +35,7 @@ void ref_dec(ref_t *r) {
             r->destructor_func(r->p);
         }
         heap_free(r->allocator, r->p);
+        heap_free(r->allocator, r);
     }
 }
 

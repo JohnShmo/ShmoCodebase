@@ -14,7 +14,7 @@ typedef struct ref_t {
     heap_allocator_t *allocator;
 } ref_t;
 
-void *ref_create(ref_t *r, size_t n, destructor_func_t destructor_func, heap_allocator_t *allocator);
+ref_t *ref_create(size_t n, destructor_func_t destructor_func, heap_allocator_t *allocator);
 void ref_inc(ref_t *r);
 void ref_dec(ref_t *r);
 void *ref_get(ref_t *r);

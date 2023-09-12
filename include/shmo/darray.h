@@ -15,7 +15,7 @@ typedef struct darray_t {
     heap_allocator_t *allocator;
 } darray_t;
 
-void darray_create(darray_t *da, size_t element_size, heap_allocator_t *allocator);
+darray_t *darray_create(size_t element_size, heap_allocator_t *allocator);
 void darray_destroy(darray_t *da);
 void darray_reserve(darray_t *da, size_t n);
 void darray_resize(darray_t *da, size_t n, const void *fillval);

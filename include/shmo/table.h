@@ -31,8 +31,7 @@ typedef struct table_t {
     heap_allocator_t *allocator;
 } table_t;
 
-void table_create(table_t *tb,
-                  size_t key_size,
+table_t *table_create(size_t key_size,
                   size_t val_size,
                   hash_func_t hash_func,
                   compare_func_t compare_func,

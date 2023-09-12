@@ -29,7 +29,7 @@ typedef struct arena_t {
     arena_block_header_t *free_blocks[ARENA_BLOCK_COUNT_];
 } arena_t;
 
-void arena_create(arena_t *a);
+arena_t *arena_create(void);
 void arena_destroy(arena_t *a);
 void *arena_malloc(arena_t *a, size_t n);
 void *arena_calloc(arena_t *a, size_t n, size_t size);

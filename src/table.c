@@ -110,19 +110,20 @@ local_fn table_bucket_t *table_lookup(const table_t *tb, const void *key) {
     return bucket;
 }
 
-void table_create(table_t *tb,
-                  size_t key_size,
+table_t *table_create(size_t key_size,
                   size_t val_size,
                   hash_func_t hash_func,
                   compare_func_t compare_func,
                   heap_allocator_t *allocator) {
-    assert(tb);
     assert(key_size);
     assert(val_size);
     assert(hash_func);
     assert(compare_func);
     if (!allocator)
         allocator = stdalloc;
+
+    table_t *tb = heap_malloc(allocator, sizeof(table_t));
+    assert(tb);
 
     tb->size = 0;
     tb->slot_count = 0;
@@ -145,7 +146,8 @@ void table_destroy(table_t *tb) {
     tb->val_size = 0;
     tb->hash_func = nullptr;
     tb->compare_func = nullptr;
-    tb->allocator = nullptr;
+
+    heap_free(tb->allocator, tb);
 }
 
 void table_put(table_t *tb, const void *key, const void *val) {
