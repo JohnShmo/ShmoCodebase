@@ -355,6 +355,7 @@ r2f_t r2f(v2f_t min, v2f_t max);
 // ========================================
 // Utilities
 
+typedef void (*destructor_func_t)(void *);
 typedef i32 (*compare_func_t)(const void *, const void *);
 typedef u64 (*hash_func_t)(const void *);
 
