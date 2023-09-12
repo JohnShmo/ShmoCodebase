@@ -1,7 +1,9 @@
 #include "shmo/darray.h"
+#include "shmo/table.h"
 #include <stdio.h>
 
 DARRAY_DEF(darrayi32, i32)
+TABLE_DEF(table_str_i32, char *, i32, hash_cstr, compare_cstr)
 
 int main() {
     darrayi32_t *arr = darrayi32_create(stdalloc);
