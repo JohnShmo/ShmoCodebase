@@ -14,7 +14,7 @@ int main() {
     darrayi32_pushb(arr, 60);
 
     for (size_t i = 0; i < darrayi32_size(arr); ++i) {
-        printf("[%llu] -> %d\n", i, *darrayi32_at(arr, i));
+        printf("[%zu] -> %d\n", i, *darrayi32_at(arr, i));
     }
 
     darrayi32_destroy(arr);
