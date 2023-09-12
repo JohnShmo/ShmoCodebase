@@ -1,24 +1,22 @@
-#include "shmo/table.h"
+#include "shmo/darray.h"
 #include <stdio.h>
 
+DARRAY_DEF(darrayi32, i32)
+
 int main() {
-    table_t *table = table_create(sizeof(char *),
-                                  sizeof(char *),
-                                  hash_cstr,
-                                  compare_cstr,
-                                  stdalloc);
+    darrayi32_t *arr = darrayi32_create(stdalloc);
 
-    char *dave_key = "Dave";
-    char *tim_key = "Tim";
-    char *dave_val = "Cool guy.";
-    char *tim_val = "Super cool guy.";
+    darrayi32_pushb(arr, 10);
+    darrayi32_pushb(arr, 20);
+    darrayi32_pushb(arr, 30);
+    darrayi32_pushb(arr, 40);
+    darrayi32_pushb(arr, 50);
+    darrayi32_pushb(arr, 60);
 
-    table_put(table, &dave_key, &dave_val);
-    table_put(table, &tim_key, &tim_val);
+    for (size_t i = 0; i < darrayi32_size(arr); ++i) {
+        printf("[%llu] -> %d\n", i, *darrayi32_at(arr, i));
+    }
 
-    printf("%s : %s\n", dave_key, *(char **)table_get(table, &dave_key));
-    printf("%s : %s\n", tim_key, *(char **)table_get(table, &tim_key));
-
-    table_destroy(table);
+    darrayi32_destroy(arr);
     return 0;
 }
