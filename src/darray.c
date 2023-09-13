@@ -14,29 +14,37 @@ darray_t *darray_create(size_t element_size, heap_allocator_t *allocator) {
     assert(element_size);
     if (!allocator)
         allocator = stdalloc;
-
     darray_t *da = heap_malloc(allocator, sizeof(darray_t));
     assert(da);
-
-    da->size = 0;
-    da->capacity = 0;
-    da->element_size = element_size;
-    da->data = nullptr;
-    da->allocator = allocator;
-
+    darray_place_create(da, element_size, allocator);
     return da;
+}
+
+void darray_place_create(darray_t *dest, size_t element_size, heap_allocator_t *allocator) {
+    assert(dest);
+    assert(element_size);
+    if (!allocator)
+        allocator = stdalloc;
+    dest->size = 0;
+    dest->capacity = 0;
+    dest->element_size = element_size;
+    dest->data = nullptr;
+    dest->allocator = allocator;
 }
 
 void darray_destroy(darray_t *da) {
     assert(da);
+    darray_place_destroy(da);
+    heap_free(da->allocator, da);
+}
 
+void darray_place_destroy(darray_t *da) {
+    assert(da);
     heap_free(da->allocator, da->data);
     da->size = 0;
     da->capacity = 0;
     da->element_size = 0;
     da->data = nullptr;
-
-    heap_free(da->allocator, da);
 }
 
 void darray_reserve(darray_t *da, size_t n) {

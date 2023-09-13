@@ -121,24 +121,44 @@ table_t *table_create(size_t key_size,
     assert(compare_func);
     if (!allocator)
         allocator = stdalloc;
-
     table_t *tb = heap_malloc(allocator, sizeof(table_t));
     assert(tb);
-
-    tb->size = 0;
-    tb->slot_count = 0;
-    tb->slots = nullptr;
-    tb->free_buckets = nullptr;
-    tb->key_size = key_size;
-    tb->val_size = val_size;
-    tb->hash_func = hash_func;
-    tb->compare_func = compare_func;
-    tb->allocator = allocator;
-
+    table_place_create(tb, key_size, val_size, hash_func, compare_func, allocator);
     return tb;
 }
 
+void table_place_create(table_t *dest,
+                        size_t key_size,
+                        size_t val_size,
+                        hash_func_t hash_func,
+                        compare_func_t compare_func,
+                        heap_allocator_t *allocator) {
+    assert(dest);
+    assert(key_size);
+    assert(val_size);
+    assert(hash_func);
+    assert(compare_func);
+    if (!allocator)
+        allocator = stdalloc;
+
+    dest->size = 0;
+    dest->slot_count = 0;
+    dest->slots = nullptr;
+    dest->free_buckets = nullptr;
+    dest->key_size = key_size;
+    dest->val_size = val_size;
+    dest->hash_func = hash_func;
+    dest->compare_func = compare_func;
+    dest->allocator = allocator;
+}
+
 void table_destroy(table_t *tb) {
+    assert(tb);
+    table_place_destroy(tb);
+    heap_free(tb->allocator, tb);
+}
+
+void table_place_destroy(table_t *tb) {
     assert(tb);
 
     table_clear(tb);
@@ -148,8 +168,6 @@ void table_destroy(table_t *tb) {
     tb->val_size = 0;
     tb->hash_func = nullptr;
     tb->compare_func = nullptr;
-
-    heap_free(tb->allocator, tb);
 }
 
 void table_put(table_t *tb, const void *key, const void *val) {

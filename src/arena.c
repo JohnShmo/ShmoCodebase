@@ -107,14 +107,25 @@ local_fn void arena_page_destroy(arena_page_t *p) {
 arena_t *arena_create(void) {
     arena_t *a = malloc(sizeof(arena_t));
     assert(a);
-    a->pages = nullptr;
-    for (i32 i = 0; i < ARENA_BLOCK_COUNT_; ++i) {
-        a->free_blocks[i] = nullptr;
-    }
+    arena_place_create(a);
     return a;
 }
 
+void arena_place_create(arena_t *dest) {
+    assert(dest);
+    dest->pages = nullptr;
+    for (i32 i = 0; i < ARENA_BLOCK_COUNT_; ++i) {
+        dest->free_blocks[i] = nullptr;
+    }
+}
+
 void arena_destroy(arena_t *a) {
+    assert(a);
+    arena_place_destroy(a);
+    free(a);
+}
+
+void arena_place_destroy(arena_t *a) {
     assert(a);
     while(a->pages) {
         arena_page_t *to_free = a->pages;
@@ -125,7 +136,6 @@ void arena_destroy(arena_t *a) {
     for (i32 i = 0; i < ARENA_BLOCK_COUNT_; ++i) {
         a->free_blocks[i] = nullptr;
     }
-    free(a);
 }
 
 void *arena_malloc(arena_t *a, size_t n) {
