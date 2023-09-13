@@ -128,12 +128,12 @@ typedef void void_func_t(void);
 #define member(T, M) (((T*)0)->M)
 #define offsetof_member(T, M) int_from_ptr(&member(T, M))
 
-#define MIN(A, B) (((A)<(B))?(A):(B))
-#define MAX(A, B) (((A)>(B))?(A):(B))
+#define min(A, B) ({ typeof(A) _a_ = (A); typeof(B) _b_ = (B); _a_ < _b_ ? _a_ : _b_; })
+#define max(A, B) ({ typeof(A) _a_ = (A); typeof(B) _b_ = (B); _a_ > _b_ ? _a_ : _b_; })
 #define CLAMP(A, X, B) (((X)<(A))?(A):\
                        ((B)<(X))?(B):(X))
-#define CLAMP_TOP(A, B) MIN(A, B)
-#define CLAMP_BOT(A, B) MAX(A, B)
+#define CLAMP_TOP(A, B) min(A, B)
+#define CLAMP_BOT(A, B) max(A, B)
 
 #include <string.h>
 #define memory_zero(Dest, Size) memset((Dest), 0, (Size))
@@ -309,32 +309,32 @@ typedef union v4f_t {
 
 typedef union r1u_t {
     struct {
-        u64 min;
-        u64 max;
+        u64 begin;
+        u64 end;
     };
     u64 r[2];
 } r1u_t;
 
 typedef union r1f_t {
     struct {
-        f32 min;
-        f32 max;
+        f32 begin;
+        f32 end;
     };
     f32 r[2];
 } r1f_t;
 
 typedef union r2i_t {
     struct {
-        v2i_t min;
-        v2i_t max;
+        v2i_t begin;
+        v2i_t end;
     };
     v2i_t r[2];
 } r2i_t;
 
 typedef union r2f_t {
     struct {
-        v2f_t min;
-        v2f_t max;
+        v2f_t begin;
+        v2f_t end;
     };
     v2f_t r[2];
 } r2f_t;
@@ -347,11 +347,10 @@ v2f_t v2f(f32 x, f32 y);
 v3f_t v3f(f32 x, f32 y, f32 z);
 v4f_t v4f(f32 x, f32 y, f32 z, f32 w);
 
-r1u_t r1u(u64 min, u64 max);
-r1f_t r1f(f32 min, f32 max);
-r2i_t r2i(v2i_t min, v2i_t max);
-r2f_t r2f(v2f_t min, v2f_t max);
-
+r1u_t r1u(u64 begin, u64 end);
+r1f_t r1f(f32 begin, f32 end);
+r2i_t r2i(v2i_t begin, v2i_t end);
+r2f_t r2f(v2f_t begin, v2f_t end);
 
 // ========================================
 // Utilities

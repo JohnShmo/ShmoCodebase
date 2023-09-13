@@ -29,7 +29,7 @@ local_fn bool arena_can_page_fit(arena_page_t *p, size_t n) {
 local_fn void arena_page_create(arena_page_t *p, size_t size) {
     assert(p);
     assert(size);
-    p->start = malloc(MAX(ARENA_MIN_PAGE_SIZE, size));
+    p->start = malloc(max(ARENA_MIN_PAGE_SIZE, size));
     assert(p->start);
     p->current = p->start;
     p->end = p->start + size;

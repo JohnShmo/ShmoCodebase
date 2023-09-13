@@ -124,7 +124,7 @@ void strview_cstr_to(const strview_t *view, char *dest, size_t dest_size) {
     assert(dest);
     assert(dest_size);
 
-    size_t len = MIN(dest_size - 1, view->length);
+    size_t len = min(dest_size - 1, view->length);
 
     memcpy(dest, view->data, len);
     dest[len] = '\0';

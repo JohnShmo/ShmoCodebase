@@ -137,20 +137,20 @@ v4f_t v4f(f32 x, f32 y, f32 z, f32 w) {
     return (v4f_t){ .x = x, .y = y, .z = z, .w = w };
 }
 
-r1u_t r1u(u64 min, u64 max) {
-    return (r1u_t) { .min = min, .max = max };
+r1u_t r1u(u64 begin, u64 end) {
+    return (r1u_t) { .begin = begin, .end = end };
 }
 
-r1f_t r1f(f32 min, f32 max) {
-    return (r1f_t) { .min = min, .max = max };
+r1f_t r1f(f32 begin, f32 end) {
+    return (r1f_t) { .begin = begin, .end = end };
 }
 
-r2i_t r2i(v2i_t min, v2i_t max) {
-    return (r2i_t) { .min = min, .max = max };
+r2i_t r2i(v2i_t begin, v2i_t end) {
+    return (r2i_t) { .begin = begin, .end = end };
 }
 
-r2f_t r2f(v2f_t min, v2f_t max) {
-    return (r2f_t) { .min = min, .max = max };
+r2f_t r2f(v2f_t begin, v2f_t end) {
+    return (r2f_t) { .begin = begin, .end = end };
 }
 
 u64 hash_cstr(const void *v) {
