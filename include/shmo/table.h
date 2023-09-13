@@ -31,21 +31,14 @@ typedef struct table_t {
     heap_allocator_t *allocator;
 } table_t;
 
-table_t *table_create(size_t key_size,
-                      size_t val_size,
-                      hash_func_t hash_func,
-                      compare_func_t compare_func,
-                      heap_allocator_t *allocator);
-
-void table_place_create(table_t *dest,
-                        size_t key_size,
-                        size_t val_size,
-                        hash_func_t hash_func,
-                        compare_func_t compare_func,
-                        heap_allocator_t *allocator);
+void table_create(table_t *dest,
+                  size_t key_size,
+                  size_t val_size,
+                  hash_func_t hash_func,
+                  compare_func_t compare_func,
+                  heap_allocator_t *allocator);
 
 void table_destroy(table_t *tb);
-void table_place_destroy(table_t *tb);
 void table_put(table_t *tb, const void *key, const void *val);
 void *table_get(table_t *tb, const void *key);
 void table_remove(table_t *tb, const void *key);
@@ -69,10 +62,8 @@ table_pair_t *table_itr_get(table_itr_t itr);
 #define TABLE_DEF(Name, KeyT, ValT, HashFunc, CompareFunc) \
 typedef struct Name##_pair_t { KeyT *key; ValT *val; } Name##_pair_t; \
 typedef struct Name##_t { table_t impl; } Name##_t;        \
-local_fn Name##_t *Name##_create(heap_allocator_t *allocator) { return (Name##_t *)table_create(sizeof(KeyT), sizeof(ValT), HashFunc, CompareFunc, allocator); } \
-local_fn void Name##_place_create(Name##_t *dest, heap_allocator_t *allocator) { table_place_create((table_t *)dest, sizeof(KeyT), sizeof(ValT), HashFunc, CompareFunc, allocator); } \
+local_fn void Name##_create(Name##_t *dest, heap_allocator_t *allocator) { table_create((table_t *)dest, sizeof(KeyT), sizeof(ValT), HashFunc, CompareFunc, allocator); } \
 local_fn void Name##_destroy(Name##_t *tb) { table_destroy((table_t *)tb); }                                                                                     \
-local_fn void Name##_place_destroy(Name##_t *tb) { table_place_destroy((table_t *)tb); }                                                                         \
 local_fn void Name##_put(Name##_t *tb, const KeyT key, const ValT val) { table_put((table_t *)tb, &key, &val); }                                                 \
 local_fn ValT *Name##_get(Name##_t *tb, const KeyT key) { return table_get((table_t *)tb, &key); }                                                               \
 local_fn void Name##_remove(Name##_t *tb, const KeyT key) { table_remove((table_t *)tb, &key); }                                                                 \
