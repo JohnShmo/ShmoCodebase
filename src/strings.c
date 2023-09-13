@@ -10,7 +10,6 @@ void string_create(string_t *dest, const char *cstr, heap_allocator_t *allocator
     if (!allocator) {
         allocator = stdalloc;
     }
-    string_destroy(dest);
 
     size_t len = strlen(cstr);
 
@@ -19,6 +18,9 @@ void string_create(string_t *dest, const char *cstr, heap_allocator_t *allocator
     dest->length = len;
 
     memcpy(dest->data, cstr, len);
+    if (len == 0) {
+        dest->data[0] = '\0';
+    }
 }
 
 void string_copy(string_t *restrict dest, const string_t *restrict src, heap_allocator_t *allocator) {
@@ -34,7 +36,6 @@ void string_copy_view(string_t *restrict dest, const strview_t *restrict src, he
     if (!allocator) {
         allocator = stdalloc;
     }
-    string_destroy(dest);
 
     size_t len = src->length;
 
@@ -43,13 +44,13 @@ void string_copy_view(string_t *restrict dest, const strview_t *restrict src, he
     dest->length = len;
 
     memcpy(dest->data, src->data, len);
+    if (len == 0) {
+        dest->data[0] = '\0';
+    }
 }
 
 void string_destroy(string_t *str) {
     assert(str);
-    if (!str->allocator) {
-        return;
-    }
     heap_free(str->allocator, str->data);
     str->data = nullptr;
     str->length = 0;

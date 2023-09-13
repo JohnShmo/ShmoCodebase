@@ -123,7 +123,6 @@ void table_create(table_t *dest,
     assert(compare_func);
     if (!allocator)
         allocator = stdalloc;
-    table_destroy(dest);
 
     dest->size = 0;
     dest->slot_count = 0;
@@ -138,9 +137,6 @@ void table_create(table_t *dest,
 
 void table_destroy(table_t *tb) {
     assert(tb);
-    if (!tb->allocator) {
-        return;
-    }
 
     table_clear(tb);
     table_shrink(tb);
