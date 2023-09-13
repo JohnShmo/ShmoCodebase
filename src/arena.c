@@ -114,7 +114,7 @@ arena_t *arena_create(void) {
 void arena_place_create(arena_t *dest) {
     assert(dest);
     dest->pages = nullptr;
-    for (i32 i = 0; i < ARENA_BLOCK_COUNT_; ++i) {
+    for (i32 i = 0; i < COUNT_ARENA_BLOCK; ++i) {
         dest->free_blocks[i] = nullptr;
     }
 }
@@ -127,13 +127,18 @@ void arena_destroy(arena_t *a) {
 
 void arena_place_destroy(arena_t *a) {
     assert(a);
+    arena_release(a);
+}
+
+void arena_release(arena_t *a) {
+    assert(a);
     while(a->pages) {
         arena_page_t *to_free = a->pages;
         a->pages = to_free->next;
         arena_page_destroy(to_free);
         free(to_free);
     }
-    for (i32 i = 0; i < ARENA_BLOCK_COUNT_; ++i) {
+    for (i32 i = 0; i < COUNT_ARENA_BLOCK; ++i) {
         a->free_blocks[i] = nullptr;
     }
 }
