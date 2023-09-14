@@ -10,17 +10,20 @@ local_fn void darray_reserve_if_full(darray_t *da) {
     }
 }
 
-void darray_create(darray_t *dest, size_t element_size, heap_allocator_t *allocator) {
-    assert(dest);
+darray_t darray_create(size_t element_size, heap_allocator_t *allocator) {
     assert(element_size);
     if (!allocator)
         allocator = stdalloc;
 
-    dest->size = 0;
-    dest->capacity = 0;
-    dest->element_size = element_size;
-    dest->data = nullptr;
-    dest->allocator = allocator;
+    darray_t dest;
+
+    dest.size = 0;
+    dest.capacity = 0;
+    dest.element_size = element_size;
+    dest.data = nullptr;
+    dest.allocator = allocator;
+
+    return dest;
 }
 
 void darray_destroy(darray_t *da) {

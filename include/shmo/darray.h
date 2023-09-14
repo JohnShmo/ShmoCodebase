@@ -15,7 +15,7 @@ typedef struct darray_t {
     heap_allocator_t *allocator;
 } darray_t;
 
-void darray_create(darray_t *dest, size_t element_size, heap_allocator_t *allocator);
+darray_t darray_create(size_t element_size, heap_allocator_t *allocator);
 void darray_destroy(darray_t *da);
 void darray_reserve(darray_t *da, size_t n);
 void darray_resize(darray_t *da, size_t n, const void *fillval);
@@ -44,7 +44,7 @@ const void *darray_const_data(const darray_t *da);
 typedef struct Name##_t {   \
     darray_t impl;          \
 } Name##_t;                 \
-local_fn void Name##_create(Name##_t *dest, heap_allocator_t *allocator) { darray_create((darray_t *)dest, sizeof(T), allocator); } \
+local_fn Name##_t Name##_create(heap_allocator_t *allocator) { darray_t res = darray_create(sizeof(T), allocator); return *(Name##_t *)&res; } \
 local_fn void Name##_destroy(Name##_t *da) { darray_destroy((darray_t *)da); }                                           \
 local_fn void Name##_reserve(Name##_t *da, size_t n) { darray_reserve((darray_t *)da, n); }                              \
 local_fn void Name##_resize(Name##_t *da, size_t n, const T fillval) { darray_resize((darray_t *)da, n, &fillval); }     \

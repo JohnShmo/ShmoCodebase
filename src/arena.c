@@ -104,12 +104,13 @@ local_fn void arena_page_destroy(arena_page_t *p) {
     p->next = nullptr;
 }
 
-void arena_create(arena_t *dest) {
-    assert(dest);
-    dest->pages = nullptr;
+arena_t arena_create(void) {
+    arena_t dest;
+    dest.pages = nullptr;
     for (i32 i = 0; i < COUNT_ARENA_BLOCK; ++i) {
-        dest->free_blocks[i] = nullptr;
+        dest.free_blocks[i] = nullptr;
     }
+    return dest;
 }
 
 void arena_destroy(arena_t *a) {

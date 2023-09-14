@@ -6,8 +6,7 @@ DARRAY_DEF(darrayi32, i32)
 TABLE_DEF(table_str_i32, char *, i32, hash_cstr, compare_cstr)
 
 int main() {
-    darrayi32_t arr;
-    darrayi32_create(&arr, stdalloc);
+    darrayi32_t arr = darrayi32_create(stdalloc);
 
     darrayi32_pushb(&arr, 10);
     darrayi32_pushb(&arr, 20);
