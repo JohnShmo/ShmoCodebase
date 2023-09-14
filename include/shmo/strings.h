@@ -15,7 +15,7 @@ typedef struct strview_t {
 strview_t strview(const char *data, size_t length);
 strview_t strview_of(const char *cstr);
 const char *strview_cstr(const strview_t *view);
-const char *strview_dup(const strview_t *view, heap_allocator_t *allocator);
+char *strview_dup(const strview_t *view, heap_allocator_t *allocator);
 void strview_cpy(const strview_t *view, char *dest, size_t dest_size);
 const char *strview_data(const strview_t *view);
 size_t strview_len(const strview_t *view);

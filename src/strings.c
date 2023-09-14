@@ -33,7 +33,7 @@ const char *strview_cstr(const strview_t *view) {
     return buffer;
 }
 
-const char *strview_dup(const strview_t *view, heap_allocator_t *allocator) {
+char *strview_dup(const strview_t *view, heap_allocator_t *allocator) {
     assert(view);
     if (!allocator) {
         allocator = stdalloc;
