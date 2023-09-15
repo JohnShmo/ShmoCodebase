@@ -7,7 +7,6 @@
 
 #include "base.h"
 
-#ifndef DONT_DEFINE_KEY_CODE_ENUM
 typedef enum key_code_t {
     VK_LBUTTON      = 0x01,
     VK_RBUTTON      = 0x02,
@@ -125,11 +124,6 @@ typedef enum key_code_t {
 #define VK_BSLASH    VK_OEM_5
 #define VK_RBRACKET  VK_OEM_6
 #define VK_QUOTE     VK_OEM_7
-#else
-typedef enum key_code_t {
-    COUNT_VK = 0x100
-} key_code_t;
-#endif
 
 #define KEY_DOWN_MASK     0x01
 #define KEY_PRESSED_MASK  0x02
@@ -142,6 +136,10 @@ bool keyboard_check_released(u8 vk_code);
 bool keyboard_check_repeated(u8 vk_code);
 u8 keyboard_lastkey(void);
 
-void keyboard_update(void);
+void keyboard_key_update(u8 vk_code);
+void keyboard_key_clear(u8 vk_code);
+void keyboard_key_press(u8 vk_code);
+void keyboard_key_release(u8 vk_code);
+void keyboard_key_repeat(u8 vk_code);
 
 #endif //SHMOCODEBASE_USER_INPUT_H
