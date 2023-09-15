@@ -11,6 +11,7 @@ add_executable(ShmoCodebase src/main.c
         src/table.c
         src/linear_algebra.c
         src/strings.c
+        src/user_input.c
 )
 target_include_directories(ShmoCodebase PUBLIC include)
 target_compile_definitions(ShmoCodebase PUBLIC ENABLE_ASSERT=1)
