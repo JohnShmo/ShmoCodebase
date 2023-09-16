@@ -7,7 +7,9 @@
 
 #include "base.h"
 
-bool app_open(void);
+#define APP_POS_CENTERED (0x2FFF0000u | (0))
+
+bool app_open(const char *title, v2i_t position, v2i_t size);
 void app_poll_events(void);
 bool app_should_close(void);
 void app_close(void);

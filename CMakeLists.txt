@@ -12,7 +12,6 @@ add_executable(ShmoCodebase src/main.c
         src/linear_algebra.c
         src/strings.c
         src/user_input.c
-        src/window.c
         src/app.c
 )
 find_package(SDL2 REQUIRED)
