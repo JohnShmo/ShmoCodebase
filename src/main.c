@@ -1,23 +1,20 @@
 #include "shmo/user_input.h"
+#include "shmo/window.h"
 #include <stdio.h>
+#include <stdlib.h>
 
-#include <SDL.h>
-
-int main(int argc, char *argv[]) {
-    SDL_Init(SDL_INIT_EVERYTHING);
-
-    SDL_Window *window = SDL_CreateWindow("My Window", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1080, 720, SDL_WINDOW_OPENGL);
-
-    while(true) {
-        SDL_Event event;
-        SDL_PollEvent(&event);
-        if (event.type == SDL_QUIT) {
-            break;
-        }
+int main(i32 argc, char *argv[]) {
+    if (!app_open()) {
+        return EXIT_FAILURE;
     }
+    window_t window = window_create("test",
+                                    v2i(WINDOWPOS_CENTERED, WINDOWPOS_CENTERED),
+                                    v2i(1080, 720));
+    while(!app_should_close()) {
+        app_poll_events();
+    }
+    window_destroy(&window);
+    app_close();
 
-    SDL_DestroyWindow(window);
-
-    SDL_Quit();
-    return 0;
+    return EXIT_SUCCESS;
 }
