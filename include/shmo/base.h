@@ -72,11 +72,17 @@
 #endif
 
 // ========================================
-// Basic Types
+// Includes
 
 #include <stdint.h>
 #include <stddef.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <string.h>
+
+// ========================================
+// Basic Types
+
 typedef int8_t   i8;
 typedef int16_t  i16;
 typedef int32_t  i32;
@@ -135,7 +141,6 @@ typedef void void_func_t(void);
 #define CLAMP_TOP(A, B) min(A, B)
 #define CLAMP_BOT(A, B) max(A, B)
 
-#include <string.h>
 #define memory_zero(Dest, Size) memset((Dest), 0, (Size))
 #define memory_zero_struct(Dest) memory_zero((Dest), sizeof(*(Dest)))
 #define memory_zero_array(Dest) memory_zero((Dest), sizeof(Dest))

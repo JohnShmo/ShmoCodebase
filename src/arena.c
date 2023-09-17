@@ -3,7 +3,6 @@
 //
 
 #include "shmo/arena.h"
-#include <stdlib.h>
 
 #define ARENA_MIN_PAGE_SIZE (1024ULL * 8ULL)
 

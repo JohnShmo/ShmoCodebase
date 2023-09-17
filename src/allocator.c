@@ -3,7 +3,6 @@
 //
 
 #include "shmo/allocator.h"
-#include <stdlib.h>
 
 local_fn void *malloc_c(void *a, size_t n) {
     (void)a;
