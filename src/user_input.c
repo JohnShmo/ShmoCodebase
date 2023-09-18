@@ -3,11 +3,11 @@
 //
 
 #include "shmo/base.h"
-
 #include "shmo/user_input.h"
 
 volatile static u8 key_states[COUNT_VK] = { 0 };
 volatile static u8 last_pressed_key = 0;
+volatile static v2i_t m_pos = { 0, 0 };
 
 bool keyboard_check(u8 vk_code) {
     return (key_states[vk_code] & KEY_DOWN_MASK) != 0;
@@ -27,6 +27,10 @@ bool keyboard_check_repeated(u8 vk_code) {
 
 u8 keyboard_lastkey(void) {
     return last_pressed_key;
+}
+
+v2i_t mouse_position(void) {
+    return m_pos;
 }
 
 void keyboard_key_update(u8 vk_code) {
@@ -55,4 +59,8 @@ void keyboard_key_release(u8 vk_code) {
 
 void keyboard_key_repeat(u8 vk_code) {
     key_states[vk_code] |= KEY_REPEATED_MASK;
+}
+
+void mouse_set_position(v2i_t pos) {
+    m_pos = pos;
 }

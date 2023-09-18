@@ -206,6 +206,11 @@ typedef void void_func_t(void);
 #define SQRT_2_f64          ((f64) 1.41421356237309504880)
 #define O1_SQRT_2_f64       ((f64) 0.707106781186547524401)
 
+#define RAD_TO_DEG_f32      (PI_f32 / 180.0f)
+#define DEG_TO_RAD_f32      (180.0f / PI_f32)
+#define RAD_TO_DEG_f64      (PI_f64 / 180.0 )
+#define DEG_TO_RAD_f64      (180.0  / PI_f64)
+
 // ========================================
 // Math Functions
 
