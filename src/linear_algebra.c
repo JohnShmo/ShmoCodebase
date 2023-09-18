@@ -54,129 +54,129 @@ void vec_norm(size_t n, f32 dest[n], const f32 a[n]) {
     }
 }
 
-v2f_t v2f_add(const v2f_t *a, const v2f_t *b) {
+v2f_t v2f_add(v2f_t a, v2f_t b) {
     v2f_t result;
-    vec_add(2, result.v, a->v, b->v);
+    vec_add(2, result.v, a.v, b.v);
     return result;
 }
 
-v2f_t v2f_sub(const v2f_t *a, const v2f_t *b) {
+v2f_t v2f_sub(v2f_t a, v2f_t b) {
     v2f_t result;
-    vec_sub(2, result.v, a->v, b->v);
+    vec_sub(2, result.v, a.v, b.v);
     return result;
 }
 
-f32 v2f_dot(const v2f_t *a, const v2f_t *b) {
-    return vec_dot(2, a->v, b->v);
+f32 v2f_dot(v2f_t a, v2f_t b) {
+    return vec_dot(2, a.v, b.v);
 }
 
-f32 v2f_cross(const v2f_t *a, const v2f_t *b) {
-    return a->x * b->y - a->y * b->x;
+f32 v2f_cross(v2f_t a, v2f_t b) {
+    return a.x * b.y - a.y * b.x;
 }
 
-v2f_t v2f_mul(const v2f_t *a, f32 b) {
+v2f_t v2f_mul(v2f_t a, f32 b) {
     v2f_t result;
-    vec_mul(2, result.v, a->v, b);
+    vec_mul(2, result.v, a.v, b);
     return result;
 }
 
-v2f_t v2f_div(const v2f_t *a, f32 b) {
+v2f_t v2f_div(v2f_t a, f32 b) {
     v2f_t result;
-    vec_div(2, result.v, a->v, b);
+    vec_div(2, result.v, a.v, b);
     return result;
 }
 
-f32 v2f_len(const v2f_t *a) {
-    return vec_len(2, a->v);
+f32 v2f_len(v2f_t a) {
+    return vec_len(2, a.v);
 }
 
-v2f_t v2f_norm(const v2f_t *a) {
+v2f_t v2f_norm(v2f_t a) {
     v2f_t result;
-    vec_norm(2, result.v, a->v);
+    vec_norm(2, result.v, a.v);
     return result;
 }
 
-v3f_t v3f_add(const v3f_t *a, const v3f_t *b) {
+v3f_t v3f_add(v3f_t a, v3f_t b) {
     v3f_t result;
-    vec_add(3, result.v, a->v, b->v);
+    vec_add(3, result.v, a.v, b.v);
     return result;
 }
 
-v3f_t v3f_sub(const v3f_t *a, const v3f_t *b) {
+v3f_t v3f_sub(v3f_t a, v3f_t b) {
     v3f_t result;
-    vec_sub(3, result.v, a->v, b->v);
+    vec_sub(3, result.v, a.v, b.v);
     return result;
 }
 
-f32 v3f_dot(const v3f_t *a, const v3f_t *b) {
-    return vec_dot(3, a->v, b->v);
+f32 v3f_dot(v3f_t a, v3f_t b) {
+    return vec_dot(3, a.v, b.v);
 }
 
-v3f_t v3f_cross(const v3f_t *a, const v3f_t *b) {
+v3f_t v3f_cross(v3f_t a, v3f_t b) {
     return (v3f_t) {
-        .x = a->y * b->z - a->z * b->y,
-        .y = a->x * b->z - a->z * b->x,
-        .z = a->x * b->y - a->y * b->x
+        .x = a.y * b.z - a.z * b.y,
+        .y = a.x * b.z - a.z * b.x,
+        .z = a.x * b.y - a.y * b.x
     };
 }
 
-v3f_t v3f_mul(const v3f_t *a, f32 b) {
+v3f_t v3f_mul(v3f_t a, f32 b) {
     v3f_t result;
-    vec_mul(3, result.v, a->v, b);
+    vec_mul(3, result.v, a.v, b);
     return result;
 }
 
-v3f_t v3f_div(const v3f_t *a, f32 b) {
+v3f_t v3f_div(v3f_t a, f32 b) {
     v3f_t result;
-    vec_div(3, result.v, a->v, b);
+    vec_div(3, result.v, a.v, b);
     return result;
 }
 
-f32 v3f_len(const v3f_t *a) {
-    return vec_len(3, a->v);
+f32 v3f_len(v3f_t a) {
+    return vec_len(3, a.v);
 }
 
-v3f_t v3f_norm(const v3f_t *a) {
+v3f_t v3f_norm(v3f_t a) {
     v3f_t result;
-    vec_norm(3, result.v, a->v);
+    vec_norm(3, result.v, a.v);
     return result;
 }
 
-v4f_t v4f_add(const v4f_t *a, const v4f_t *b) {
+v4f_t v4f_add(v4f_t a, v4f_t b) {
     v4f_t result;
-    vec_add(4, result.v, a->v, b->v);
+    vec_add(4, result.v, a.v, b.v);
     return result;
 }
 
-v4f_t v4f_sub(const v4f_t *a, const v4f_t *b) {
+v4f_t v4f_sub(v4f_t a, v4f_t b) {
     v4f_t result;
-    vec_sub(4, result.v, a->v, b->v);
+    vec_sub(4, result.v, a.v, b.v);
     return result;
 }
 
-f32 v4f_dot(const v4f_t *a, const v4f_t *b) {
-    return vec_dot(4, a->v, b->v);
+f32 v4f_dot(v4f_t a, v4f_t b) {
+    return vec_dot(4, a.v, b.v);
 }
 
-v4f_t v4f_mul(const v4f_t *a, f32 b) {
+v4f_t v4f_mul(v4f_t a, f32 b) {
     v4f_t result;
-    vec_mul(4, result.v, a->v, b);
+    vec_mul(4, result.v, a.v, b);
     return result;
 }
 
-v4f_t v4f_div(const v4f_t *a, f32 b) {
+v4f_t v4f_div(v4f_t a, f32 b) {
     v4f_t result;
-    vec_div(4, result.v, a->v, b);
+    vec_div(4, result.v, a.v, b);
     return result;
 }
 
-f32 v4f_len(const v4f_t *a) {
-    return vec_len(4, a->v);
+f32 v4f_len(v4f_t a) {
+    return vec_len(4, a.v);
 }
 
-v4f_t v4f_norm(const v4f_t *a) {
+v4f_t v4f_norm(v4f_t a) {
     v4f_t result;
-    vec_norm(4, result.v, a->v);
+    vec_norm(4, result.v, a.v);
     return result;
 }
 
@@ -188,18 +188,18 @@ m3x3f_t m3x3f_identity(void) {
     };
 }
 
-m3x3f_t m3x3f_translation(const v2f_t *v) {
+m3x3f_t m3x3f_translation(v2f_t v) {
     return (m3x3f_t) {
-        {{ 1, 0, v->x },
-         { 0, 1, v->y },
+        {{ 1, 0, v.x },
+         { 0, 1, v.y },
          { 0, 0, 1 }},
     };
 }
 
-m3x3f_t m3x3f_scale(const v2f_t *v) {
+m3x3f_t m3x3f_scale(v2f_t v) {
     return (m3x3f_t) {
-        {{ v->x, 0,    0 },
-         { 0,    v->y, 0 },
+        {{ v.x, 0,    0 },
+         { 0,    v.y, 0 },
          { 0,    0,    1 }},
     };
 }
@@ -223,10 +223,10 @@ m3x3f_t m3x3f_rotation(f32 degrees) {
     };
 }
 
-m3x3f_t m3x3f_shear(const v2f_t *v) {
+m3x3f_t m3x3f_shear(v2f_t v) {
     return (m3x3f_t) {
-        {{ 1,    v->x, 0 },
-         { v->y, 1,    0 },
+        {{ 1,    v.x, 0 },
+         { v.y, 1,    0 },
          { 0,    0,    1 }},
     };
 }
@@ -246,14 +246,14 @@ m3x3f_t m3x3f_mul_m3x3f(const m3x3f_t *m1, const m3x3f_t *m2) {
     return result;
 }
 
-v2f_t m3x3f_mul_v2f(const m3x3f_t *m, const v2f_t *v) {
+v2f_t m3x3f_mul_v2f(const m3x3f_t *m, v2f_t v) {
     v2f_t result;
 
     // Multiply using homogeneous coordinates
-    float w = m->v[0][2] * v->x + m->v[1][2] * v->y + m->v[2][2]; // This is the homogeneous coordinate
+    float w = m->v[0][2] * v.x + m->v[1][2] * v.y + m->v[2][2]; // This is the homogeneous coordinate
 
-    result.x = (m->v[0][0] * v->x + m->v[1][0] * v->y + m->v[2][0]) / w;
-    result.y = (m->v[0][1] * v->x + m->v[1][1] * v->y + m->v[2][1]) / w;
+    result.x = (m->v[0][0] * v.x + m->v[1][0] * v.y + m->v[2][0]) / w;
+    result.y = (m->v[0][1] * v.x + m->v[1][1] * v.y + m->v[2][1]) / w;
 
     return result;
 }

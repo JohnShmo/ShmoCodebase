@@ -4,6 +4,25 @@
 
 #include "shmo/table.h"
 
+struct table_bucket_t {
+    table_pair_t pair;
+    struct table_bucket_t *next;
+};
+
+struct table_t {
+    size_t size;
+    size_t slot_count;
+
+    table_bucket_t **slots;
+    table_bucket_t *free_buckets;
+
+    size_t key_size;
+    size_t val_size;
+    hash_func_t hash_func;
+    compare_func_t compare_func;
+    heap_allocator_t *allocator;
+};
+
 local_fn void table_bucket_create(table_bucket_t *bucket,
                                   const void *key,
                                   size_t key_size,
@@ -110,7 +129,7 @@ local_fn table_bucket_t *table_lookup(const table_t *tb, const void *key) {
     return bucket;
 }
 
-table_t table_create(size_t key_size,
+table_t *table_create(size_t key_size,
                   size_t val_size,
                   hash_func_t hash_func,
                   compare_func_t compare_func,
@@ -122,17 +141,18 @@ table_t table_create(size_t key_size,
     if (!allocator)
         allocator = stdalloc;
 
-    table_t dest;
+    table_t *dest = heap_malloc(allocator, sizeof(table_t));
+    assert(dest);
 
-    dest.size = 0;
-    dest.slot_count = 0;
-    dest.slots = nullptr;
-    dest.free_buckets = nullptr;
-    dest.key_size = key_size;
-    dest.val_size = val_size;
-    dest.hash_func = hash_func;
-    dest.compare_func = compare_func;
-    dest.allocator = allocator;
+    dest->size = 0;
+    dest->slot_count = 0;
+    dest->slots = nullptr;
+    dest->free_buckets = nullptr;
+    dest->key_size = key_size;
+    dest->val_size = val_size;
+    dest->hash_func = hash_func;
+    dest->compare_func = compare_func;
+    dest->allocator = allocator;
     return dest;
 }
 
@@ -146,7 +166,8 @@ void table_destroy(table_t *tb) {
     tb->val_size = 0;
     tb->hash_func = nullptr;
     tb->compare_func = nullptr;
-    tb->allocator = nullptr;
+
+    heap_free(tb->allocator, tb);
 }
 
 void table_put(table_t *tb, const void *key, const void *val) {

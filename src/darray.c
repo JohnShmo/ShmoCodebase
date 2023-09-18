@@ -4,24 +4,33 @@
 
 #include "shmo/darray.h"
 
+struct darray_t {
+    size_t size;
+    size_t capacity;
+    size_t element_size;
+    void *data;
+    heap_allocator_t *allocator;
+};
+
 local_fn void darray_reserve_if_full(darray_t *da) {
     if (da->size == da->capacity) {
         darray_reserve(da, da->capacity * 4 + 1);
     }
 }
 
-darray_t darray_create(size_t element_size, heap_allocator_t *allocator) {
+darray_t *darray_create(size_t element_size, heap_allocator_t *allocator) {
     assert(element_size);
     if (!allocator)
         allocator = stdalloc;
 
-    darray_t dest;
+    darray_t *dest = heap_malloc(allocator, sizeof(darray_t));
+    assert(dest);
 
-    dest.size = 0;
-    dest.capacity = 0;
-    dest.element_size = element_size;
-    dest.data = nullptr;
-    dest.allocator = allocator;
+    dest->size = 0;
+    dest->capacity = 0;
+    dest->element_size = element_size;
+    dest->data = nullptr;
+    dest->allocator = allocator;
 
     return dest;
 }
@@ -34,7 +43,8 @@ void darray_destroy(darray_t *da) {
     da->capacity = 0;
     da->element_size = 0;
     da->data = nullptr;
-    da->allocator = nullptr;
+
+    heap_free(da->allocator, da);
 }
 
 void darray_reserve(darray_t *da, size_t n) {

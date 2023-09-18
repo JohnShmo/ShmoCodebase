@@ -4,6 +4,28 @@
 
 #include "shmo/arena.h"
 
+typedef struct arena_block_header_t arena_block_header_t;
+typedef struct arena_page_t arena_page_t;
+
+typedef enum arena_block_size_t {
+    ARENA_BLOCK_32,
+    ARENA_BLOCK_64,
+    ARENA_BLOCK_128,
+    ARENA_BLOCK_256,
+    ARENA_BLOCK_512,
+    ARENA_BLOCK_1024,
+    ARENA_BLOCK_2048,
+    ARENA_BLOCK_4096,
+    ARENA_BLOCK_8192,
+    ARENA_BLOCK_LARGE,
+    COUNT_ARENA_BLOCK
+} arena_block_size_t;
+
+struct arena_t {
+    arena_page_t *pages;
+    arena_block_header_t *free_blocks[COUNT_ARENA_BLOCK];
+};
+
 #define ARENA_MIN_PAGE_SIZE (1024ULL * 8ULL)
 
 struct arena_block_header_t {
@@ -103,11 +125,11 @@ local_fn void arena_page_destroy(arena_page_t *p) {
     p->next = nullptr;
 }
 
-arena_t arena_create(void) {
-    arena_t dest;
-    dest.pages = nullptr;
+arena_t *arena_create(void) {
+    arena_t *dest = malloc(sizeof(arena_t));
+    dest->pages = nullptr;
     for (i32 i = 0; i < COUNT_ARENA_BLOCK; ++i) {
-        dest.free_blocks[i] = nullptr;
+        dest->free_blocks[i] = nullptr;
     }
     return dest;
 }
@@ -115,6 +137,7 @@ arena_t arena_create(void) {
 void arena_destroy(arena_t *a) {
     assert(a);
     arena_release(a);
+    free(a);
 }
 
 void arena_release(arena_t *a) {
