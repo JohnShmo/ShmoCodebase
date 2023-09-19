@@ -12,6 +12,7 @@ add_executable(ShmoCodebase src/main.c
         src/linear_algebra.c
         src/strings.c
         src/user_input.c
+        src/set.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
