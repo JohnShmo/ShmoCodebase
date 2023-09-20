@@ -10,14 +10,14 @@ struct table_bucket_t {
 };
 
 struct table_t {
-    size_t size;
-    size_t slot_count;
+    usize size;
+    usize slot_count;
 
     table_bucket_t **slots;
     table_bucket_t *free_buckets;
 
-    size_t key_size;
-    size_t val_size;
+    usize key_size;
+    usize val_size;
     hash_func_t hash_func;
     compare_func_t compare_func;
     heap_allocator_t *allocator;
@@ -25,9 +25,9 @@ struct table_t {
 
 local_fn void table_bucket_create(table_bucket_t *bucket,
                                   const void *key,
-                                  size_t key_size,
+                                  usize key_size,
                                   const void *val,
-                                  size_t val_size,
+                                  usize val_size,
                                   heap_allocator_t *allocator) {
     assert(bucket);
     assert(key);
@@ -49,7 +49,7 @@ local_fn void table_bucket_create(table_bucket_t *bucket,
     bucket->pair.val = val_copy;
 }
 
-local_fn void table_bucket_put_val(table_bucket_t *bucket, const void *val, size_t val_size) {
+local_fn void table_bucket_put_val(table_bucket_t *bucket, const void *val, usize val_size) {
     assert(bucket);
     assert(bucket->pair.val);
     assert(val);
@@ -74,7 +74,7 @@ local_fn void table_bucket_destroy(table_bucket_t *bucket, heap_allocator_t *all
     bucket->next = nullptr;
 }
 
-local_fn void table_rehash(table_t *tb, size_t new_count) {
+local_fn void table_rehash(table_t *tb, usize new_count) {
     assert(tb);
 
     if (new_count == 0) {
@@ -87,17 +87,17 @@ local_fn void table_rehash(table_t *tb, size_t new_count) {
     }
 
     table_bucket_t **old_slots = tb->slots;
-    size_t old_count = tb->slot_count;
+    usize old_count = tb->slot_count;
 
     tb->slots = heap_calloc(tb->allocator, new_count, sizeof(table_bucket_t *));
     assert(tb->slots);
     tb->slot_count = new_count;
 
-    for (size_t i = 0; i < old_count; ++i) {
+    for (usize i = 0; i < old_count; ++i) {
         table_bucket_t *bucket = old_slots[i];
         while (bucket) {
             table_bucket_t *next = bucket->next;
-            size_t hash = tb->hash_func(bucket->pair.key) % new_count;
+            usize hash = tb->hash_func(bucket->pair.key) % new_count;
             bucket->next = tb->slots[hash];
             tb->slots[hash] = bucket;
             bucket = next;
@@ -117,7 +117,7 @@ local_fn table_bucket_t *table_lookup(const table_t *tb, const void *key) {
         return nullptr;
     }
 
-    size_t hash = tb->hash_func(key) % tb->slot_count;
+    usize hash = tb->hash_func(key) % tb->slot_count;
     table_bucket_t *bucket = tb->slots[hash];
     while(bucket) {
         bool match = tb->compare_func(bucket->pair.key, key) == 0;
@@ -129,8 +129,8 @@ local_fn table_bucket_t *table_lookup(const table_t *tb, const void *key) {
     return bucket;
 }
 
-table_t *table_create(size_t key_size,
-                  size_t val_size,
+table_t *table_create(usize key_size,
+                  usize val_size,
                   hash_func_t hash_func,
                   compare_func_t compare_func,
                   heap_allocator_t *allocator) {
@@ -191,7 +191,7 @@ void table_put(table_t *tb, const void *key, const void *val) {
     if (bucket) {
         table_bucket_put_val(bucket, val, tb->val_size);
     } else {
-        size_t hash = tb->hash_func(key) % tb->slot_count;
+        usize hash = tb->hash_func(key) % tb->slot_count;
         table_bucket_t *new_bucket = heap_malloc(tb->allocator, sizeof(table_bucket_t));
         assert(new_bucket);
         table_bucket_create(new_bucket, key, tb->key_size, val, tb->val_size, tb->allocator);
@@ -216,7 +216,7 @@ void table_remove(table_t *tb, const void *key) {
         return;
     }
 
-    size_t hash = tb->hash_func(key) % tb->slot_count;
+    usize hash = tb->hash_func(key) % tb->slot_count;
     table_bucket_t *first_bucket = tb->slots[hash];
 
     table_pair_t temp = first_bucket->pair;
@@ -236,7 +236,7 @@ void table_clear(table_t *tb) {
         return;
     }
 
-    for (size_t i = 0; i < tb->slot_count; ++i) {
+    for (usize i = 0; i < tb->slot_count; ++i) {
         table_bucket_t *bucket = tb->slots[i];
         while (bucket) {
             table_bucket_t *next = bucket->next;
@@ -257,7 +257,7 @@ void table_clear(table_t *tb) {
 void table_shrink(table_t *tb) {
     assert(tb);
 
-    table_rehash(tb, (size_t)((f64)tb->size * 1.25));
+    table_rehash(tb, (usize)((f64)tb->size * 1.25));
 
     while (tb->free_buckets) {
         table_bucket_t *to_free = tb->free_buckets;
@@ -266,7 +266,7 @@ void table_shrink(table_t *tb) {
     }
 }
 
-size_t table_size(const table_t *tb) {
+usize table_size(const table_t *tb) {
     assert(tb);
     return tb->size;
 }
@@ -299,7 +299,7 @@ table_itr_t table_itr_next(table_itr_t itr) {
         return itr;
     }
 
-    size_t slot = itr.slot;
+    usize slot = itr.slot;
     table_bucket_t *bucket;
 
     if (itr.bucket) {

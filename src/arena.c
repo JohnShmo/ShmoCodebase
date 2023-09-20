@@ -29,7 +29,7 @@ struct arena_t {
 #define ARENA_MIN_PAGE_SIZE (1024ULL * 8ULL)
 
 struct arena_block_header_t {
-    size_t size;
+    usize size;
     arena_block_header_t *next;
 };
 
@@ -40,14 +40,14 @@ struct arena_page_t {
     arena_page_t *next;
 };
 
-local_fn bool arena_can_page_fit(arena_page_t *p, size_t n) {
+local_fn bool arena_can_page_fit(arena_page_t *p, usize n) {
     assert(p);
     assert(n);
-    size_t diff = int_from_ptr(p->end) - int_from_ptr(p->current);
+    usize diff = int_from_ptr(p->end) - int_from_ptr(p->current);
     return n <= diff;
 }
 
-local_fn void arena_page_create(arena_page_t *p, size_t size) {
+local_fn void arena_page_create(arena_page_t *p, usize size) {
     assert(p);
     assert(size);
     p->start = malloc(max(ARENA_MIN_PAGE_SIZE, size));
@@ -57,7 +57,7 @@ local_fn void arena_page_create(arena_page_t *p, size_t size) {
     p->next = nullptr;
 }
 
-local_fn u8 *arena_page_alloc(arena_page_t *p, size_t size) {
+local_fn u8 *arena_page_alloc(arena_page_t *p, usize size) {
     assert(p);
     assert(size);
     assert(arena_can_page_fit(p, size));
@@ -66,7 +66,7 @@ local_fn u8 *arena_page_alloc(arena_page_t *p, size_t size) {
     return result;
 }
 
-local_fn arena_block_size_t arena_get_block_size(size_t n) {
+local_fn arena_block_size_t arena_get_block_size(usize n) {
     if (n <= 32)
         return ARENA_BLOCK_32;
     else if (n <= 64)
@@ -89,26 +89,26 @@ local_fn arena_block_size_t arena_get_block_size(size_t n) {
         return ARENA_BLOCK_LARGE;
 }
 
-local_fn size_t arena_calculate_final_block_size(size_t n, arena_block_size_t block_size) {
+local_fn usize arena_calculate_final_block_size(usize n, arena_block_size_t block_size) {
     switch (block_size) {
         case ARENA_BLOCK_32:
-            return (size_t)32;
+            return (usize)32;
         case ARENA_BLOCK_64:
-            return (size_t)64;
+            return (usize)64;
         case ARENA_BLOCK_128:
-            return (size_t)128;
+            return (usize)128;
         case ARENA_BLOCK_256:
-            return (size_t)256;
+            return (usize)256;
         case ARENA_BLOCK_512:
-            return (size_t)512;
+            return (usize)512;
         case ARENA_BLOCK_1024:
-            return (size_t)1024;
+            return (usize)1024;
         case ARENA_BLOCK_2048:
-            return (size_t)2048;
+            return (usize)2048;
         case ARENA_BLOCK_4096:
-            return (size_t)4096;
+            return (usize)4096;
         case ARENA_BLOCK_8192:
-            return (size_t)8192;
+            return (usize)8192;
         case ARENA_BLOCK_LARGE:
             return n;
         default:
@@ -153,10 +153,10 @@ void arena_release(arena_t *a) {
     }
 }
 
-void *arena_malloc(arena_t *a, size_t n) {
+void *arena_malloc(arena_t *a, usize n) {
     assert(a);
     assert(n);
-    n = (size_t)round_up_u64((u64)n + (u64)sizeof(arena_block_header_t), 32ULL);
+    n = (usize)round_up_u64((u64)n + (u64)sizeof(arena_block_header_t), 32ULL);
     arena_block_size_t block_size = arena_get_block_size(n);
     n = arena_calculate_final_block_size(n, block_size);
 
@@ -203,7 +203,7 @@ void *arena_malloc(arena_t *a, size_t n) {
     return result;
 }
 
-void *arena_calloc(arena_t *a, size_t n, size_t size) {
+void *arena_calloc(arena_t *a, usize n, usize size) {
     assert(a);
     assert(n);
     assert(size);
@@ -214,7 +214,7 @@ void *arena_calloc(arena_t *a, size_t n, size_t size) {
     return result;
 }
 
-void *arena_realloc(arena_t *a, void *p, size_t n) {
+void *arena_realloc(arena_t *a, void *p, usize n) {
     assert(a);
     assert(n);
 

@@ -7,9 +7,9 @@
 
 #include "arena.h"
 
-typedef void *(*malloc_func_t)(void *, size_t);
-typedef void *(*calloc_func_t)(void *, size_t, size_t);
-typedef void *(*realloc_func_t)(void *, void *, size_t);
+typedef void *(*malloc_func_t)(void *, usize);
+typedef void *(*calloc_func_t)(void *, usize, usize);
+typedef void *(*realloc_func_t)(void *, void *, usize);
 typedef void (*free_func_t)(void *, void *);
 
 typedef struct heap_allocator_t {
@@ -20,9 +20,9 @@ typedef struct heap_allocator_t {
     free_func_t free_func;
 } heap_allocator_t;
 
-void *heap_malloc(heap_allocator_t *a, size_t n);
-void *heap_calloc(heap_allocator_t *a, size_t n, size_t size);
-void *heap_realloc(heap_allocator_t *a, void *p, size_t n);
+void *heap_malloc(heap_allocator_t *a, usize n);
+void *heap_calloc(heap_allocator_t *a, usize n, usize size);
+void *heap_realloc(heap_allocator_t *a, void *p, usize n);
 void heap_free(heap_allocator_t *a, void *p);
 
 heap_allocator_t heap_allocator_arena(arena_t *arena);

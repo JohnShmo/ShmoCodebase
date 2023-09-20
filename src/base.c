@@ -170,3 +170,177 @@ i32 compare_cstr(const void *lhs, const void *rhs) {
     assert(rhs);
     return strcmp(*(const char **)lhs, *(const char **)rhs);
 }
+
+i32 compare_i8(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const i8 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_i8(const void *v) {
+    assert(v);
+    union {
+        i8 i8_;
+        u64 u64_;
+    } convert = {
+            .i8_ = *(i8 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_i16(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const i16 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_i16(const void *v) {
+    assert(v);
+    union {
+        i16 i16_;
+        u64 u64_;
+    } convert = {
+            .i16_ = *(i16 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_i32(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const i32 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_i32(const void *v) {
+    assert(v);
+    union {
+        i32 i32_;
+        u64 u64_;
+    } convert = {
+            .i32_ = *(i32 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_i64(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const i64 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_i64(const void *v) {
+    assert(v);
+    union {
+        i64 i64_;
+        u64 u64_;
+    } convert = {
+            .i64_ = *(i64 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_isize(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const isize *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_isize(const void *v) {
+    assert(v);
+    union {
+        isize isize_;
+        u64 u64_;
+    } convert = {
+            .isize_ = *(isize *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_u8(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const u8 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_u8(const void *v) {
+    assert(v);
+    union {
+        u8 u8_;
+        u64 u64_;
+    } convert = {
+            .u8_ = *(u8 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_u16(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const u16 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_u16(const void *v) {
+    assert(v);
+    union {
+        u16 u16_;
+        u64 u64_;
+    } convert = {
+            .u16_ = *(u16 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_u32(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const u32 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_u32(const void *v) {
+    assert(v);
+    union {
+        u32 u32_;
+        u64 u64_;
+    } convert = {
+            .u32_ = *(u32 *)v
+    };
+    return convert.u64_;
+}
+
+i32 compare_u64(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const u64 *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_u64(const void *v) {
+    assert(v);
+    return *(u64 *)v;
+}
+
+i32 compare_usize(const void *lhs, const void *rhs) {
+    assert(lhs);
+    assert(rhs);
+    const usize *a = lhs, *b = rhs;
+    return (i32)(*a > *b) - (i32)(*a < *b);
+}
+
+u64 hash_usize(const void *v) {
+    assert(v);
+    union {
+        usize usize_;
+        u64 u64_;
+    } convert = {
+            .usize_ = *(isize *)v
+    };
+    return convert.u64_;
+}

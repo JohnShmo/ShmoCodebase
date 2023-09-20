@@ -43,19 +43,19 @@ heap_allocator_t heap_allocator_arena(arena_t *arena) {
     };
 }
 
-void *heap_malloc(heap_allocator_t *a, size_t n) {
+void *heap_malloc(heap_allocator_t *a, usize n) {
     assert(a);
     assert(a->malloc_func);
     return a->malloc_func(a->allocator, n);
 }
 
-void *heap_calloc(heap_allocator_t *a, size_t n, size_t size) {
+void *heap_calloc(heap_allocator_t *a, usize n, usize size) {
     assert(a);
     assert(a->calloc_func);
     return a->calloc_func(a->allocator, n, size);
 }
 
-void *heap_realloc(heap_allocator_t *a, void *p, size_t n) {
+void *heap_realloc(heap_allocator_t *a, void *p, usize n) {
     assert(a);
     assert(a->realloc_func);
     return a->realloc_func(a->allocator, p, n);

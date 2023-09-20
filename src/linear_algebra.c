@@ -4,52 +4,52 @@
 
 #include "shmo/linear_algebra.h"
 
-void vec_add(size_t n, f32 dest[n], const f32 a[n], const f32 b[n]) {
-    for (size_t i = 0; i < n; ++i) {
+void vec_add(usize n, f32 dest[n], const f32 a[n], const f32 b[n]) {
+    for (usize i = 0; i < n; ++i) {
         dest[i] = a[i] + b[i];
     }
 }
 
-void vec_sub(size_t n, f32 dest[n], const f32 a[n], const f32 b[n]) {
-    for (size_t i = 0; i < n; ++i) {
+void vec_sub(usize n, f32 dest[n], const f32 a[n], const f32 b[n]) {
+    for (usize i = 0; i < n; ++i) {
         dest[i] = a[i] - b[i];
     }
 }
 
-f32 vec_dot(size_t n, const f32 a[n], const f32 b[n]) {
+f32 vec_dot(usize n, const f32 a[n], const f32 b[n]) {
     f32 accum = 0;
-    for (size_t i = 0; i < n; ++i) {
+    for (usize i = 0; i < n; ++i) {
         accum += a[i] * b[i];
     }
     return accum;
 }
 
-void vec_mul(size_t n, f32 dest[n], const f32 a[n], f32 b) {
-    for (size_t i = 0; i < n; ++i) {
+void vec_mul(usize n, f32 dest[n], const f32 a[n], f32 b) {
+    for (usize i = 0; i < n; ++i) {
         dest[i] = a[i] * b;
     }
 }
 
-void vec_div(size_t n, f32 dest[n], const f32 a[n], f32 b) {
-    for (size_t i = 0; i < n; ++i) {
+void vec_div(usize n, f32 dest[n], const f32 a[n], f32 b) {
+    for (usize i = 0; i < n; ++i) {
         dest[i] = a[i] / b;
     }
 }
 
-f32 vec_len(size_t n, const f32 a[n]) {
+f32 vec_len(usize n, const f32 a[n]) {
     f32 dot = vec_dot(n, a, a);
     return sqrt_f32(dot);
 }
 
-void vec_norm(size_t n, f32 dest[n], const f32 a[n]) {
+void vec_norm(usize n, f32 dest[n], const f32 a[n]) {
     f32 len = vec_len(n, a);
     if (len == 0.0f) {
-        for (size_t i = 0; i < n; ++i) {
+        for (usize i = 0; i < n; ++i) {
             dest[i] = a[i];
         }
         return;
     }
-    for (size_t i = 0; i < n; ++i) {
+    for (usize i = 0; i < n; ++i) {
         dest[i] = a[i] / len;
     }
 }

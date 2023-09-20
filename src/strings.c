@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "shmo/strings.h"
 
-strview_t strview(const char *data, size_t length) {
+strview_t strview(const char *data, usize length) {
     assert(data);
     return (strview_t) { .data = data, .length = length };
 }
@@ -37,23 +37,23 @@ char *strview_dup(const strview_t *view, heap_allocator_t *allocator) {
     return buffer;
 }
 
-void strview_cpy(const strview_t *view, char *dest, size_t dest_size) {
+void strview_cpy(const strview_t *view, char *dest, usize dest_size) {
     assert(view);
     if (!dest || dest_size == 0) {
         return;
     }
 
-    size_t len = min(dest_size - 1, view->length);
+    usize len = min(dest_size - 1, view->length);
 
     memcpy(dest, view->data, len);
     dest[len] = '\0';
 }
 
-size_t strview_cat(const strview_t *lhs, const strview_t *rhs, char *dest, size_t dest_size) {
+usize strview_cat(const strview_t *lhs, const strview_t *rhs, char *dest, usize dest_size) {
     assert(lhs);
     assert(rhs);
 
-    size_t result = lhs->length + rhs->length;
+    usize result = lhs->length + rhs->length;
     if (!dest || dest_size == 0) {
         return result;
     }
@@ -70,7 +70,7 @@ const char *strview_data(const strview_t *view) {
     return view->data;
 }
 
-size_t strview_len(const strview_t *view) {
+usize strview_len(const strview_t *view) {
     assert(view);
     return view->length;
 }

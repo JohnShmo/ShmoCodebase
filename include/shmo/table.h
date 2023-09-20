@@ -14,8 +14,8 @@ typedef struct table_pair_t {
 typedef struct table_bucket_t table_bucket_t;
 typedef struct table_t table_t;
 
-table_t *table_create(size_t key_size,
-                     size_t val_size,
+table_t *table_create(usize key_size,
+                     usize val_size,
                      hash_func_t hash_func,
                      compare_func_t compare_func,
                      heap_allocator_t *allocator);
@@ -26,13 +26,13 @@ void *table_get(table_t *tb, const void *key);
 void table_remove(table_t *tb, const void *key);
 void table_clear(table_t *tb);
 void table_shrink(table_t *tb);
-size_t table_size(const table_t *tb);
+usize table_size(const table_t *tb);
 bool table_empty(const table_t *tb);
 bool table_contains(const table_t *tb, const void *key);
 
 typedef struct table_itr_t {
     table_t *table;
-    size_t slot;
+    usize slot;
     table_bucket_t *bucket;
 } table_itr_t;
 
@@ -51,7 +51,7 @@ local_fn ValT *Name##_get(Name##_t *tb, const KeyT key) { return table_get((tabl
 local_fn void Name##_remove(Name##_t *tb, const KeyT key) { table_remove((table_t *)tb, &key); }                                                     \
 local_fn void Name##_clear(Name##_t *tb) { table_clear((table_t *)tb); }                                                                             \
 local_fn void Name##_shrink(Name##_t *tb) { table_shrink((table_t *)tb); }                                                                           \
-local_fn size_t Name##_size(const Name##_t *tb) { return table_size((const table_t *)tb); }                                                          \
+local_fn usize Name##_size(const Name##_t *tb) { return table_size((const table_t *)tb); }                                                          \
 local_fn bool Name##_empty(const Name##_t *tb) { return table_empty((const table_t *)tb); }                                                          \
 local_fn bool Name##_contains(const Name##_t *tb, const KeyT key) { return table_contains((const table_t *)tb, &key); }                              \
 local_fn table_itr_t Name##_itr(Name##_t *tb) { return table_itr((table_t *)tb); }                                                                   \

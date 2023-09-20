@@ -5,9 +5,9 @@
 #include "shmo/darray.h"
 
 struct darray_t {
-    size_t size;
-    size_t capacity;
-    size_t element_size;
+    usize size;
+    usize capacity;
+    usize element_size;
     void *data;
     heap_allocator_t *allocator;
 };
@@ -18,7 +18,7 @@ local_fn void darray_reserve_if_full(darray_t *da) {
     }
 }
 
-darray_t *darray_create(size_t element_size, heap_allocator_t *allocator) {
+darray_t *darray_create(usize element_size, heap_allocator_t *allocator) {
     assert(element_size);
     if (!allocator)
         allocator = stdalloc;
@@ -47,7 +47,7 @@ void darray_destroy(darray_t *da) {
     heap_free(da->allocator, da);
 }
 
-void darray_reserve(darray_t *da, size_t n) {
+void darray_reserve(darray_t *da, usize n) {
     assert(da);
 
     if (n <= da->capacity) {
@@ -64,16 +64,16 @@ void darray_reserve(darray_t *da, size_t n) {
     }
 }
 
-void darray_resize(darray_t *da, size_t n, const void *fillval) {
+void darray_resize(darray_t *da, usize n, const void *fillval) {
     assert(da);
 
     darray_reserve(da, n);
 
     if (n > da->size) {
-        size_t count = n - da->size;
+        usize count = n - da->size;
         if (fillval) {
-            for (size_t i = 0; i < count; ++i) {
-                size_t index = da->size + i;
+            for (usize i = 0; i < count; ++i) {
+                usize index = da->size + i;
                 index *= da->element_size;
                 memory_copy(((u8 *)da->data) + index, fillval, da->element_size);
             }
@@ -112,7 +112,7 @@ void darray_pushb(darray_t *da, const void *val) {
 
     darray_reserve_if_full(da);
 
-    size_t index = da->size * da->element_size;
+    usize index = da->size * da->element_size;
     if (val) {
         memory_copy(((u8 *)da->data) + index, val, da->element_size);
     } else {
@@ -154,7 +154,7 @@ void darray_popf(darray_t *da) {
     da->size -= 1;
 }
 
-void darray_insert(darray_t *da, size_t index, const void *val) {
+void darray_insert(darray_t *da, usize index, const void *val) {
     assert(da);
     assert(index <= da->size);
 
@@ -181,7 +181,7 @@ void darray_insert(darray_t *da, size_t index, const void *val) {
     da->size += 1;
 }
 
-void darray_remove(darray_t *da, size_t index) {
+void darray_remove(darray_t *da, usize index) {
     assert(da);
     assert(index <= da->size);
 
@@ -203,7 +203,7 @@ void *darray_back(darray_t *da) {
     assert(da);
     assert(da->size);
 
-    size_t index = (da->size - 1) * da->element_size;
+    usize index = (da->size - 1) * da->element_size;
     return ((u8 *)da->data) + index;
 }
 
@@ -214,7 +214,7 @@ void *darray_front(darray_t *da) {
     return da->data;
 }
 
-void *darray_at(darray_t *da, size_t index) {
+void *darray_at(darray_t *da, usize index) {
     assert(da);
     assert(da->size);
 
@@ -222,7 +222,7 @@ void *darray_at(darray_t *da, size_t index) {
     return ((u8 *)da->data) + index;
 }
 
-const void *darray_const_at(const darray_t *da, size_t index) {
+const void *darray_const_at(const darray_t *da, usize index) {
     assert(da);
     assert(da->size);
 
@@ -230,7 +230,7 @@ const void *darray_const_at(const darray_t *da, size_t index) {
     return ((u8 *)da->data) + index;
 }
 
-void darray_set(darray_t *da, size_t index, const void *val) {
+void darray_set(darray_t *da, usize index, const void *val) {
     assert(da);
     assert(da->size);
 
@@ -247,12 +247,12 @@ bool darray_empty(const darray_t *da) {
     return da->size == 0;
 }
 
-size_t darray_size(const darray_t *da) {
+usize darray_size(const darray_t *da) {
     assert(da);
     return da->size;
 }
 
-size_t darray_capacity(const darray_t *da) {
+usize darray_capacity(const darray_t *da) {
     assert(da);
     return da->capacity;
 }

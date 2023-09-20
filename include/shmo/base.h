@@ -83,16 +83,18 @@
 // ========================================
 // Basic Types
 
-typedef int8_t   i8;
-typedef int16_t  i16;
-typedef int32_t  i32;
-typedef int64_t  i64;
-typedef uint8_t  u8;
-typedef uint16_t u16;
-typedef uint32_t u32;
-typedef uint64_t u64;
-typedef float    f32;
-typedef double   f64;
+typedef int8_t    i8;
+typedef int16_t   i16;
+typedef int32_t   i32;
+typedef int64_t   i64;
+typedef uint8_t   u8;
+typedef uint16_t  u16;
+typedef uint32_t  u32;
+typedef uint64_t  u64;
+typedef size_t    usize;
+typedef ptrdiff_t isize;
+typedef float     f32;
+typedef double    f64;
 
 typedef void void_func_t(void);
 
@@ -370,5 +372,27 @@ typedef u64 (*hash_func_t)(const void *);
 
 i32 compare_cstr(const void *lhs, const void *rhs);
 u64 hash_cstr(const void *v);
+
+i32 compare_i8(const void *lhs, const void *rhs);
+u64 hash_i8(const void *v);
+i32 compare_i16(const void *lhs, const void *rhs);
+u64 hash_i16(const void *v);
+i32 compare_i32(const void *lhs, const void *rhs);
+u64 hash_i32(const void *v);
+i32 compare_i64(const void *lhs, const void *rhs);
+u64 hash_i64(const void *v);
+i32 compare_isize(const void *lhs, const void *rhs);
+u64 hash_isize(const void *v);
+
+i32 compare_u8(const void *lhs, const void *rhs);
+u64 hash_u8(const void *v);
+i32 compare_u16(const void *lhs, const void *rhs);
+u64 hash_u16(const void *v);
+i32 compare_u32(const void *lhs, const void *rhs);
+u64 hash_u32(const void *v);
+i32 compare_u64(const void *lhs, const void *rhs);
+u64 hash_u64(const void *v);
+i32 compare_usize(const void *lhs, const void *rhs);
+u64 hash_usize(const void *v);
 
 #endif //SHMOCODEBASE_BASE_H
