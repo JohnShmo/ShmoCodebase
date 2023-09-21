@@ -10,7 +10,10 @@ SET_DEF(IntSet, intset, i32, hash_i32, compare_i32)
 int main(i32 argc, char *argv[]) {
     (void)argc; (void)argv;
 
-    IntTable *t = inttable_create(stdalloc);
+    LinearArena *arena = linear_arena_create();
+    HeapAllocator allocator = heap_allocator_linear_arena(arena);
+
+    IntTable *t = inttable_create(&allocator);
 
     inttable_put(t, 0, 100);
     inttable_put(t, 1, 200);
@@ -27,5 +30,6 @@ int main(i32 argc, char *argv[]) {
     }
 
     inttable_destroy(t);
+    linear_arena_destroy(arena);
     return 0;
 }

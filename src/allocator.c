@@ -33,13 +33,23 @@ static HeapAllocator stdalloc_ = {
 };
 HeapAllocator *stdalloc = &stdalloc_;
 
-HeapAllocator heap_allocator_arena(Arena *arena) {
+HeapAllocator heap_allocator_free_list_arena(FreeListArena *arena) {
     return (HeapAllocator) {
         .allocator = arena,
-        .malloc_func = (MallocFunc)arena_malloc,
-        .calloc_func = (CallocFunc)arena_calloc,
-        .realloc_func = (ReallocFunc)arena_realloc,
-        .free_func = (FreeFunc)arena_free
+        .malloc_func = (MallocFunc) free_list_arena_malloc,
+        .calloc_func = (CallocFunc) free_list_arena_calloc,
+        .realloc_func = (ReallocFunc) free_list_arena_realloc,
+        .free_func = (FreeFunc) free_list_arena_free
+    };
+}
+
+HeapAllocator heap_allocator_linear_arena(LinearArena *arena) {
+    return (HeapAllocator) {
+        .allocator = arena,
+        .malloc_func = (MallocFunc) linear_arena_malloc,
+        .calloc_func = (CallocFunc) linear_arena_calloc,
+        .realloc_func = (ReallocFunc) linear_arena_realloc,
+        .free_func = (FreeFunc) linear_arena_free
     };
 }
 

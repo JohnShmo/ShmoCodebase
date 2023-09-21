@@ -5,7 +5,7 @@ project(ShmoCodebase C)
 
 add_executable(ShmoCodebase src/main.c
         src/base.c
-        src/arena.c
+        src/free_list_arena.c
         src/allocator.c
         src/darray.c
         src/table.c
@@ -13,6 +13,7 @@ add_executable(ShmoCodebase src/main.c
         src/strings.c
         src/user_input.c
         src/set.c
+        src/linear_arena.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
