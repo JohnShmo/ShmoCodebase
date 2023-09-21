@@ -16,4 +16,3 @@ add_executable(ShmoCodebase src/main.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
-target_compile_definitions(ShmoCodebase PUBLIC ENABLE_ASSERT=1)

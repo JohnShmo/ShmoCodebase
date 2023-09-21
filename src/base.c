@@ -121,36 +121,36 @@ u64 round_up_u64(u64 num, u64 multiple) {
     return ((num + multiple - 1) / multiple) * multiple;
 }
 
-v2i_t v2i(i32 x, i32 y) {
-    return (v2i_t){ .x = x, .y = y };
+V2i v2i(i32 x, i32 y) {
+    return (V2i){ .x = x, .y = y };
 }
 
-v2f_t v2f(f32 x, f32 y) {
-    return (v2f_t){ .x = x, .y = y };
+V2f v2f(f32 x, f32 y) {
+    return (V2f){ .x = x, .y = y };
 }
 
-v3f_t v3f(f32 x, f32 y, f32 z) {
-    return (v3f_t){ .x = x, .y = y, .z = z };
+V3f v3f(f32 x, f32 y, f32 z) {
+    return (V3f){ .x = x, .y = y, .z = z };
 }
 
-v4f_t v4f(f32 x, f32 y, f32 z, f32 w) {
-    return (v4f_t){ .x = x, .y = y, .z = z, .w = w };
+V4f v4f(f32 x, f32 y, f32 z, f32 w) {
+    return (V4f){ .x = x, .y = y, .z = z, .w = w };
 }
 
-r1u_t r1u(u64 begin, u64 end) {
-    return (r1u_t) { .begin = begin, .end = end };
+R1u r1u(u64 begin, u64 end) {
+    return (R1u) { .begin = begin, .end = end };
 }
 
-r1f_t r1f(f32 begin, f32 end) {
-    return (r1f_t) { .begin = begin, .end = end };
+R1f r1f(f32 begin, f32 end) {
+    return (R1f) { .begin = begin, .end = end };
 }
 
-r2i_t r2i(v2i_t begin, v2i_t end) {
-    return (r2i_t) { .begin = begin, .end = end };
+R2i r2i(V2i begin, V2i end) {
+    return (R2i) { .begin = begin, .end = end };
 }
 
-r2f_t r2f(v2f_t begin, v2f_t end) {
-    return (r2f_t) { .begin = begin, .end = end };
+R2f r2f(V2f begin, V2f end) {
+    return (R2f) { .begin = begin, .end = end };
 }
 
 u64 hash_cstr(const void *v) {

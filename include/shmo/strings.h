@@ -7,18 +7,18 @@
 
 #include "allocator.h"
 
-typedef struct strview_t {
+typedef struct Strview {
     const char *data;
     usize length;
-} strview_t;
+} Strview;
 
-strview_t strview(const char *data, usize length);
-strview_t strview_of(const char *cstr);
-const char *strview_cstr(const strview_t *view);
-char *strview_dup(const strview_t *view, heap_allocator_t *allocator);
-void strview_cpy(const strview_t *view, char *dest, usize dest_size);
-usize strview_cat(const strview_t *lhs, const strview_t *rhs, char *dest, usize dest_size);
-const char *strview_data(const strview_t *view);
-usize strview_len(const strview_t *view);
+Strview strview(const char *data, usize length);
+Strview strview_of(const char *cstr);
+const char *strview_cstr(const Strview *view);
+char *strview_dup(const Strview *view, HeapAllocator *allocator);
+void strview_cpy(const Strview *view, char *dest, usize dest_size);
+usize strview_cat(const Strview *lhs, const Strview *rhs, char *dest, usize dest_size);
+const char *strview_data(const Strview *view);
+usize strview_len(const Strview *view);
 
 #endif //SHMOCODEBASE_STRINGS_H

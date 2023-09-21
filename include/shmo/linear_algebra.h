@@ -7,13 +7,13 @@
 
 #include "base.h"
 
-typedef struct m3x3f_t {
+typedef struct M3x3f {
     f32 v[3][3];
-} m3x3f_t;
+} M3x3f;
 
-typedef struct m4x4f_t {
+typedef struct M4x4f {
     f32 v[4][4];
-} m4x4f_t;
+} M4x4f;
 
 void vec_add(usize n, f32 dest[n], const f32 a[n], const f32 b[n]);
 void vec_sub(usize n, f32 dest[n], const f32 a[n], const f32 b[n]);
@@ -23,39 +23,39 @@ void vec_div(usize n, f32 dest[n], const f32 a[n], f32 b);
 f32 vec_len(usize n, const f32 a[n]);
 void vec_norm(usize n, f32 dest[n], const f32 a[n]);
 
-v2f_t v2f_add(v2f_t a, v2f_t b);
-v2f_t v2f_sub(v2f_t a, v2f_t b);
-f32 v2f_dot(v2f_t a, v2f_t b);
-f32 v2f_cross(v2f_t a, v2f_t b);
-v2f_t v2f_mul(v2f_t a, f32 b);
-v2f_t v2f_div(v2f_t a, f32 b);
-f32 v2f_len(v2f_t a);
-v2f_t v2f_norm(v2f_t a);
+V2f v2f_add(V2f a, V2f b);
+V2f v2f_sub(V2f a, V2f b);
+f32 v2f_dot(V2f a, V2f b);
+f32 v2f_cross(V2f a, V2f b);
+V2f v2f_mul(V2f a, f32 b);
+V2f v2f_div(V2f a, f32 b);
+f32 v2f_len(V2f a);
+V2f v2f_norm(V2f a);
 
-v3f_t v3f_add(v3f_t a, v3f_t b);
-v3f_t v3f_sub(v3f_t a, v3f_t b);
-f32 v3f_dot(v3f_t a, v3f_t b);
-v3f_t v3f_cross(v3f_t a, v3f_t b);
-v3f_t v3f_mul(v3f_t a, f32 b);
-v3f_t v3f_div(v3f_t a, f32 b);
-f32 v3f_len(v3f_t a);
-v3f_t v3f_norm(v3f_t a);
+V3f v3f_add(V3f a, V3f b);
+V3f v3f_sub(V3f a, V3f b);
+f32 v3f_dot(V3f a, V3f b);
+V3f v3f_cross(V3f a, V3f b);
+V3f v3f_mul(V3f a, f32 b);
+V3f v3f_div(V3f a, f32 b);
+f32 v3f_len(V3f a);
+V3f v3f_norm(V3f a);
 
-v4f_t v4f_add(v4f_t a, v4f_t b);
-v4f_t v4f_sub(v4f_t a, v4f_t b);
-f32 v4f_dot(v4f_t a, v4f_t b);
-v4f_t v4f_mul(v4f_t a, f32 b);
-v4f_t v4f_div(v4f_t a, f32 b);
-f32 v4f_len(v4f_t a);
-v4f_t v4f_norm(v4f_t a);
+V4f v4f_add(V4f a, V4f b);
+V4f v4f_sub(V4f a, V4f b);
+f32 v4f_dot(V4f a, V4f b);
+V4f v4f_mul(V4f a, f32 b);
+V4f v4f_div(V4f a, f32 b);
+f32 v4f_len(V4f a);
+V4f v4f_norm(V4f a);
 
-m3x3f_t m3x3f_identity(void);
-m3x3f_t m3x3f_translation(v2f_t v);
-m3x3f_t m3x3f_scale(v2f_t v);
-m3x3f_t m3x3f_reflection(void);
-m3x3f_t m3x3f_rotation(f32 degrees);
-m3x3f_t m3x3f_shear(v2f_t v);
-m3x3f_t m3x3f_mul_m3x3f(const m3x3f_t *m1, const m3x3f_t *m2);
-v2f_t m3x3f_mul_v2f(const m3x3f_t *m, v2f_t v);
+M3x3f m3x3f_identity(void);
+M3x3f m3x3f_translation(V2f v);
+M3x3f m3x3f_scale(V2f v);
+M3x3f m3x3f_reflection(void);
+M3x3f m3x3f_rotation(f32 degrees);
+M3x3f m3x3f_shear(V2f v);
+M3x3f m3x3f_mul_m3x3f(const M3x3f *m1, const M3x3f *m2);
+V2f m3x3f_mul_v2f(const M3x3f *m, V2f v);
 
 #endif //SHMOCODEBASE_LINEAR_ALGEBRA_H

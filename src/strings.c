@@ -5,26 +5,26 @@
 #include <stdlib.h>
 #include "shmo/strings.h"
 
-strview_t strview(const char *data, usize length) {
+Strview strview(const char *data, usize length) {
     assert(data);
-    return (strview_t) { .data = data, .length = length };
+    return (Strview) { .data = data, .length = length };
 }
 
-strview_t strview_of(const char *cstr) {
+Strview strview_of(const char *cstr) {
     assert(cstr);
-    return (strview_t) { .data = cstr, .length = strlen(cstr) };
+    return (Strview) { .data = cstr, .length = strlen(cstr) };
 }
 
 #define CSTR_BUFFER_SIZE (1024ULL * 8ULL)
 static char cstr_buffer[CSTR_BUFFER_SIZE];
 
-const char *strview_cstr(const strview_t *view) {
+const char *strview_cstr(const Strview *view) {
     assert(view);
     strview_cpy(view, cstr_buffer, CSTR_BUFFER_SIZE);
     return cstr_buffer;
 }
 
-char *strview_dup(const strview_t *view, heap_allocator_t *allocator) {
+char *strview_dup(const Strview *view, HeapAllocator *allocator) {
     assert(view);
     if (!allocator) {
         allocator = stdalloc;
@@ -37,7 +37,7 @@ char *strview_dup(const strview_t *view, heap_allocator_t *allocator) {
     return buffer;
 }
 
-void strview_cpy(const strview_t *view, char *dest, usize dest_size) {
+void strview_cpy(const Strview *view, char *dest, usize dest_size) {
     assert(view);
     if (!dest || dest_size == 0) {
         return;
@@ -49,7 +49,7 @@ void strview_cpy(const strview_t *view, char *dest, usize dest_size) {
     dest[len] = '\0';
 }
 
-usize strview_cat(const strview_t *lhs, const strview_t *rhs, char *dest, usize dest_size) {
+usize strview_cat(const Strview *lhs, const Strview *rhs, char *dest, usize dest_size) {
     assert(lhs);
     assert(rhs);
 
@@ -65,12 +65,12 @@ usize strview_cat(const strview_t *lhs, const strview_t *rhs, char *dest, usize 
     return result;
 }
 
-const char *strview_data(const strview_t *view) {
+const char *strview_data(const Strview *view) {
     assert(view);
     return view->data;
 }
 
-usize strview_len(const strview_t *view) {
+usize strview_len(const Strview *view) {
     assert(view);
     return view->length;
 }

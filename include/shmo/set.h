@@ -7,48 +7,48 @@
 
 #include "allocator.h"
 
-typedef struct set_bucket_t set_bucket_t;
-typedef struct set_t set_t;
+typedef struct SetBucket SetBucket;
+typedef struct Set Set;
 
-set_t *set_create(usize element_size,
-                  hash_func_t hash_func,
-                  compare_func_t compare_func,
-                  heap_allocator_t *allocator);
+Set *set_create(usize element_size,
+                HashFunc hash_func,
+                CompareFunc compare_func,
+                HeapAllocator *allocator);
 
-void set_destroy(set_t *s);
-void set_put(set_t *s, const void *elm);
-void set_remove(set_t *s, const void *elm);
-void set_clear(set_t *s);
-void set_shrink(set_t *s);
-usize set_size(const set_t *s);
-bool set_empty(const set_t *s);
-bool set_contains(const set_t *s, const void *elm);
+void set_destroy(Set *s);
+void set_put(Set *s, const void *elm);
+void set_remove(Set *s, const void *elm);
+void set_clear(Set *s);
+void set_shrink(Set *s);
+usize set_size(const Set *s);
+bool set_empty(const Set *s);
+bool set_contains(const Set *s, const void *elm);
 
-typedef struct set_itr_t {
-    set_t *set;
+typedef struct SetItr {
+    Set *set;
     usize slot;
-    set_bucket_t *bucket;
-} set_itr_t;
+    SetBucket *bucket;
+} SetItr;
 
-set_itr_t set_itr(set_t *s);
-set_itr_t set_itr_next(set_itr_t itr);
-bool set_itr_end(set_itr_t itr);
-void *set_itr_get(set_itr_t itr);
+SetItr set_itr(Set *s);
+SetItr set_itr_next(SetItr itr);
+bool set_itr_end(SetItr itr);
+void *set_itr_get(SetItr itr);
 
-#define SET_DEF(Name, T, HashFunc, CompareFunc) \
-typedef void Name##_t;                          \
-local_fn Name##_t *Name##_create(heap_allocator_t *allocator) { return set_create(sizeof(T), HashFunc, CompareFunc, allocator); } \
-local_fn void Name##_destroy(Name##_t *s) { set_destroy((set_t *)s); }                                                            \
-local_fn void Name##_put(Name##_t *s, const T elm) { set_put((set_t *)s, &elm); }                                                 \
-local_fn void Name##_remove(Name##_t *s, const T elm) { set_remove((set_t *)s, &elm); }                                           \
-local_fn void Name##_clear(Name##_t *s) { set_clear((set_t *)s); }                                                                \
-local_fn void Name##_shrink(Name##_t *s) { set_shrink((set_t *)s); }                                                              \
-local_fn usize Name##_size(const Name##_t *s) { return set_size((const set_t *)s); }                                             \
-local_fn bool Name##_empty(const Name##_t *s) { return set_empty((const set_t *)s); }                                             \
-local_fn bool Name##_contains(const Name##_t *s, const T elm) { return set_contains((const set_t *)s, &elm); }                    \
-local_fn set_itr_t Name##_itr(Name##_t *s) { return set_itr((set_t *)s); }                                                        \
-local_fn set_itr_t Name##_itr_next(set_itr_t itr) { return set_itr_next(itr); }                                                   \
-local_fn bool Name##_itr_end(set_itr_t itr) { return set_itr_end(itr); }                                                          \
-local_fn T *Name##_itr_get(set_itr_t itr) { return (T *)set_itr_get(itr); }
+#define SET_DEF(Name, Prefix, T, HashFunc, CompareFunc) \
+typedef void Name;                                      \
+local_fn Name *Prefix##_create(HeapAllocator *allocator) { return set_create(sizeof(T), HashFunc, CompareFunc, allocator); } \
+local_fn void Prefix##_destroy(Name *s) { set_destroy((Set *)s); }                                                              \
+local_fn void Prefix##_put(Name *s, const T elm) { set_put((Set *)s, &elm); }                                                   \
+local_fn void Prefix##_remove(Name *s, const T elm) { set_remove((Set *)s, &elm); }                                             \
+local_fn void NaPrefixme##_clear(Name *s) { set_clear((Set *)s); }                                                              \
+local_fn void Prefix##_shrink(Name *s) { set_shrink((Set *)s); }                                                                \
+local_fn usize Prefix##_size(const Name *s) { return set_size((const Set *)s); }                                                \
+local_fn bool Prefix##_empty(const Name *s) { return set_empty((const Set *)s); }                                               \
+local_fn bool Prefix##_contains(const Name *s, const T elm) { return set_contains((const Set *)s, &elm); }                      \
+local_fn SetItr Prefix##_itr(Name *s) { return set_itr((Set *)s); }                                                             \
+local_fn SetItr Prefix##_itr_next(SetItr itr) { return set_itr_next(itr); }                                                     \
+local_fn bool Prefix##_itr_end(SetItr itr) { return set_itr_end(itr); }                                                         \
+local_fn T *Prefix##_itr_get(SetItr itr) { return (T *)set_itr_get(itr); }
 
 #endif //SHMOCODEBASE_SET_H

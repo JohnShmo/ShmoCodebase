@@ -21,7 +21,7 @@ typedef enum arena_block_size_t {
     COUNT_ARENA_BLOCK
 } arena_block_size_t;
 
-struct arena_t {
+struct Arena {
     arena_page_t *pages;
     arena_block_header_t *free_blocks[COUNT_ARENA_BLOCK];
 };
@@ -125,8 +125,8 @@ local_fn void arena_page_destroy(arena_page_t *p) {
     p->next = nullptr;
 }
 
-arena_t *arena_create(void) {
-    arena_t *dest = malloc(sizeof(arena_t));
+Arena *arena_create(void) {
+    Arena *dest = malloc(sizeof(Arena));
     dest->pages = nullptr;
     for (i32 i = 0; i < COUNT_ARENA_BLOCK; ++i) {
         dest->free_blocks[i] = nullptr;
@@ -134,13 +134,13 @@ arena_t *arena_create(void) {
     return dest;
 }
 
-void arena_destroy(arena_t *a) {
+void arena_destroy(Arena *a) {
     assert(a);
     arena_release(a);
     free(a);
 }
 
-void arena_release(arena_t *a) {
+void arena_release(Arena *a) {
     assert(a);
     while(a->pages) {
         arena_page_t *to_free = a->pages;
@@ -153,7 +153,7 @@ void arena_release(arena_t *a) {
     }
 }
 
-void *arena_malloc(arena_t *a, usize n) {
+void *arena_malloc(Arena *a, usize n) {
     assert(a);
     assert(n);
     n = (usize)round_up_u64((u64)n + (u64)sizeof(arena_block_header_t), 32ULL);
@@ -203,7 +203,7 @@ void *arena_malloc(arena_t *a, usize n) {
     return result;
 }
 
-void *arena_calloc(arena_t *a, usize n, usize size) {
+void *arena_calloc(Arena *a, usize n, usize size) {
     assert(a);
     assert(n);
     assert(size);
@@ -214,7 +214,7 @@ void *arena_calloc(arena_t *a, usize n, usize size) {
     return result;
 }
 
-void *arena_realloc(arena_t *a, void *p, usize n) {
+void *arena_realloc(Arena *a, void *p, usize n) {
     assert(a);
     assert(n);
 
@@ -237,7 +237,7 @@ void *arena_realloc(arena_t *a, void *p, usize n) {
     return new_loc;
 }
 
-void arena_free(arena_t *a, void *p) {
+void arena_free(Arena *a, void *p) {
     assert(a);
     if (!p)
         return;

@@ -7,58 +7,58 @@
 
 #include "allocator.h"
 
-typedef struct darray_t darray_t;
+typedef struct Darray Darray;
 
-darray_t *darray_create(usize element_size, heap_allocator_t *allocator);
-void darray_destroy(darray_t *da);
-void darray_reserve(darray_t *da, usize n);
-void darray_resize(darray_t *da, usize n, const void *fillval);
-void darray_shrink(darray_t *da);
-void darray_clear(darray_t *da);
-void darray_pushb(darray_t *da, const void *val);
-void darray_popb(darray_t *da);
-void darray_pushf(darray_t *da, const void *val);
-void darray_popf(darray_t *da);
-void darray_insert(darray_t *da, usize index, const void *val);
-void darray_remove(darray_t *da, usize index);
-void *darray_back(darray_t *da);
-const void *darray_const_back(const darray_t *da);
-void *darray_front(darray_t *da);
-const void *darray_const_front(const darray_t *da);
-void *darray_at(darray_t *da, usize index);
-const void *darray_const_at(const darray_t *da, usize index);
-void darray_set(darray_t *da, usize index, const void *val);
-bool darray_empty(const darray_t *da);
-usize darray_size(const darray_t *da);
-usize darray_capacity(const darray_t *da);
-void *darray_data(darray_t *da);
-const void *darray_const_data(const darray_t *da);
+Darray *darray_create(usize element_size, HeapAllocator *allocator);
+void darray_destroy(Darray *da);
+void darray_reserve(Darray *da, usize n);
+void darray_resize(Darray *da, usize n, const void *fillval);
+void darray_shrink(Darray *da);
+void darray_clear(Darray *da);
+void darray_pushb(Darray *da, const void *val);
+void darray_popb(Darray *da);
+void darray_pushf(Darray *da, const void *val);
+void darray_popf(Darray *da);
+void darray_insert(Darray *da, usize index, const void *val);
+void darray_remove(Darray *da, usize index);
+void *darray_back(Darray *da);
+const void *darray_const_back(const Darray *da);
+void *darray_front(Darray *da);
+const void *darray_const_front(const Darray *da);
+void *darray_at(Darray *da, usize index);
+const void *darray_const_at(const Darray *da, usize index);
+void darray_set(Darray *da, usize index, const void *val);
+bool darray_empty(const Darray *da);
+usize darray_size(const Darray *da);
+usize darray_capacity(const Darray *da);
+void *darray_data(Darray *da);
+const void *darray_const_data(const Darray *da);
 
-#define DARRAY_DEF(Name, T) \
-typedef void Name##_t;      \
-local_fn Name##_t *Name##_create(heap_allocator_t *allocator) { return darray_create(sizeof(T), allocator); } \
-local_fn void Name##_destroy(Name##_t *da) { darray_destroy((darray_t *)da); }                                \
-local_fn void Name##_reserve(Name##_t *da, usize n) { darray_reserve((darray_t *)da, n); }                   \
-local_fn void Name##_resize(Name##_t *da, usize n, const T fillval) { darray_resize((darray_t *)da, n, &fillval); } \
-local_fn void Name##_shrink(Name##_t *da) { darray_shrink((darray_t *)da); }                                  \
-local_fn void Name##_clear(Name##_t *da) { darray_clear((darray_t *)da); }                                    \
-local_fn void Name##_pushb(Name##_t *da, const T val) { darray_pushb((darray_t *)da, &val); }                 \
-local_fn void Name##_popb(Name##_t *da) { darray_popb((darray_t *)da); }                                      \
-local_fn void Name##_pushf(Name##_t *da, const T val) { darray_pushf((darray_t *)da, &val); }                 \
-local_fn void Name##_popf(Name##_t *da) { darray_popf((darray_t *)da); }                                      \
-local_fn void Name##_insert(Name##_t *da, usize index, const T val) { darray_insert((darray_t *)da, index, &val); } \
-local_fn void Name##_remove(Name##_t *da, usize index) { darray_remove((darray_t *)da, index); }             \
-local_fn T *Name##_back(Name##_t *da) { return darray_back((darray_t *)da); }                                 \
-local_fn const T *Name##_const_back(const Name##_t *da) { return darray_const_back((const darray_t *)da); }   \
-local_fn T *Name##_front(Name##_t *da) { return darray_front((darray_t *)da); }                               \
-local_fn const T *Name##_const_front(const Name##_t *da) { return darray_const_front((const darray_t *)da); } \
-local_fn T *Name##_at(Name##_t *da, usize index) { return darray_at((darray_t *)da, index); }                \
-local_fn const T *Name##_const_at(const Name##_t *da, usize index) { return darray_const_at((const darray_t *)da, index); } \
-local_fn void Name##_set(Name##_t *da, usize index, const T val) { darray_set((darray_t *)da, index, &val); }\
-local_fn bool Name##_empty(const Name##_t *da) { return darray_empty((const darray_t *)da); }                 \
-local_fn usize Name##_size(const Name##_t *da) { return darray_size((const darray_t *)da); }                 \
-local_fn usize Name##_capacity(const Name##_t *da) { return darray_capacity((const darray_t *)da); }         \
-local_fn T *Name##_data(Name##_t *da) { return darray_data((darray_t *)da); }                                 \
-local_fn const T *Name##_const_data(const Name##_t *da) { return darray_const_data((const darray_t *)da); }
+#define DARRAY_DEF(Name, Prefix, T) \
+typedef void Name;      \
+local_fn Name *Prefix##_create(HeapAllocator *allocator) { return darray_create(sizeof(T), allocator); } \
+local_fn void Prefix##_destroy(Name *da) { darray_destroy((Darray *)da); }                                \
+local_fn void Prefix##_reserve(Name *da, usize n) { darray_reserve((Darray *)da, n); }                   \
+local_fn void Prefix##_resize(Name *da, usize n, const T fillval) { darray_resize((Darray *)da, n, &fillval); } \
+local_fn void Prefix##_shrink(Name *da) { darray_shrink((Darray *)da); }                                  \
+local_fn void Prefix##_clear(Name *da) { darray_clear((Darray *)da); }                                    \
+local_fn void Prefix##_pushb(Name *da, const T val) { darray_pushb((Darray *)da, &val); }                 \
+local_fn void Prefix##_popb(Name *da) { darray_popb((Darray *)da); }                                      \
+local_fn void Prefix##_pushf(Name *da, const T val) { darray_pushf((Darray *)da, &val); }                 \
+local_fn void Prefix##_popf(Name *da) { darray_popf((Darray *)da); }                                      \
+local_fn void Prefix##_insert(Name *da, usize index, const T val) { darray_insert((Darray *)da, index, &val); } \
+local_fn void Prefix##_remove(Name *da, usize index) { darray_remove((Darray *)da, index); }             \
+local_fn T *Prefix##_back(Name *da) { return darray_back((Darray *)da); }                                 \
+local_fn const T *Prefix##_const_back(const Name *da) { return darray_const_back((const Darray *)da); }   \
+local_fn T *Prefix##_front(Name *da) { return darray_front((Darray *)da); }                               \
+local_fn const T *Prefix##_const_front(const Name *da) { return darray_const_front((const Darray *)da); } \
+local_fn T *Prefix##_at(Name *da, usize index) { return darray_at((Darray *)da, index); }                \
+local_fn const T *Prefix##_const_at(const Name *da, usize index) { return darray_const_at((const Darray *)da, index); } \
+local_fn void Prefix##_set(Name *da, usize index, const T val) { darray_set((Darray *)da, index, &val); }\
+local_fn bool Prefix##_empty(const Name *da) { return darray_empty((const Darray *)da); }                 \
+local_fn usize Prefix##_size(const Name *da) { return darray_size((const Darray *)da); }                 \
+local_fn usize Prefix##_capacity(const Name *da) { return darray_capacity((const Darray *)da); }         \
+local_fn T *Prefix##_data(Name *da) { return darray_data((Darray *)da); }                                 \
+local_fn const T *Prefix##_const_data(const Name *da) { return darray_const_data((const Darray *)da); }
 
 #endif //SHMOCODEBASE_DARRAY_H

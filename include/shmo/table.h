@@ -7,56 +7,56 @@
 
 #include "allocator.h"
 
-typedef struct table_pair_t {
+typedef struct TablePair {
     void *key;
     void *val;
-} table_pair_t;
-typedef struct table_bucket_t table_bucket_t;
-typedef struct table_t table_t;
+} TablePair;
+typedef struct TableBucket TableBucket;
+typedef struct Table Table;
 
-table_t *table_create(usize key_size,
-                     usize val_size,
-                     hash_func_t hash_func,
-                     compare_func_t compare_func,
-                     heap_allocator_t *allocator);
+Table *table_create(usize key_size,
+                    usize val_size,
+                    HashFunc hash_func,
+                    CompareFunc compare_func,
+                    HeapAllocator *allocator);
 
-void table_destroy(table_t *tb);
-void table_put(table_t *tb, const void *key, const void *val);
-void *table_get(table_t *tb, const void *key);
-void table_remove(table_t *tb, const void *key);
-void table_clear(table_t *tb);
-void table_shrink(table_t *tb);
-usize table_size(const table_t *tb);
-bool table_empty(const table_t *tb);
-bool table_contains(const table_t *tb, const void *key);
+void table_destroy(Table *tb);
+void table_put(Table *tb, const void *key, const void *val);
+void *table_get(Table *tb, const void *key);
+void table_remove(Table *tb, const void *key);
+void table_clear(Table *tb);
+void table_shrink(Table *tb);
+usize table_size(const Table *tb);
+bool table_empty(const Table *tb);
+bool table_contains(const Table *tb, const void *key);
 
-typedef struct table_itr_t {
-    table_t *table;
+typedef struct TableItr {
+    Table *table;
     usize slot;
-    table_bucket_t *bucket;
-} table_itr_t;
+    TableBucket *bucket;
+} TableItr;
 
-table_itr_t table_itr(table_t *tb);
-table_itr_t table_itr_next(table_itr_t itr);
-bool table_itr_end(table_itr_t itr);
-table_pair_t *table_itr_get(table_itr_t itr);
+TableItr table_itr(Table *tb);
+TableItr table_itr_next(TableItr itr);
+bool table_itr_end(TableItr itr);
+TablePair *table_itr_get(TableItr itr);
 
-#define TABLE_DEF(Name, KeyT, ValT, HashFunc, CompareFunc) \
-typedef struct Name##_pair_t { KeyT *key; ValT *val; } Name##_pair_t; \
-typedef void Name##_t;                                     \
-local_fn Name##_t *Name##_create(heap_allocator_t *allocator) { return table_create(sizeof(KeyT), sizeof(ValT), HashFunc, CompareFunc, allocator); } \
-local_fn void Name##_destroy(Name##_t *tb) { table_destroy((table_t *)tb); }                                                                         \
-local_fn void Name##_put(Name##_t *tb, const KeyT key, const ValT val) { table_put((table_t *)tb, &key, &val); }                                     \
-local_fn ValT *Name##_get(Name##_t *tb, const KeyT key) { return table_get((table_t *)tb, &key); }                                                   \
-local_fn void Name##_remove(Name##_t *tb, const KeyT key) { table_remove((table_t *)tb, &key); }                                                     \
-local_fn void Name##_clear(Name##_t *tb) { table_clear((table_t *)tb); }                                                                             \
-local_fn void Name##_shrink(Name##_t *tb) { table_shrink((table_t *)tb); }                                                                           \
-local_fn usize Name##_size(const Name##_t *tb) { return table_size((const table_t *)tb); }                                                          \
-local_fn bool Name##_empty(const Name##_t *tb) { return table_empty((const table_t *)tb); }                                                          \
-local_fn bool Name##_contains(const Name##_t *tb, const KeyT key) { return table_contains((const table_t *)tb, &key); }                              \
-local_fn table_itr_t Name##_itr(Name##_t *tb) { return table_itr((table_t *)tb); }                                                                   \
-local_fn table_itr_t Name##_itr_next(table_itr_t itr) { return table_itr_next(itr); }                                                                \
-local_fn bool Name##_itr_end(table_itr_t itr) { return table_itr_end(itr); }                                                                         \
-local_fn Name##_pair_t *Name##_itr_get(table_itr_t itr) { return (Name##_pair_t *)table_itr_get(itr); }
+#define TABLE_DEF(Name, Prefix, KeyT, ValT, HashFunc, CompareFunc) \
+typedef struct Name##_TablePair { KeyT *key; ValT *val; } Name##_TablePair; \
+typedef void Name;                                     \
+local_fn Name *Prefix##_create(HeapAllocator *allocator) { return table_create(sizeof(KeyT), sizeof(ValT), HashFunc, CompareFunc, allocator); } \
+local_fn void Prefix##_destroy(Name *tb) { table_destroy((Table *)tb); }                                                                         \
+local_fn void Prefix##_put(Name *tb, const KeyT key, const ValT val) { table_put((Table *)tb, &key, &val); }                                     \
+local_fn ValT *Prefix##_get(Name *tb, const KeyT key) { return table_get((Table *)tb, &key); }                                                   \
+local_fn void Prefix##_remove(Name *tb, const KeyT key) { table_remove((Table *)tb, &key); }                                                     \
+local_fn void Prefix##_clear(Name *tb) { table_clear((Table *)tb); }                                                                             \
+local_fn void Prefix##_shrink(Name *tb) { table_shrink((Table *)tb); }                                                                           \
+local_fn usize Prefix##_size(const Name *tb) { return table_size((const Table *)tb); }                                                          \
+local_fn bool Prefix##_empty(const Name *tb) { return table_empty((const Table *)tb); }                                                          \
+local_fn bool Prefix##_contains(const Name *tb, const KeyT key) { return table_contains((const Table *)tb, &key); }                              \
+local_fn TableItr Prefix##_itr(Name *tb) { return table_itr((Table *)tb); }                                                                   \
+local_fn TableItr Prefix##_itr_next(TableItr itr) { return table_itr_next(itr); }                                                                \
+local_fn bool Prefix##_itr_end(TableItr itr) { return table_itr_end(itr); }                                                                         \
+local_fn Name##_TablePair *Name##_itr_get(TableItr itr) { return (Name##_TablePair *)table_itr_get(itr); }
 
 #endif //SHMOCODEBASE_TABLE_H

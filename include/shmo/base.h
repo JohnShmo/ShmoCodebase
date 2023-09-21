@@ -136,8 +136,8 @@ typedef void void_func_t(void);
 #define member(T, M) (((T*)0)->M)
 #define offsetof_member(T, M) int_from_ptr(&member(T, M))
 
-#define min(A, B) ({ typeof(A) _a_ = (A); typeof(B) _b_ = (B); _a_ < _b_ ? _a_ : _b_; })
-#define max(A, B) ({ typeof(A) _a_ = (A); typeof(B) _b_ = (B); _a_ > _b_ ? _a_ : _b_; })
+#define min(A, B) ((A) < (B) ? (A) : (B))
+#define max(A, B) ((A) > (B) ? (A) : (B))
 #define CLAMP(A, X, B) (((X)<(A))?(A):\
                        ((B)<(X))?(B):(X))
 #define CLAMP_TOP(A, B) min(A, B)
@@ -284,32 +284,32 @@ u64 round_up_u64(u64 num, u64 multiple);
 // ========================================
 // Compound Types
 
-typedef union v2i_t {
+typedef union V2i {
     struct {
         i32 x;
         i32 y;
     };
     i32 v[2];
-} v2i_t;
+} V2i;
 
-typedef union v2f_t {
+typedef union V2f {
     struct {
         f32 x;
         f32 y;
     };
     f32 v[2];
-} v2f_t;
+} V2f;
 
-typedef union v3f_t {
+typedef union V3f {
     struct {
         f32 x;
         f32 y;
         f32 z;
     };
     f32 v[3];
-} v3f_t;
+} V3f;
 
-typedef union v4f_t {
+typedef union V4f {
     struct {
         f32 x;
         f32 y;
@@ -317,58 +317,58 @@ typedef union v4f_t {
         f32 w;
     };
     f32 v[4];
-} v4f_t;
+} V4f;
 
-typedef union r1u_t {
+typedef union R1u {
     struct {
         u64 begin;
         u64 end;
     };
     u64 r[2];
-} r1u_t;
+} R1u;
 
-typedef union r1f_t {
+typedef union R1f {
     struct {
         f32 begin;
         f32 end;
     };
     f32 r[2];
-} r1f_t;
+} R1f;
 
-typedef union r2i_t {
+typedef union R2i {
     struct {
-        v2i_t begin;
-        v2i_t end;
+        V2i begin;
+        V2i end;
     };
-    v2i_t r[2];
-} r2i_t;
+    V2i r[2];
+} R2i;
 
-typedef union r2f_t {
+typedef union R2f {
     struct {
-        v2f_t begin;
-        v2f_t end;
+        V2f begin;
+        V2f end;
     };
-    v2f_t r[2];
-} r2f_t;
+    V2f r[2];
+} R2f;
 
 // ========================================
 // Compound Type Constructors
 
-v2i_t v2i(i32 x, i32 y);
-v2f_t v2f(f32 x, f32 y);
-v3f_t v3f(f32 x, f32 y, f32 z);
-v4f_t v4f(f32 x, f32 y, f32 z, f32 w);
+V2i v2i(i32 x, i32 y);
+V2f v2f(f32 x, f32 y);
+V3f v3f(f32 x, f32 y, f32 z);
+V4f v4f(f32 x, f32 y, f32 z, f32 w);
 
-r1u_t r1u(u64 begin, u64 end);
-r1f_t r1f(f32 begin, f32 end);
-r2i_t r2i(v2i_t begin, v2i_t end);
-r2f_t r2f(v2f_t begin, v2f_t end);
+R1u r1u(u64 begin, u64 end);
+R1f r1f(f32 begin, f32 end);
+R2i r2i(V2i begin, V2i end);
+R2f r2f(V2f begin, V2f end);
 
 // ========================================
 // Utilities
 
-typedef i32 (*compare_func_t)(const void *, const void *);
-typedef u64 (*hash_func_t)(const void *);
+typedef i32 (*CompareFunc)(const void *, const void *);
+typedef u64 (*HashFunc)(const void *);
 
 i32 compare_cstr(const void *lhs, const void *rhs);
 u64 hash_cstr(const void *v);

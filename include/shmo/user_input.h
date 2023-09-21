@@ -135,13 +135,13 @@ bool keyboard_check_pressed(u8 vk_code);
 bool keyboard_check_released(u8 vk_code);
 bool keyboard_check_repeated(u8 vk_code);
 u8 keyboard_lastkey(void);
-v2i_t mouse_position(void);
+V2i mouse_position(void);
 
 void keyboard_key_update(u8 vk_code);
 void keyboard_key_clear(u8 vk_code);
 void keyboard_key_press(u8 vk_code);
 void keyboard_key_release(u8 vk_code);
 void keyboard_key_repeat(u8 vk_code);
-void mouse_set_position(v2i_t pos);
+void mouse_set_position(V2i pos);
 
 #endif //SHMOCODEBASE_USER_INPUT_H

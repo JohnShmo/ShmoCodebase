@@ -7,26 +7,26 @@
 
 #include "arena.h"
 
-typedef void *(*malloc_func_t)(void *, usize);
-typedef void *(*calloc_func_t)(void *, usize, usize);
-typedef void *(*realloc_func_t)(void *, void *, usize);
-typedef void (*free_func_t)(void *, void *);
+typedef void *(*MallocFunc)(void *, usize);
+typedef void *(*CallocFunc)(void *, usize, usize);
+typedef void *(*ReallocFunc)(void *, void *, usize);
+typedef void (*FreeFunc)(void *, void *);
 
-typedef struct heap_allocator_t {
+typedef struct HeapAllocator {
     void *allocator;
-    malloc_func_t malloc_func;
-    calloc_func_t calloc_func;
-    realloc_func_t realloc_func;
-    free_func_t free_func;
-} heap_allocator_t;
+    MallocFunc malloc_func;
+    CallocFunc calloc_func;
+    ReallocFunc realloc_func;
+    FreeFunc free_func;
+} HeapAllocator;
 
-void *heap_malloc(heap_allocator_t *a, usize n);
-void *heap_calloc(heap_allocator_t *a, usize n, usize size);
-void *heap_realloc(heap_allocator_t *a, void *p, usize n);
-void heap_free(heap_allocator_t *a, void *p);
+void *heap_malloc(HeapAllocator *a, usize n);
+void *heap_calloc(HeapAllocator *a, usize n, usize size);
+void *heap_realloc(HeapAllocator *a, void *p, usize n);
+void heap_free(HeapAllocator *a, void *p);
 
-heap_allocator_t heap_allocator_arena(arena_t *arena);
+HeapAllocator heap_allocator_arena(Arena *arena);
 
-extern heap_allocator_t *stdalloc;
+extern HeapAllocator *stdalloc;
 
 #endif //SHMOCODEBASE_ALLOCATOR_H
