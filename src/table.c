@@ -4,8 +4,13 @@
 
 #include "shmo/table.h"
 
+typedef struct TablePairInternal {
+    void *key;
+    void *val;
+} TablePairInternal;
+
 struct TableBucket {
-    TablePair pair;
+    TablePairInternal pair;
     struct TableBucket *next;
 };
 
@@ -201,10 +206,14 @@ void table_put(Table *tb, const void *key, const void *val) {
     }
 }
 
-void *table_get(Table *tb, const void *key) {
+const TablePair *table_get(Table *tb, const void *key) {
     assert(tb);
     assert(key);
-    return table_lookup(tb, key)->pair.val;
+    TableBucket *bucket = table_lookup(tb, key);
+    if (bucket) {
+        return (TablePair *)&bucket->pair;
+    }
+    return nullptr;
 }
 
 void table_remove(Table *tb, const void *key) {
@@ -219,7 +228,7 @@ void table_remove(Table *tb, const void *key) {
     usize hash = tb->hash_func(key) % tb->slot_count;
     TableBucket *first_bucket = tb->slots[hash];
 
-    TablePair temp = first_bucket->pair;
+    TablePairInternal temp = first_bucket->pair;
     first_bucket->pair = bucket->pair;
     bucket->pair = temp;
 
@@ -327,8 +336,8 @@ bool table_itr_end(TableItr itr) {
     return itr.slot >= itr.table->slot_count;
 }
 
-TablePair *table_itr_get(TableItr itr) {
+const TablePair *table_itr_get(TableItr itr) {
     assert(itr.table);
     assert(itr.bucket);
-    return &(itr.bucket->pair);
+    return (TablePair *)&(itr.bucket->pair);
 }

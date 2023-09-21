@@ -1,7 +1,9 @@
 #include "shmo/table.h"
+#include "shmo/set.h"
 #include <stdio.h>
 
 TABLE_DEF(IntStrTable, istable, i32, char *, hash_i32, compare_i32)
+SET_DEF(StrSet, strset, char *, hash_i32, compare_i32)
 
 int main(i32 argc, char *argv[]) {
     (void)argc; (void)argv;
@@ -17,8 +19,13 @@ int main(i32 argc, char *argv[]) {
     istable_put(t, 101, "But that's alright");
     istable_put(t, 122, "It's not supposed to be an array!");
 
+    IntStrTable_ReleasedPair r = istable_remove(t, 10);
+    if (r.released) {
+        printf("REMOVED: %d : %s\n", r.key, r.val);
+    }
+
     for (TableItr itr = istable_itr(t); !istable_itr_end(itr); itr = istable_itr_next(itr)) {
-        IntStrTable_Pair *pair = istable_itr_get(itr);
+        const IntStrTable_Pair *pair = istable_itr_get(itr);
         printf("%d : %s\n", *pair->key, *pair->val);
     }
 

@@ -174,6 +174,18 @@ void set_put(Set *s, const void *elm) {
     }
 }
 
+const void *set_get(const Set *s, const void *elm) {
+    assert(s);
+    assert(elm);
+
+    SetBucket *bucket = set_lookup(s, elm);
+    if (bucket) {
+        return bucket->elm;
+    }
+
+    return nullptr;
+}
+
 void set_remove(Set *s, const void *elm) {
     assert(s);
     assert(elm);
