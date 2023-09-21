@@ -18,59 +18,51 @@ Strview strview_of(const char *cstr) {
 #define CSTR_BUFFER_SIZE (1024ULL * 8ULL)
 static char cstr_buffer[CSTR_BUFFER_SIZE];
 
-const char *strview_cstr(const Strview *view) {
-    assert(view);
+const char *strview_cstr(Strview view) {
     strview_cpy(view, cstr_buffer, CSTR_BUFFER_SIZE);
     return cstr_buffer;
 }
 
-char *strview_dup(const Strview *view, HeapAllocator *allocator) {
-    assert(view);
+char *strview_dup(Strview view, HeapAllocator *allocator) {;
     if (!allocator) {
         allocator = stdalloc;
     }
 
-    char *buffer = heap_malloc(allocator, view->length + 1);
+    char *buffer = heap_malloc(allocator, view.length + 1);
     assert(buffer);
-    memcpy(buffer, view->data, view->length);
-    buffer[view->length] = '\0';
+    memcpy(buffer, view.data, view.length);
+    buffer[view.length] = '\0';
     return buffer;
 }
 
-void strview_cpy(const Strview *view, char *dest, usize dest_size) {
-    assert(view);
+void strview_cpy(Strview view, char *dest, usize dest_size) {
     if (!dest || dest_size == 0) {
         return;
     }
 
-    usize len = min(dest_size - 1, view->length);
+    usize len = min(dest_size - 1, view.length);
 
-    memcpy(dest, view->data, len);
+    memcpy(dest, view.data, len);
     dest[len] = '\0';
 }
 
-usize strview_cat(const Strview *lhs, const Strview *rhs, char *dest, usize dest_size) {
-    assert(lhs);
-    assert(rhs);
-
-    usize result = lhs->length + rhs->length;
+usize strview_cat(Strview lhs, Strview rhs, char *dest, usize dest_size) {
+    usize result = lhs.length + rhs.length;
     if (!dest || dest_size == 0) {
         return result;
     }
 
     strview_cpy(lhs, dest, dest_size);
-    if (dest_size > lhs->length) {
-        strview_cpy(rhs, dest + lhs->length, dest_size - lhs->length);
+    if (dest_size > lhs.length) {
+        strview_cpy(rhs, dest + lhs.length, dest_size - lhs.length);
     }
     return result;
 }
 
-const char *strview_data(const Strview *view) {
-    assert(view);
-    return view->data;
+const char *strview_data(Strview view) {
+    return view.data;
 }
 
-usize strview_len(const Strview *view) {
-    assert(view);
-    return view->length;
+usize strview_len(Strview view) {
+    return view.length;
 }
