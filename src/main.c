@@ -25,7 +25,6 @@ int main(i32 argc, char *argv[]) {
     inttable_put(t, 7, 800);
     inttable_put(t, 8, 900);
 
-
     for (i32 i = 0; i < 9; ++i) {
         printf("%d : %d\n", i, *inttable_get(t, i));
     }
