@@ -1,35 +1,27 @@
-#include "shmo/darray.h"
-#include "shmo/set.h"
 #include "shmo/table.h"
 #include <stdio.h>
 
-DARRAY_DEF(IntArray, intarray, i32)
-TABLE_DEF(IntTable, inttable, i32, i32, hash_i32, compare_i32)
-SET_DEF(IntSet, intset, i32, hash_i32, compare_i32)
+TABLE_DEF(IntStrTable, istable, i32, char *, hash_i32, compare_i32)
 
 int main(i32 argc, char *argv[]) {
     (void)argc; (void)argv;
 
-    LinearArena *arena = linear_arena_create();
-    HeapAllocator allocator = heap_allocator_linear_arena(arena);
+    IntStrTable *t = istable_create(stdalloc);
 
-    IntTable *t = inttable_create(&allocator);
+    istable_put(t, 0, "This");
+    istable_put(t, 10, "Is an example");
+    istable_put(t, 20, "Of an unordered");
+    istable_put(t, 30, "Table");
+    istable_put(t, 45, "The order of these entries");
+    istable_put(t, 100, "Might get out of whack!");
+    istable_put(t, 101, "But that's alright");
+    istable_put(t, 122, "It's not supposed to be an array!");
 
-    inttable_put(t, 0, 100);
-    inttable_put(t, 1, 200);
-    inttable_put(t, 2, 300);
-    inttable_put(t, 3, 400);
-    inttable_put(t, 4, 500);
-    inttable_put(t, 5, 600);
-    inttable_put(t, 6, 700);
-    inttable_put(t, 7, 800);
-    inttable_put(t, 8, 900);
-
-    for (i32 i = 0; i < 9; ++i) {
-        printf("%d : %d\n", i, *inttable_get(t, i));
+    for (TableItr itr = istable_itr(t); !istable_itr_end(itr); itr = istable_itr_next(itr)) {
+        IntStrTable_Pair *pair = istable_itr_get(itr);
+        printf("%d : %s\n", *pair->key, *pair->val);
     }
 
-    inttable_destroy(t);
-    linear_arena_destroy(arena);
+    istable_destroy(t);
     return 0;
 }

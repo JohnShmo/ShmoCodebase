@@ -42,7 +42,7 @@ bool table_itr_end(TableItr itr);
 TablePair *table_itr_get(TableItr itr);
 
 #define TABLE_DEF(Name, Prefix, KeyT, ValT, HashFunc, CompareFunc) \
-typedef struct Name##_TablePair { KeyT *key; ValT *val; } Name##_TablePair; \
+typedef struct Name##_Pair { KeyT *key; ValT *val; } Name##_Pair; \
 typedef void Name;                                     \
 local_fn Name *Prefix##_create(HeapAllocator *allocator) { return table_create(sizeof(KeyT), sizeof(ValT), HashFunc, CompareFunc, allocator); } \
 local_fn void Prefix##_destroy(Name *tb) { table_destroy((Table *)tb); }                                                                         \
@@ -57,6 +57,6 @@ local_fn bool Prefix##_contains(const Name *tb, const KeyT key) { return table_c
 local_fn TableItr Prefix##_itr(Name *tb) { return table_itr((Table *)tb); }                                                                   \
 local_fn TableItr Prefix##_itr_next(TableItr itr) { return table_itr_next(itr); }                                                                \
 local_fn bool Prefix##_itr_end(TableItr itr) { return table_itr_end(itr); }                                                                         \
-local_fn Name##_TablePair *Name##_itr_get(TableItr itr) { return (Name##_TablePair *)table_itr_get(itr); }
+local_fn Name##_Pair *Prefix##_itr_get(TableItr itr) { return (Name##_Pair *)table_itr_get(itr); }
 
 #endif //SHMOCODEBASE_TABLE_H
