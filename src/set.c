@@ -6,6 +6,7 @@
 
 struct SetBucket {
     void *elm;
+    usize elm_size;
     struct SetBucket *next;
 };
 
@@ -16,9 +17,6 @@ struct Set {
     SetBucket **slots;
     SetBucket *free_buckets;
 
-    usize elm_size;
-    HashFunc hash_func;
-    CompareFunc compare_func;
     HeapAllocator *allocator;
 };
 
@@ -38,6 +36,7 @@ local_fn void set_bucket_create(SetBucket *bucket,
 
     bucket->next = nullptr;
     bucket->elm = elm_copy;
+    bucket->elm_size = elm_size;
 }
 
 local_fn void set_bucket_destroy(SetBucket *bucket, HeapAllocator *allocator) {
@@ -75,7 +74,7 @@ local_fn void set_rehash(Set *s, usize new_count) {
         SetBucket *bucket = old_slots[i];
         while (bucket) {
             SetBucket *next = bucket->next;
-            usize hash = s->hash_func(bucket->elm) % new_count;
+            usize hash = hash_bytes((Bytes) { .p = bucket->elm, .size = bucket->elm_size }) % new_count;
             bucket->next = s->slots[hash];
             s->slots[hash] = bucket;
             bucket = next;
@@ -87,18 +86,18 @@ local_fn void set_rehash(Set *s, usize new_count) {
     }
 }
 
-local_fn SetBucket *set_lookup(const Set *s, const void *elm) {
+local_fn SetBucket *set_lookup(const Set *s, Bytes elm) {
     assert(s);
-    assert(elm);
+    assert(elm.p);
 
     if (set_empty(s)) {
         return nullptr;
     }
 
-    usize hash = s->hash_func(elm) % s->slot_count;
+    usize hash = hash_bytes(elm) % s->slot_count;
     SetBucket *bucket = s->slots[hash];
     while(bucket) {
-        bool match = s->compare_func(bucket->elm, elm) == 0;
+        bool match = compare_bytes((Bytes) { .p = bucket->elm, .size = bucket->elm_size }, elm) == 0;
         if (match) {
             break;
         }
@@ -107,13 +106,7 @@ local_fn SetBucket *set_lookup(const Set *s, const void *elm) {
     return bucket;
 }
 
-Set *set_create(usize element_size,
-                HashFunc hash_func,
-                CompareFunc compare_func,
-                HeapAllocator *allocator) {
-    assert(element_size);
-    assert(hash_func);
-    assert(compare_func);
+Set *set_create(HeapAllocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
 
@@ -124,9 +117,6 @@ Set *set_create(usize element_size,
     dest->slot_count = 0;
     dest->slots = nullptr;
     dest->free_buckets = nullptr;
-    dest->elm_size = element_size;
-    dest->hash_func = hash_func;
-    dest->compare_func = compare_func;
     dest->allocator = allocator;
     return dest;
 }
@@ -137,16 +127,12 @@ void set_destroy(Set *s) {
     set_clear(s);
     set_shrink(s);
 
-    s->elm_size = 0;
-    s->hash_func = nullptr;
-    s->compare_func = nullptr;
-
     heap_free(s->allocator, s);
 }
 
-void set_put(Set *s, const void *elm) {
+void set_put(Set *s, Bytes elm) {
     assert(s);
-    assert(elm);
+    assert(elm.p);
 
     f64 load;
     if (set_empty(s)) {
@@ -164,38 +150,26 @@ void set_put(Set *s, const void *elm) {
     if (bucket) {
         return;
     } else {
-        usize hash = s->hash_func(elm) % s->slot_count;
+        usize hash = hash_bytes(elm) % s->slot_count;
         SetBucket *new_bucket = heap_malloc(s->allocator, sizeof(SetBucket));
         assert(new_bucket);
-        set_bucket_create(new_bucket, elm, s->elm_size, s->allocator);
+        set_bucket_create(new_bucket, elm.p, elm.size, s->allocator);
         new_bucket->next = s->slots[hash];
         s->slots[hash] = new_bucket;
         s->size++;
     }
 }
 
-const void *set_get(const Set *s, const void *elm) {
+void set_remove(Set *s, Bytes elm) {
     assert(s);
-    assert(elm);
-
-    SetBucket *bucket = set_lookup(s, elm);
-    if (bucket) {
-        return bucket->elm;
-    }
-
-    return nullptr;
-}
-
-void set_remove(Set *s, const void *elm) {
-    assert(s);
-    assert(elm);
+    assert(elm.p);
 
     SetBucket *bucket = set_lookup(s, elm);
     if (!bucket) {
         return;
     }
 
-    usize hash = s->hash_func(elm) % s->slot_count;
+    usize hash = hash_bytes(elm) % s->slot_count;
     SetBucket *first_bucket = s->slots[hash];
 
     void *temp = first_bucket->elm;
@@ -255,9 +229,9 @@ bool set_empty(const Set *s) {
     return s->size == 0 || s->slot_count == 0;
 }
 
-bool set_contains(const Set *s, const void *elm) {
+bool set_contains(const Set *s, Bytes elm) {
     assert(s);
-    assert(elm);
+    assert(elm.p);
     return set_lookup(s, elm) != nullptr;
 }
 
@@ -306,8 +280,8 @@ bool set_itr_end(SetItr itr) {
     return itr.slot >= itr.set->slot_count;
 }
 
-void *set_itr_get(SetItr itr) {
+Bytes set_itr_get(SetItr itr) {
     assert(itr.set);
     assert(itr.bucket);
-    return &(itr.bucket->elm);
+    return (Bytes) { .p = itr.bucket->elm, .size = itr.bucket->elm_size };
 }

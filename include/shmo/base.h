@@ -370,29 +370,19 @@ R2f r2f(V2f begin, V2f end);
 typedef i32 (*CompareFunc)(const void *, const void *);
 typedef u64 (*HashFunc)(const void *);
 
-i32 compare_cstr(const void *lhs, const void *rhs);
-u64 hash_cstr(const void *v);
+typedef struct Bytes {
+    const u8 * const p;
+    const usize size;
+} Bytes;
 
-i32 compare_i8(const void *lhs, const void *rhs);
-u64 hash_i8(const void *v);
-i32 compare_i16(const void *lhs, const void *rhs);
-u64 hash_i16(const void *v);
-i32 compare_i32(const void *lhs, const void *rhs);
-u64 hash_i32(const void *v);
-i32 compare_i64(const void *lhs, const void *rhs);
-u64 hash_i64(const void *v);
-i32 compare_isize(const void *lhs, const void *rhs);
-u64 hash_isize(const void *v);
+Bytes bytes(const u8 *p, usize size);
+#define bytes_of(V) (Bytes) { .p = (const u8 *)&(V), .size = sizeof(V) }
+#define bytes_of_str(Str) (Bytes) { .p = (const u8 *)(Str), .size = (strlen(Str) + 1) }
+#define bytes_to(T, B) *(const T *)(B).p
+#define bytes_to_str(B) (const char *)(B).p
+#define nullbytes (Bytes) { .p = nullptr, .size = 0 }
 
-i32 compare_u8(const void *lhs, const void *rhs);
-u64 hash_u8(const void *v);
-i32 compare_u16(const void *lhs, const void *rhs);
-u64 hash_u16(const void *v);
-i32 compare_u32(const void *lhs, const void *rhs);
-u64 hash_u32(const void *v);
-i32 compare_u64(const void *lhs, const void *rhs);
-u64 hash_u64(const void *v);
-i32 compare_usize(const void *lhs, const void *rhs);
-u64 hash_usize(const void *v);
+i32 compare_bytes(Bytes lhs, Bytes rhs);
+u64 hash_bytes(Bytes v);
 
 #endif //SHMOCODEBASE_BASE_H

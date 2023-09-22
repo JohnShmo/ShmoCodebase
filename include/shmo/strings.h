@@ -18,6 +18,7 @@ const char *strview_cstr(Strview view);
 char *strview_dup(Strview view, HeapAllocator *allocator);
 void strview_cpy(Strview view, char *dest, usize dest_size);
 usize strview_cat(Strview lhs, Strview rhs, char *dest, usize dest_size);
+usize strview_join(Strview *views, usize views_count, Strview sep, char *dest, usize dest_size);
 const char *strview_data(Strview view);
 usize strview_len(Strview view);
 
