@@ -11,7 +11,6 @@ typedef struct SetBucket SetBucket;
 typedef struct Set Set;
 
 Set *set_create(HeapAllocator *allocator);
-
 void set_destroy(Set *s);
 void set_put(Set *s, Bytes elm);
 void set_remove(Set *s, Bytes elm);

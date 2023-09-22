@@ -15,7 +15,6 @@ typedef struct TableBucket TableBucket;
 typedef struct Table Table;
 
 Table *table_create(HeapAllocator *allocator);
-
 void table_destroy(Table *tb);
 void table_put(Table *tb, Bytes key, Bytes val);
 Bytes table_get(Table *tb, Bytes key);

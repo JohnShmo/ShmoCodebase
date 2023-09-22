@@ -118,7 +118,7 @@ typedef void void_func_t(void);
 #if ENABLE_ASSERT
 # define assert(C) stmnt( if (!(C)) { assert_break(); } )
 #else
-# define assert(C)
+# define assert(C) ((void)(0))
 #endif
 
 #define local_fn static inline
