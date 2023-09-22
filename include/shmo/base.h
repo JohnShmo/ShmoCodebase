@@ -96,7 +96,7 @@ typedef ptrdiff_t isize;
 typedef float     f32;
 typedef double    f64;
 
-typedef void void_func_t(void);
+typedef void VoidFunc(void);
 
 // ========================================
 // Helper Macros

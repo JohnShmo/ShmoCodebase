@@ -60,32 +60,22 @@ usize strview_cat(Strview lhs, Strview rhs, char *dest, usize dest_size) {
 }
 
 usize strview_join(Strview *views, usize views_count, Strview sep, char *dest, usize dest_size) {
-    // TODO: Fix this broken-ass function
-    usize result = 0;
-    usize write_index = 0;
+    usize total_len = 0;
 
     if (views_count == 0) {
-        return result;
+        return total_len;
     }
 
-    if (views_count == 1) {
-        result = views[0].length;
-        if (dest && dest_size) {
-            strview_cpy(views[0], dest, dest_size);
-        }
-        return result;
-    }
-
-    for (usize i = 1; i < views_count; ++i) {
-        result += strview_cat(views[i-1], views[i], dest + write_index, dest_size > write_index ? dest_size - write_index : 0);
-        write_index += views[i-1].length;
+    for (usize i = 0; i < views_count; ++i) {
+        strview_cpy(views[i], dest + total_len, dest_size > total_len ? dest_size - total_len : 0);
+        total_len += views[i].length;
         if (i < views_count - 1) {
-            result += strview_cat(views[i], sep, dest + write_index, dest_size > write_index ? dest_size - write_index : 0);
-            write_index += sep.length;
+            strview_cpy(sep, dest + total_len, dest_size > total_len ? dest_size - total_len : 0);
+            total_len += sep.length;
         }
     }
 
-    return result;
+    return total_len;
 }
 
 const char *strview_data(Strview view) {

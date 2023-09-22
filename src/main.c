@@ -1,20 +1,36 @@
-#include "shmo/table.h"
+#include "shmo/strings.h"
 #include <stdio.h>
 
 int main(i32 argc, char *argv[]) {
     (void)argc; (void)argv;
 
-    Table *table = table_create(stdalloc);
-    table_put(table, bytes_of_str("Mike"), bytes_of_str("Cool guy"));
-    table_put(table, bytes_of_str("Dave"), bytes_of_str("Cooler guy"));
+    Strview views[] = {
+            strview_of("Hello,"),
+            strview_of("World!"),
+            strview_of("This"),
+            strview_of("is"),
+            strview_of("a"),
+            strview_of("test"),
+            strview_of("of"),
+            strview_of("the"),
+            strview_of("strview_join"),
+            strview_of("function!"),
+    };
 
-    for (TableItr itr = table_itr(table); !table_itr_end(itr); itr = table_itr_next(itr)) {
-        TablePair pair = table_itr_get(itr);
-        const char *key = bytes_to_str(pair.key);
-        const char *val = bytes_to_str(pair.val);
-        printf("%s : %s\n", key, val);
-    }
+    // First calculate the size we'll need.
+    usize buffer_size = strview_join(views, array_count(views), strview_of(" "), nullptr, 0);
 
-    table_destroy(table);
+    // Add one to account for a null-terminator
+    buffer_size += 1;
+
+    // Allocate enough memory.
+    char *buffer = malloc(buffer_size);
+
+    // Re-call the function with the new buffer to actually preform the operation.
+    strview_join(views, array_count(views), strview_of(" "), buffer, buffer_size);
+
+    printf("%s\n", buffer);
+    free(buffer);
+
     return 0;
 }
