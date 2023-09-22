@@ -15,5 +15,6 @@ int main(i32 argc, char *argv[]) {
         printf("%s : %s\n", key, val);
     }
 
+    table_destroy(table);
     return 0;
 }
