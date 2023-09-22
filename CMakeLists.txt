@@ -14,6 +14,7 @@ add_executable(ShmoCodebase src/main.c
         src/user_input.c
         src/set.c
         src/linear_arena.c
+        src/errors.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
