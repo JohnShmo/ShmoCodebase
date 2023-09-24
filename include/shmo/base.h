@@ -387,7 +387,7 @@ Bytes bytes(const u8 *p, usize size);
 #define bytes_to(T, B) *(const T *)(B).p
 #define bytes_to_str(B) (const char *)(B).p
 #define nullbytes (Bytes) { .p = nullptr, .size = 0 }
-bool is_nullbytes(Bytes b);
+#define bytes_is_null(B) ((B).p == nullptr || (B).size == 0)
 
 i32 compare_bytes(Bytes lhs, Bytes rhs);
 u64 hash_bytes(Bytes v);

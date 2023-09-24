@@ -6,13 +6,19 @@
 #include "shmo/strings.h"
 
 Strview strview(const char *data, usize length) {
-    assert(data);
+    if (!data || length == 0)
+        return nullstrview;
     return (Strview) { .data = data, .length = length };
 }
 
 Strview strview_of(const char *cstr) {
-    assert(cstr);
+    if (!cstr)
+        return nullstrview;
     return (Strview) { .data = cstr, .length = strlen(cstr) };
+}
+
+bool strview_is_null(Strview view) {
+    return !view.data || view.length == 0;
 }
 
 #define CSTR_BUFFER_SIZE (1024ULL * 8ULL)
@@ -29,7 +35,8 @@ char *strview_dup(Strview view, HeapAllocator *allocator) {;
     }
 
     char *buffer = heap_malloc(allocator, view.length + 1);
-    assert(buffer);
+    if (!buffer)
+        return nullptr;
     memcpy(buffer, view.data, view.length);
     buffer[view.length] = '\0';
     return buffer;

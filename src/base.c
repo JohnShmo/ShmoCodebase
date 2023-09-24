@@ -157,10 +157,6 @@ Bytes bytes(const u8 *p, usize size) {
     return (Bytes) { .p = p, .size = size };
 }
 
-bool is_nullbytes(Bytes b) {
-    return !b.p || b.size == 0;
-}
-
 u64 hash_bytes(Bytes v) {
     assert(v.p);
     size_t len = v.size;

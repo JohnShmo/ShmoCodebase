@@ -12,10 +12,10 @@ typedef struct Set Set;
 
 Set *set_create(HeapAllocator *allocator);
 void set_destroy(Set *s);
-void set_put(Set *s, Bytes elm);
-void set_remove(Set *s, Bytes elm);
+bool set_put(Set *s, Bytes elm);
+bool set_remove(Set *s, Bytes elm);
 void set_clear(Set *s);
-void set_shrink(Set *s);
+bool set_shrink(Set *s);
 usize set_size(const Set *s);
 bool set_empty(const Set *s);
 bool set_contains(const Set *s, Bytes elm);
