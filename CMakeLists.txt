@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.26)
-set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD 17)
 
 project(ShmoCodebase C)
 
@@ -14,7 +14,6 @@ add_executable(ShmoCodebase src/main.c
         src/user_input.c
         src/set.c
         src/linear_arena.c
-        src/errors.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)

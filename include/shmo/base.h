@@ -98,6 +98,12 @@ typedef double    f64;
 
 typedef void VoidFunc(void);
 
+#if defined __STDC_VERSION__ && __STDC_VERSION__ > 201710L
+/* nullptr is a keyword  */
+#elif !defined __cplusplus
+# define nullptr NULL
+#endif
+
 // ========================================
 // Helper Macros
 
@@ -381,6 +387,7 @@ Bytes bytes(const u8 *p, usize size);
 #define bytes_to(T, B) *(const T *)(B).p
 #define bytes_to_str(B) (const char *)(B).p
 #define nullbytes (Bytes) { .p = nullptr, .size = 0 }
+bool is_nullbytes(Bytes b);
 
 i32 compare_bytes(Bytes lhs, Bytes rhs);
 u64 hash_bytes(Bytes v);

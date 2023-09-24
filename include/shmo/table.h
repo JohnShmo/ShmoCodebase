@@ -16,11 +16,11 @@ typedef struct Table Table;
 
 Table *table_create(HeapAllocator *allocator);
 void table_destroy(Table *tb);
-void table_put(Table *tb, Bytes key, Bytes val);
+bool table_put(Table *tb, Bytes key, Bytes val);
 Bytes table_get(Table *tb, Bytes key);
-void table_remove(Table *tb, Bytes key);
+bool table_remove(Table *tb, Bytes key);
 void table_clear(Table *tb);
-void table_shrink(Table *tb);
+bool table_shrink(Table *tb);
 usize table_size(const Table *tb);
 bool table_empty(const Table *tb);
 bool table_contains(const Table *tb, Bytes key);
