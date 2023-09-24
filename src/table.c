@@ -239,7 +239,7 @@ bool table_put(Table *tb, Bytes key, Bytes val) {
     return false;
 }
 
-Bytes table_get(Table *tb, Bytes key) {
+Bytes table_get(const Table *tb, Bytes key) {
     if (!tb || !key.p)
         return nullbytes;
 
