@@ -69,23 +69,31 @@ usize strview_cat(Strview lhs, Strview rhs, char *dest, usize dest_size) {
     return result;
 }
 
-usize strview_join(Strview *views, usize views_count, Strview sep, char *dest, usize dest_size) {
-    usize total_len = 0;
-
-    if (views_count == 0) {
-        return total_len;
-    }
-
+char *strview_join(Strview *views, usize views_count, Strview delim, HeapAllocator *allocator) {
+    if (!allocator)
+        allocator = stdalloc;
+    char *result = nullptr;
+    usize total_len = strview_len_all(views, views_count);
+    usize delim_len = strview_len(delim);
+    if (views_count > 1 && !strview_is_null(delim))
+        total_len += delim_len * (views_count - 1);
+    result = heap_malloc(allocator, total_len + 1);
+    if (!result)
+        return nullptr;
+    if (total_len == 0)
+        goto finish;
+    usize offset = 0;
     for (usize i = 0; i < views_count; ++i) {
-        strview_cpy(views[i], dest + total_len, dest_size > total_len ? dest_size - total_len : 0);
-        total_len += views[i].length;
+        strview_cpy(views[i], result + offset, (total_len + 1) - offset);
+        offset += views[i].length;
         if (i < views_count - 1) {
-            strview_cpy(sep, dest + total_len, dest_size > total_len ? dest_size - total_len : 0);
-            total_len += sep.length;
+            strview_cpy(delim, result + offset, (total_len + 1) - offset);
+            offset += delim.length;
         }
     }
-
-    return total_len;
+    finish:
+    result[total_len] = '\0';
+    return result;
 }
 
 const char *strview_data(Strview view) {
@@ -93,7 +101,19 @@ const char *strview_data(Strview view) {
 }
 
 usize strview_len(Strview view) {
+    if (strview_is_null(view))
+        return 0;
     return view.length;
+}
+
+usize strview_len_all(Strview *views, usize views_count) {
+    if (!views)
+        return 0;
+    usize result = 0;
+    for (usize i = 0; i < views_count; ++i) {
+        result += strview_len(views[i]);
+    }
+    return result;
 }
 
 usize string_len(const char *str) {

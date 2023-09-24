@@ -17,20 +17,8 @@ int main(i32 argc, char *argv[]) {
             strview_of("function!"),
     };
 
-    // First calculate the size we'll need.
-    usize buffer_size = strview_join(views, array_count(views), strview_of(" "), nullptr, 0);
-
-    // Add one to account for a null-terminator
-    buffer_size += 1;
-
-    // Allocate enough memory.
-    char *buffer = malloc(buffer_size);
-
-    // Re-call the function with the new buffer to actually preform the operation.
-    strview_join(views, array_count(views), strview_of(" "), buffer, buffer_size);
-
+    char *buffer = strview_join(views, array_count(views), strview_of(" "), stdalloc);
     printf("%s\n", buffer);
-    free(buffer);
-
+    heap_free(stdalloc, buffer);
     return 0;
 }
