@@ -24,4 +24,11 @@ usize strview_join(Strview *views, usize views_count, Strview sep, char *dest, u
 const char *strview_data(Strview view);
 usize strview_len(Strview view);
 
+usize string_len(const char *str);
+usize string_len_all(const char **strs, usize strs_count);
+void string_cpy(char *dest, usize dest_size, const char *src);
+usize string_cat(char *dest, usize dest_size, const char *src);
+char *string_dup(const char *src, HeapAllocator *allocator);
+char *string_join(const char **strs, usize strs_count, const char *delim, HeapAllocator *allocator);
+
 #endif //SHMOCODEBASE_STRINGS_H

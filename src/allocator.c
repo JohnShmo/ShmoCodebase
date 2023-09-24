@@ -54,25 +54,25 @@ HeapAllocator heap_allocator_linear_arena(LinearArena *arena) {
 }
 
 void *heap_malloc(HeapAllocator *a, usize n) {
-    assert(a);
-    assert(a->malloc_func);
+    if (!a || !a->malloc_func)
+        return nullptr;
     return a->malloc_func(a->allocator, n);
 }
 
 void *heap_calloc(HeapAllocator *a, usize n, usize size) {
-    assert(a);
-    assert(a->calloc_func);
+    if (!a || !a->calloc_func)
+        return nullptr;
     return a->calloc_func(a->allocator, n, size);
 }
 
 void *heap_realloc(HeapAllocator *a, void *p, usize n) {
-    assert(a);
-    assert(a->realloc_func);
+    if (!a || !a->realloc_func)
+        return nullptr;
     return a->realloc_func(a->allocator, p, n);
 }
 
 void heap_free(HeapAllocator *a, void *p) {
-    assert(a);
-    assert(a->free_func);
+    if (!a || !a->free_func)
+        return;
     a->free_func(a->allocator, p);
 }
