@@ -21,11 +21,14 @@ bool strview_is_null(Strview view) {
     return !view.data || view.length == 0;
 }
 
-#define CSTR_BUFFER_SIZE (1024ULL * 8ULL)
+#define CSTR_BUFFER_SIZE (1024ULL)
 static char cstr_buffer[CSTR_BUFFER_SIZE];
+static usize cstr_buffer_index = 0;
 
 const char *strview_cstr(Strview view) {
-    strview_cpy(view, cstr_buffer, CSTR_BUFFER_SIZE);
+    if (CSTR_BUFFER_SIZE <= cstr_buffer_index || CSTR_BUFFER_SIZE - cstr_buffer_index < view.length + 1)
+        cstr_buffer_index = 0;
+    strview_cpy(view, cstr_buffer + cstr_buffer_index, CSTR_BUFFER_SIZE - cstr_buffer_index);
     return cstr_buffer;
 }
 
