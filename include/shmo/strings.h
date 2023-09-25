@@ -12,10 +12,10 @@ typedef struct Strview {
     usize length;
 } Strview;
 #define nullstrview (Strview) { .data = nullptr, .length = 0 }
+#define strview_is_null(V) ((V).data == nullptr || (V).length == 0)
 
 Strview strview(const char *data, usize length);
 Strview strview_of(const char *cstr);
-bool strview_is_null(Strview view);
 const char *strview_cstr(Strview view);
 char *strview_dup(Strview view, HeapAllocator *allocator);
 void strview_cpy(Strview view, char *dest, usize dest_size);

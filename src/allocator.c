@@ -31,7 +31,7 @@ static HeapAllocator stdalloc_ = {
     .realloc_func = realloc_c,
     .free_func = free_c
 };
-HeapAllocator *stdalloc = &stdalloc_;
+HeapAllocator *const stdalloc = &stdalloc_;
 
 HeapAllocator heap_allocator_free_list_arena(FreeListArena *arena) {
     return (HeapAllocator) {

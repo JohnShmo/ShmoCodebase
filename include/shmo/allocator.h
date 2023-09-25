@@ -29,6 +29,6 @@ void heap_free(HeapAllocator *a, void *p);
 HeapAllocator heap_allocator_free_list_arena(FreeListArena *arena);
 HeapAllocator heap_allocator_linear_arena(LinearArena *arena);
 
-extern HeapAllocator *stdalloc;
+extern HeapAllocator *const stdalloc;
 
 #endif //SHMOCODEBASE_ALLOCATOR_H

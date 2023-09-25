@@ -17,10 +17,6 @@ Strview strview_of(const char *cstr) {
     return (Strview) { .data = cstr, .length = strlen(cstr) };
 }
 
-bool strview_is_null(Strview view) {
-    return !view.data || view.length == 0;
-}
-
 #define CSTR_BUFFER_SIZE (1024ULL)
 static char cstr_buffer[CSTR_BUFFER_SIZE];
 static usize cstr_buffer_index = 0;
