@@ -1,7 +1,7 @@
 #include "shmo/strings.h"
 #include <stdio.h>
 
-int main(i32 argc, char *argv[]) {
+int main(int argc, char *argv[]) {
     (void)argc; (void)argv;
 
     Strview views[] = {

@@ -16,7 +16,6 @@ typedef struct Strview {
 
 Strview strview(const char *data, usize length);
 Strview strview_of(const char *cstr);
-const char *strview_cstr(Strview view);
 char *strview_dup(Strview view, HeapAllocator *allocator);
 void strview_cpy(Strview view, char *dest, usize dest_size);
 usize strview_cat(Strview lhs, Strview rhs, char *dest, usize dest_size);
@@ -31,5 +30,24 @@ void string_cpy(char *dest, usize dest_size, const char *src);
 usize string_cat(char *dest, usize dest_size, const char *src);
 char *string_dup(const char *src, HeapAllocator *allocator);
 char *string_join(const char **strs, usize strs_count, const char *delim, HeapAllocator *allocator);
+Strview string_get_view(const char *str, R1u range);
+char string_get_char(const char *str, usize index);
+
+typedef struct StringBuilder StringBuilder;
+
+StringBuilder *string_builder_create(HeapAllocator *allocator);
+void string_builder_destroy(StringBuilder *builder);
+bool string_builder_push_char(StringBuilder *builder, char c);
+bool string_builder_push_str(StringBuilder *builder, const char *s);
+bool string_builder_push_fmt(StringBuilder *builder, const char *fmt, ...);
+bool string_builder_push_view(StringBuilder *builder, Strview v);
+bool string_builder_push_view_fmt(StringBuilder *builder, Strview v_fmt, ...);
+bool string_builder_set_char(StringBuilder *builder, usize index, char c);
+bool string_builder_fill_char(StringBuilder *builder, R1u range, char c);
+bool string_builder_remove(StringBuilder *builder, R1u range);
+const char *string_builder_cstr(const StringBuilder *builder);
+char string_builder_get_char(const StringBuilder *builder, usize index);
+Strview string_builder_get_view(const StringBuilder *builder, R1u range);
+usize string_builder_len(const StringBuilder *builder);
 
 #endif //SHMOCODEBASE_STRINGS_H

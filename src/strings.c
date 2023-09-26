@@ -17,17 +17,6 @@ Strview strview_of(const char *cstr) {
     return (Strview) { .data = cstr, .length = strlen(cstr) };
 }
 
-#define CSTR_BUFFER_SIZE (1024ULL)
-static char cstr_buffer[CSTR_BUFFER_SIZE];
-static usize cstr_buffer_index = 0;
-
-const char *strview_cstr(Strview view) {
-    if (CSTR_BUFFER_SIZE <= cstr_buffer_index || CSTR_BUFFER_SIZE - cstr_buffer_index < view.length + 1)
-        cstr_buffer_index = 0;
-    strview_cpy(view, cstr_buffer + cstr_buffer_index, CSTR_BUFFER_SIZE - cstr_buffer_index);
-    return cstr_buffer;
-}
-
 char *strview_dup(Strview view, HeapAllocator *allocator) {;
     if (!allocator) {
         allocator = stdalloc;
@@ -192,4 +181,21 @@ char *string_join(const char **strs, usize strs_count, const char *delim, HeapAl
     finish:
     result[total_len] = '\0';
     return result;
+}
+
+Strview string_get_view(const char *str, R1u range) {
+    if (!str || range.begin > range.end || range.end - range.begin == 0)
+        return nullstrview;
+    usize len = string_len(str);
+    if (range.begin >= len)
+        return nullstrview;
+    if (range.end > len)
+        return nullstrview;
+    return strview(str + range.begin, range.end - range.begin);
+}
+
+char string_get_char(const char *str, usize index) {
+    if (!str)
+        return '\0';
+    return str[index];
 }

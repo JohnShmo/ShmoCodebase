@@ -79,6 +79,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 // ========================================
 // Basic Types
@@ -327,10 +328,10 @@ typedef union V4f {
 
 typedef union R1u {
     struct {
-        u64 begin;
-        u64 end;
+        usize begin;
+        usize end;
     };
-    u64 r[2];
+    usize r[2];
 } R1u;
 
 typedef union R1f {
@@ -365,7 +366,7 @@ V2f v2f(f32 x, f32 y);
 V3f v3f(f32 x, f32 y, f32 z);
 V4f v4f(f32 x, f32 y, f32 z, f32 w);
 
-R1u r1u(u64 begin, u64 end);
+R1u r1u(usize begin, usize end);
 R1f r1f(f32 begin, f32 end);
 R2i r2i(V2i begin, V2i end);
 R2f r2f(V2f begin, V2f end);

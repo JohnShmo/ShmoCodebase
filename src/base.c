@@ -137,7 +137,7 @@ V4f v4f(f32 x, f32 y, f32 z, f32 w) {
     return (V4f){ .x = x, .y = y, .z = z, .w = w };
 }
 
-R1u r1u(u64 begin, u64 end) {
+R1u r1u(usize begin, usize end) {
     return (R1u) { .begin = begin, .end = end };
 }
 
