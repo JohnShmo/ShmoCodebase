@@ -2,8 +2,11 @@ cmake_minimum_required(VERSION 3.26)
 set(CMAKE_C_STANDARD 17)
 
 project(ShmoCodebase C)
+project(ShmoCodebaseSandbox C)
 
-add_executable(ShmoCodebase src/main.c
+add_executable(ShmoCodebaseSandbox src/sandbox/main.c)
+
+add_library(ShmoCodebase STATIC
         src/base.c
         src/free_list_arena.c
         src/allocator.c
@@ -17,3 +20,4 @@ add_executable(ShmoCodebase src/main.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
+target_link_libraries(ShmoCodebaseSandbox PUBLIC ShmoCodebase)
