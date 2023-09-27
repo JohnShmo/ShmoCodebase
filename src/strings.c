@@ -2,8 +2,8 @@
 // Created by scott on 9/13/2023.
 //
 
-#include <stdlib.h>
 #include "shmo/strings.h"
+#include "shmo/darray.h"
 
 Strview strview(const char *data, usize length) {
     if (!data || length == 0)
@@ -199,3 +199,134 @@ char string_get_char(const char *str, usize index) {
         return '\0';
     return str[index];
 }
+
+struct StringBuilder {
+    Darray *darray;
+    HeapAllocator *allocator;
+};
+
+local_fn void string_builder_strip_null_chars(StringBuilder *builder) {
+    assert(builder);
+    while(true) {
+        Bytes back = darray_back(builder->darray);
+        if (bytes_is_null(back))
+            break;
+        if (bytes_to(char, back) == '\0')
+            darray_popb(builder->darray);
+        else
+            break;
+    }
+}
+
+StringBuilder *string_builder_create(HeapAllocator *allocator) {
+    if (!allocator)
+        allocator = stdalloc;
+
+    StringBuilder *builder = heap_malloc(allocator, sizeof(StringBuilder));
+    if (!builder)
+        return nullptr;
+
+    builder->darray = darray_create(sizeof(char), allocator);
+    if (!builder->darray) {
+        heap_free(allocator, builder);
+        return nullptr;
+    }
+
+    builder->allocator = allocator;
+
+    return builder;
+}
+
+void string_builder_destroy(StringBuilder *builder) {
+    if (!builder)
+        return;
+
+    darray_destroy(builder->darray);
+    heap_free(builder->allocator, builder);
+}
+
+bool string_builder_push_char(StringBuilder *builder, char c) {
+    if (!builder || c == '\0')
+        return false;
+
+    string_builder_strip_null_chars(builder);
+
+    return darray_pushb(builder->darray, bytes_of(c));
+}
+
+bool string_builder_push_str(StringBuilder *builder, const char *s) {
+    if (!builder || !s)
+        return false;
+
+    string_builder_strip_null_chars(builder);
+
+    while(*s) {
+        if (!string_builder_push_char(builder, *s))
+            return false;
+        ++s;
+    }
+
+    return true;
+}
+
+bool string_builder_push_fmt(StringBuilder *builder, const char *fmt, ...) {
+    if (!builder || !fmt)
+        return false;
+
+    string_builder_strip_null_chars(builder);
+
+    char *buffer;
+    usize buffer_size;
+
+    va_list vl;
+    va_start(vl, fmt);
+    int res = vsnprintf(nullptr, 0, fmt, vl);
+    if (res < 0)
+        return false;
+    buffer_size = res + 1;
+    va_end(vl);
+
+    if (buffer_size == 1)
+        return true;
+
+    usize position = darray_size(builder->darray);
+    if (!darray_resize(builder->darray, position + buffer_size, nullbytes)) {
+        return false;
+    }
+
+    buffer = (char *)darray_data(builder->darray) + position;
+
+    va_start(vl, fmt);
+    vsnprintf(buffer, buffer_size, fmt, vl);
+    va_end(vl);
+
+    darray_popb(builder->darray); // pop off the null terminator
+
+    return true;
+}
+
+bool string_builder_push_view(StringBuilder *builder, Strview v) {
+    if (!builder || !strview_is_null(v))
+        return false;
+
+    string_builder_strip_null_chars(builder);
+
+    for (usize i = 0; i < v.length; ++i) {
+        if (!string_builder_push_char(builder, v.data[i]))
+            return false;
+    }
+
+    return true;
+}
+
+bool string_builder_set_char(StringBuilder *builder, usize index, char c);
+bool string_builder_fill_char(StringBuilder *builder, R1u range, char c);
+bool string_builder_insert_char(StringBuilder *builder, usize index, char c);
+bool string_builder_insert_str(StringBuilder *builder, usize index, const char *s);
+bool string_builder_insert_fmt(StringBuilder *builder, usize index, const char *fmt, ...);
+bool string_builder_insert_view(StringBuilder *builder, usize index, Strview v);
+bool string_builder_remove(StringBuilder *builder, R1u range);
+const char *string_builder_cstr(const StringBuilder *builder);
+char string_builder_get_char(const StringBuilder *builder, usize index);
+Strview string_builder_get_view(const StringBuilder *builder, R1u range);
+usize string_builder_len(const StringBuilder *builder);
