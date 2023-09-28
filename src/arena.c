@@ -2,11 +2,11 @@
 // Created by scott on 9/21/2023.
 //
 
-#include "shmo/linear_arena.h"
+#include "shmo/arena.h"
 
 typedef struct LinearArenaPage LinearArenaPage;
 
-struct LinearArena {
+struct Arena {
     LinearArenaPage *pages;
 };
 
@@ -55,20 +55,20 @@ local_fn void arena_page_destroy(LinearArenaPage *p) {
     p->next = nullptr;
 }
 
-LinearArena *linear_arena_create(void) {
-    LinearArena *dest = malloc(sizeof(LinearArena));
+Arena *arena_create(void) {
+    Arena *dest = malloc(sizeof(Arena));
     assert(dest);
     dest->pages = nullptr;
     return dest;
 }
 
-void linear_arena_destroy(LinearArena *a) {
+void arena_destroy(Arena *a) {
     assert(a);
-    linear_arena_release(a);
+    arena_release(a);
     free(a);
 }
 
-void linear_arena_release(LinearArena *a) {
+void arena_release(Arena *a) {
     assert(a);
     while(a->pages) {
         LinearArenaPage *to_free = a->pages;
@@ -78,7 +78,7 @@ void linear_arena_release(LinearArena *a) {
     }
 }
 
-void *linear_arena_malloc(LinearArena *a, usize n) {
+void *arena_malloc(Arena *a, usize n) {
     assert(a);
     assert(n);
     n = (usize)round_up_u64((u64)n, (u64)sizeof(usize));
@@ -99,36 +99,46 @@ void *linear_arena_malloc(LinearArena *a, usize n) {
     return fetched;
 }
 
-void *linear_arena_calloc(LinearArena *a, usize n, usize size) {
+void *arena_calloc(Arena *a, usize n, usize size) {
     assert(a);
     assert(n);
     assert(size);
     n = n * size;
-    void *result = linear_arena_malloc(a, n);
+    void *result = arena_malloc(a, n);
     assert(result);
     memory_zero(result, n);
     return result;
 }
 
-void *linear_arena_realloc(LinearArena *a, void *p, usize n) {
+void *arena_realloc(Arena *a, void *p, usize n) {
     assert(a);
     assert(n);
 
     if (!p) {
-        void *result = linear_arena_malloc(a, n);
+        void *result = arena_malloc(a, n);
         assert(result);
         return result;
     }
 
-    void *new_loc = linear_arena_malloc(a, n);
+    void *new_loc = arena_malloc(a, n);
     assert(new_loc);
     memory_copy(new_loc, p, n);
 
-    linear_arena_free(a, p);
+    arena_free(a, p);
     return new_loc;
 }
 
-void linear_arena_free(LinearArena *a, void *p) {
+void arena_free(Arena *a, void *p) {
     (void)a; (void)p;
     // Doesn't do anything...
+}
+
+Allocator allocator_arena(Arena *arena) {
+    return (Allocator) {
+            .allocator = arena,
+            .malloc_func = (MallocFunc) arena_malloc,
+            .calloc_func = (CallocFunc) arena_calloc,
+            .realloc_func = (ReallocFunc) arena_realloc,
+            .free_func = (FreeFunc) arena_free
+    };
 }

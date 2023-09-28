@@ -5,8 +5,7 @@
 #ifndef SHMOCODEBASE_ALLOCATOR_H
 #define SHMOCODEBASE_ALLOCATOR_H
 
-#include "free_list_arena.h"
-#include "linear_arena.h"
+#include "base.h"
 
 typedef void *(*MallocFunc)(void *, usize);
 typedef void *(*CallocFunc)(void *, usize, usize);
@@ -26,8 +25,7 @@ void *allocator_calloc(Allocator *a, usize n, usize size);
 void *allocator_realloc(Allocator *a, void *p, usize n);
 void allocator_free(Allocator *a, void *p);
 
-Allocator allocator_free_list_arena(FreeListArena *arena);
-Allocator allocator_linear_arena(LinearArena *arena);
+
 
 extern Allocator *const stdalloc;
 

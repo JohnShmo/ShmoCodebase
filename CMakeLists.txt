@@ -8,7 +8,6 @@ add_executable(ShmoCodebaseSandbox src/sandbox/main.c)
 
 add_library(ShmoCodebase STATIC
         src/base.c
-        src/free_list_arena.c
         src/allocator.c
         src/darray.c
         src/table.c
@@ -16,7 +15,7 @@ add_library(ShmoCodebase STATIC
         src/strings.c
         src/user_input.c
         src/set.c
-        src/linear_arena.c
+        src/arena.c
         src/stack.c
 )
 

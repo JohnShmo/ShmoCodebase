@@ -33,25 +33,7 @@ static Allocator stdalloc_ = {
 };
 Allocator *const stdalloc = &stdalloc_;
 
-Allocator allocator_free_list_arena(FreeListArena *arena) {
-    return (Allocator) {
-        .allocator = arena,
-        .malloc_func = (MallocFunc) free_list_arena_malloc,
-        .calloc_func = (CallocFunc) free_list_arena_calloc,
-        .realloc_func = (ReallocFunc) free_list_arena_realloc,
-        .free_func = (FreeFunc) free_list_arena_free
-    };
-}
 
-Allocator allocator_linear_arena(LinearArena *arena) {
-    return (Allocator) {
-        .allocator = arena,
-        .malloc_func = (MallocFunc) linear_arena_malloc,
-        .calloc_func = (CallocFunc) linear_arena_calloc,
-        .realloc_func = (ReallocFunc) linear_arena_realloc,
-        .free_func = (FreeFunc) linear_arena_free
-    };
-}
 
 void *allocator_malloc(Allocator *a, usize n) {
     if (!a || !a->malloc_func)
