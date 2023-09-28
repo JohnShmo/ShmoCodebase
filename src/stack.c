@@ -134,5 +134,7 @@ bool stack_empty(const Stack *sk) {
 }
 
 usize stack_size(const Stack *sk) {
+    if (!sk)
+        return 0;
     return sk->size;
 }
