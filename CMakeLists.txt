@@ -17,6 +17,7 @@ add_library(ShmoCodebase STATIC
         src/user_input.c
         src/set.c
         src/linear_arena.c
+        src/stack.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
