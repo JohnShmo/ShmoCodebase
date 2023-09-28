@@ -14,7 +14,7 @@ typedef struct TablePair {
 typedef struct TableBucket TableBucket;
 typedef struct Table Table;
 
-Table *table_create(HeapAllocator *allocator);
+Table *table_create(Allocator *allocator);
 void table_destroy(Table *tb);
 bool table_put(Table *tb, Bytes key, Bytes val);
 Bytes table_get(const Table *tb, Bytes key);

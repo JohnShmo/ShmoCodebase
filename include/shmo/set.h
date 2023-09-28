@@ -10,7 +10,7 @@
 typedef struct SetBucket SetBucket;
 typedef struct Set Set;
 
-Set *set_create(HeapAllocator *allocator);
+Set *set_create(Allocator *allocator);
 void set_destroy(Set *s);
 bool set_put(Set *s, Bytes elm);
 bool set_remove(Set *s, Bytes elm);

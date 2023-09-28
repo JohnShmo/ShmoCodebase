@@ -14,15 +14,15 @@ struct Stack {
     StackNode *top;
     StackNode *free_nodes;
     usize size;
-    HeapAllocator *allocator;
+    Allocator *allocator;
 };
 
-local_fn bool stack_node_init(StackNode *node, Bytes elm, HeapAllocator *allocator) {
+local_fn bool stack_node_init(StackNode *node, Bytes elm, Allocator *allocator) {
     assert(node);
     assert(allocator);
     assert(!bytes_is_null(elm));
 
-    u8 *new_elm = heap_malloc(allocator, elm.size);
+    u8 *new_elm = allocator_malloc(allocator, elm.size);
     if (!new_elm)
         return false;
     memcpy(new_elm, elm.p, elm.size);
@@ -34,22 +34,22 @@ local_fn bool stack_node_init(StackNode *node, Bytes elm, HeapAllocator *allocat
     return true;
 }
 
-local_fn void stack_node_destruct(StackNode *node, HeapAllocator *allocator) {
+local_fn void stack_node_destruct(StackNode *node, Allocator *allocator) {
     assert(node);
     assert(allocator);
 
     if (node->elm)
-        heap_free(allocator, node->elm);
+        allocator_free(allocator, node->elm);
 
     node->elm = nullptr;
     node->elm_size = 0;
     node->next = nullptr;
 }
 
-Stack *stack_create(HeapAllocator *allocator) {
+Stack *stack_create(Allocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
-    Stack *sk = heap_malloc(allocator, sizeof(Stack));
+    Stack *sk = allocator_malloc(allocator, sizeof(Stack));
     if (!sk)
         return nullptr;
 
@@ -66,7 +66,7 @@ void stack_destroy(Stack *sk) {
         return;
     stack_clear(sk);
     stack_shrink(sk);
-    heap_free(sk->allocator, sk);
+    allocator_free(sk->allocator, sk);
 }
 
 bool stack_push(Stack *sk, Bytes elm) {
@@ -78,7 +78,7 @@ bool stack_push(Stack *sk, Bytes elm) {
         node = sk->free_nodes;
         sk->free_nodes = node->next;
     } else {
-        node = heap_malloc(sk->allocator, sizeof(StackNode));
+        node = allocator_malloc(sk->allocator, sizeof(StackNode));
         if (!node)
             return false;
     }
@@ -119,7 +119,7 @@ void stack_shrink(Stack *sk) {
     while (sk->free_nodes) {
         StackNode *to_free = sk->free_nodes;
         sk->free_nodes = to_free->next;
-        heap_free(sk->allocator, to_free);
+        allocator_free(sk->allocator, to_free);
     }
 }
 

@@ -9,7 +9,7 @@ struct Darray {
     usize capacity;
     usize element_size;
     void *data;
-    HeapAllocator *allocator;
+    Allocator *allocator;
 };
 
 local_fn bool darray_reserve_if_full(Darray *da) {
@@ -19,13 +19,13 @@ local_fn bool darray_reserve_if_full(Darray *da) {
     return true;
 }
 
-Darray *darray_create(usize element_size, HeapAllocator *allocator) {
+Darray *darray_create(usize element_size, Allocator *allocator) {
     if (element_size == 0)
         return nullptr;
     if (!allocator)
         allocator = stdalloc;
 
-    Darray *dest = heap_malloc(allocator, sizeof(Darray));
+    Darray *dest = allocator_malloc(allocator, sizeof(Darray));
     if (!dest)
         return nullptr;
 
@@ -42,13 +42,13 @@ void darray_destroy(Darray *da) {
     if (!da)
         return;
 
-    heap_free(da->allocator, da->data);
+    allocator_free(da->allocator, da->data);
     da->size = 0;
     da->capacity = 0;
     da->element_size = 0;
     da->data = nullptr;
 
-    heap_free(da->allocator, da);
+    allocator_free(da->allocator, da);
 }
 
 bool darray_reserve(Darray *da, usize n) {
@@ -60,7 +60,7 @@ bool darray_reserve(Darray *da, usize n) {
     }
 
     void *old_data = da->data;
-    void *new_data = heap_malloc(da->allocator, n * da->element_size);
+    void *new_data = allocator_malloc(da->allocator, n * da->element_size);
     if (!new_data)
         return false;
 
@@ -69,7 +69,7 @@ bool darray_reserve(Darray *da, usize n) {
 
     if (old_data) {
         memory_copy(da->data, old_data, da->size * da->element_size);
-        heap_free(da->allocator, old_data);
+        allocator_free(da->allocator, old_data);
     }
 
     return true;
@@ -111,7 +111,7 @@ bool darray_shrink(Darray *da) {
         return true;
 
     void *old_data = da->data;
-    void *new_data = heap_malloc(da->allocator, da->size * da->element_size);
+    void *new_data = allocator_malloc(da->allocator, da->size * da->element_size);
     if (!new_data)
         return false;
 
@@ -120,7 +120,7 @@ bool darray_shrink(Darray *da) {
 
     if (old_data) {
         memory_copy(da->data, old_data, da->size * da->element_size);
-        heap_free(da->allocator, old_data);
+        allocator_free(da->allocator, old_data);
     }
 
     return true;

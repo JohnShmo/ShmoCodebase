@@ -18,6 +18,6 @@ int main(int argc, char *argv[]) {
 
     char *buffer = strview_join(views, array_count(views), strview_of(" "), stdalloc);
     printf("%s\n", buffer);
-    heap_free(stdalloc, buffer);
+    allocator_free(stdalloc, buffer);
     return 0;
 }

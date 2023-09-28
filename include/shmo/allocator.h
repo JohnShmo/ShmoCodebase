@@ -13,22 +13,22 @@ typedef void *(*CallocFunc)(void *, usize, usize);
 typedef void *(*ReallocFunc)(void *, void *, usize);
 typedef void (*FreeFunc)(void *, void *);
 
-typedef struct HeapAllocator {
+typedef struct Allocator {
     void *allocator;
     MallocFunc malloc_func;
     CallocFunc calloc_func;
     ReallocFunc realloc_func;
     FreeFunc free_func;
-} HeapAllocator;
+} Allocator;
 
-void *heap_malloc(HeapAllocator *a, usize n);
-void *heap_calloc(HeapAllocator *a, usize n, usize size);
-void *heap_realloc(HeapAllocator *a, void *p, usize n);
-void heap_free(HeapAllocator *a, void *p);
+void *allocator_malloc(Allocator *a, usize n);
+void *allocator_calloc(Allocator *a, usize n, usize size);
+void *allocator_realloc(Allocator *a, void *p, usize n);
+void allocator_free(Allocator *a, void *p);
 
-HeapAllocator heap_allocator_free_list_arena(FreeListArena *arena);
-HeapAllocator heap_allocator_linear_arena(LinearArena *arena);
+Allocator allocator_free_list_arena(FreeListArena *arena);
+Allocator allocator_linear_arena(LinearArena *arena);
 
-extern HeapAllocator *const stdalloc;
+extern Allocator *const stdalloc;
 
 #endif //SHMOCODEBASE_ALLOCATOR_H

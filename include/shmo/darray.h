@@ -9,7 +9,7 @@
 
 typedef struct Darray Darray;
 
-Darray *darray_create(usize element_size, HeapAllocator *allocator);
+Darray *darray_create(usize element_size, Allocator *allocator);
 void darray_destroy(Darray *da);
 bool darray_reserve(Darray *da, usize n);
 bool darray_resize(Darray *da, usize n, Bytes fillval);

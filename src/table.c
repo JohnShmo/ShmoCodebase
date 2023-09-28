@@ -23,7 +23,7 @@ struct Table {
     TableBucket **slots;
     TableBucket *free_buckets;
 
-    HeapAllocator *allocator;
+    Allocator *allocator;
 };
 
 local_fn bool table_bucket_create(TableBucket *bucket,
@@ -31,7 +31,7 @@ local_fn bool table_bucket_create(TableBucket *bucket,
                                   usize key_size,
                                   const void *val,
                                   usize val_size,
-                                  HeapAllocator *allocator) {
+                                  Allocator *allocator) {
     assert(bucket);
     assert(key);
     assert(key_size);
@@ -42,10 +42,10 @@ local_fn bool table_bucket_create(TableBucket *bucket,
     u8 *key_copy = nullptr;
     u8 *val_copy = nullptr;
 
-    key_copy = heap_malloc(allocator, key_size);
+    key_copy = allocator_malloc(allocator, key_size);
     if (!key_copy)
         goto error;
-    val_copy = heap_malloc(allocator, val_size);
+    val_copy = allocator_malloc(allocator, val_size);
     if (!val_copy)
         goto error;
 
@@ -62,20 +62,20 @@ local_fn bool table_bucket_create(TableBucket *bucket,
     
     error:
         if (key_copy)
-            heap_free(allocator, key_copy);
+            allocator_free(allocator, key_copy);
         if (val_copy)
-            heap_free(allocator, val_copy);
+            allocator_free(allocator, val_copy);
     return false;
 }
 
-local_fn bool table_bucket_put_val(TableBucket *bucket, const void *val, usize val_size, HeapAllocator *allocator) {
+local_fn bool table_bucket_put_val(TableBucket *bucket, const void *val, usize val_size, Allocator *allocator) {
     assert(bucket);
     assert(val);
     assert(val_size);
     assert(allocator);
 
     u8 *new_mem = nullptr;
-    new_mem = heap_realloc(allocator, bucket->pair.val, val_size);
+    new_mem = allocator_realloc(allocator, bucket->pair.val, val_size);
     if (!new_mem)
         goto error;
 
@@ -89,15 +89,15 @@ local_fn bool table_bucket_put_val(TableBucket *bucket, const void *val, usize v
     return false;
 }
 
-local_fn void table_bucket_destroy(TableBucket *bucket, HeapAllocator *allocator) {
+local_fn void table_bucket_destroy(TableBucket *bucket, Allocator *allocator) {
     assert(bucket);
     assert(allocator);
 
     if (bucket->pair.key) {
-        heap_free(allocator, bucket->pair.key);
+        allocator_free(allocator, bucket->pair.key);
     }
     if (bucket->pair.val) {
-        heap_free(allocator, bucket->pair.val);
+        allocator_free(allocator, bucket->pair.val);
     }
 
     bucket->pair.key = nullptr;
@@ -110,7 +110,7 @@ local_fn bool table_rehash(Table *tb, usize new_count) {
 
     if (new_count == 0) {
         if (tb->slots) {
-            heap_free(tb->allocator, tb->slots);
+            allocator_free(tb->allocator, tb->slots);
         }
         tb->slots = nullptr;
         tb->slot_count = 0;
@@ -122,7 +122,7 @@ local_fn bool table_rehash(Table *tb, usize new_count) {
 
     TableBucket **new_slots = nullptr;
 
-    new_slots = heap_calloc(tb->allocator, new_count, sizeof(TableBucket *));
+    new_slots = allocator_calloc(tb->allocator, new_count, sizeof(TableBucket *));
     if (!new_slots)
         goto error;
     tb->slots = new_slots;
@@ -140,7 +140,7 @@ local_fn bool table_rehash(Table *tb, usize new_count) {
     }
 
     if (old_slots) {
-        heap_free(tb->allocator, old_slots);
+        allocator_free(tb->allocator, old_slots);
     }
 
     return true;
@@ -169,11 +169,11 @@ local_fn TableBucket *table_lookup(const Table *tb, Bytes key) {
     return bucket;
 }
 
-Table *table_create(HeapAllocator *allocator) {
+Table *table_create(Allocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
 
-    Table *dest = heap_malloc(allocator, sizeof(Table));
+    Table *dest = allocator_malloc(allocator, sizeof(Table));
     if (!dest)
         return nullptr;
 
@@ -193,7 +193,7 @@ void table_destroy(Table *tb) {
     table_clear(tb);
     table_shrink(tb);
 
-    heap_free(tb->allocator, tb);
+    allocator_free(tb->allocator, tb);
 }
 
 bool table_put(Table *tb, Bytes key, Bytes val) {
@@ -220,7 +220,7 @@ bool table_put(Table *tb, Bytes key, Bytes val) {
         table_bucket_put_val(bucket, val.p, val.size, tb->allocator);
     } else {
         usize hash = hash_bytes(key) % tb->slot_count;
-        new_bucket = heap_malloc(tb->allocator, sizeof(TableBucket));
+        new_bucket = allocator_malloc(tb->allocator, sizeof(TableBucket));
         if (!new_bucket)
             goto error;
         if (!table_bucket_create(new_bucket, key.p, key.size, val.p, val.size, tb->allocator))
@@ -234,7 +234,7 @@ bool table_put(Table *tb, Bytes key, Bytes val) {
 
     error:
     if (new_bucket) {
-        heap_free(tb->allocator, new_bucket);
+        allocator_free(tb->allocator, new_bucket);
     }
     return false;
 }
@@ -310,7 +310,7 @@ bool table_shrink(Table *tb) {
     while (tb->free_buckets) {
         TableBucket *to_free = tb->free_buckets;
         tb->free_buckets = to_free->next;
-        heap_free(tb->allocator, to_free);
+        allocator_free(tb->allocator, to_free);
     }
 
     return true;

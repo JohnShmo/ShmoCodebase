@@ -9,7 +9,7 @@
 
 typedef struct Stack Stack;
 
-Stack *stack_create(HeapAllocator *allocator);
+Stack *stack_create(Allocator *allocator);
 void stack_destroy(Stack *sk);
 bool stack_push(Stack *sk, Bytes elm);
 bool stack_pop(Stack *sk);

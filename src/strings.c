@@ -17,12 +17,12 @@ Strview strview_of(const char *cstr) {
     return (Strview) { .data = cstr, .length = strlen(cstr) };
 }
 
-char *strview_dup(Strview view, HeapAllocator *allocator) {;
+char *strview_dup(Strview view, Allocator *allocator) {;
     if (!allocator) {
         allocator = stdalloc;
     }
 
-    char *buffer = heap_malloc(allocator, view.length + 1);
+    char *buffer = allocator_malloc(allocator, view.length + 1);
     if (!buffer)
         return nullptr;
     memcpy(buffer, view.data, view.length);
@@ -54,7 +54,7 @@ usize strview_cat(Strview lhs, Strview rhs, char *dest, usize dest_size) {
     return result;
 }
 
-char *strview_join(Strview *views, usize views_count, Strview delim, HeapAllocator *allocator) {
+char *strview_join(Strview *views, usize views_count, Strview delim, Allocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
     char *result = nullptr;
@@ -62,7 +62,7 @@ char *strview_join(Strview *views, usize views_count, Strview delim, HeapAllocat
     usize delim_len = strview_len(delim);
     if (views_count > 1 && !strview_is_null(delim))
         total_len += delim_len * (views_count - 1);
-    result = heap_malloc(allocator, total_len + 1);
+    result = allocator_malloc(allocator, total_len + 1);
     if (!result)
         return nullptr;
     if (total_len == 0)
@@ -143,20 +143,20 @@ usize string_cat(char *dest, usize dest_size, const char *src) {
     return result;
 }
 
-char *string_dup(const char *src, HeapAllocator *allocator) {
+char *string_dup(const char *src, Allocator *allocator) {
     if (!src)
         return nullptr;
     if (!allocator)
         allocator = stdalloc;
     usize result_size = string_len(src) + 1;
-    char *result = heap_malloc(allocator, result_size);
+    char *result = allocator_malloc(allocator, result_size);
     if (!result)
         return nullptr;
     string_cpy(result, result_size, src);
     return result;
 }
 
-char *string_join(const char **strs, usize strs_count, const char *delim, HeapAllocator *allocator) {
+char *string_join(const char **strs, usize strs_count, const char *delim, Allocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
     char *result = nullptr;
@@ -164,7 +164,7 @@ char *string_join(const char **strs, usize strs_count, const char *delim, HeapAl
     usize delim_len = string_len(delim);
     if (strs_count > 1 && delim)
         total_len += delim_len * (strs_count - 1);
-    result = heap_malloc(allocator, total_len + 1);
+    result = allocator_malloc(allocator, total_len + 1);
     if (!result)
         return nullptr;
     if (total_len == 0)
@@ -202,7 +202,7 @@ char string_get_char(const char *str, usize index) {
 
 struct StringBuilder {
     Darray *darray;
-    HeapAllocator *allocator;
+    Allocator *allocator;
 };
 
 local_fn void string_builder_strip_null_chars(StringBuilder *builder) {
@@ -218,17 +218,17 @@ local_fn void string_builder_strip_null_chars(StringBuilder *builder) {
     }
 }
 
-StringBuilder *string_builder_create(HeapAllocator *allocator) {
+StringBuilder *string_builder_create(Allocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
 
-    StringBuilder *builder = heap_malloc(allocator, sizeof(StringBuilder));
+    StringBuilder *builder = allocator_malloc(allocator, sizeof(StringBuilder));
     if (!builder)
         return nullptr;
 
     builder->darray = darray_create(sizeof(char), allocator);
     if (!builder->darray) {
-        heap_free(allocator, builder);
+        allocator_free(allocator, builder);
         return nullptr;
     }
 
@@ -242,7 +242,7 @@ void string_builder_destroy(StringBuilder *builder) {
         return;
 
     darray_destroy(builder->darray);
-    heap_free(builder->allocator, builder);
+    allocator_free(builder->allocator, builder);
 }
 
 bool string_builder_push_char(StringBuilder *builder, char c) {
