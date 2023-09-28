@@ -197,7 +197,8 @@ void table_destroy(Table *tb) {
 }
 
 bool table_put(Table *tb, Bytes key, Bytes val) {
-    if (!tb || !key.p || !val.p)
+    assert(tb);
+    if (!key.p || !val.p)
         return false;
 
     TableBucket *new_bucket = nullptr;
@@ -240,7 +241,8 @@ bool table_put(Table *tb, Bytes key, Bytes val) {
 }
 
 Bytes table_get(const Table *tb, Bytes key) {
-    if (!tb || !key.p)
+    assert(tb);
+    if (!key.p)
         return nullbytes;
 
     TableBucket *bucket = table_lookup(tb, key);
@@ -252,7 +254,8 @@ Bytes table_get(const Table *tb, Bytes key) {
 }
 
 bool table_remove(Table *tb, Bytes key) {
-    if (!tb || !key.p)
+    assert(tb);
+    if (!key.p)
         return false;
 
     TableBucket *bucket = table_lookup(tb, key);
@@ -277,7 +280,8 @@ bool table_remove(Table *tb, Bytes key) {
 }
 
 void table_clear(Table *tb) {
-    if (!tb || tb->size == 0) {
+    assert(tb);
+    if (tb->size == 0) {
         return;
     }
 
@@ -300,8 +304,7 @@ void table_clear(Table *tb) {
 }
 
 bool table_shrink(Table *tb) {
-    if (!tb)
-        return false;
+    assert(tb);
 
     if (!table_rehash(tb, (usize)((f64)tb->size * 1.25))) {
         return false;
@@ -317,19 +320,18 @@ bool table_shrink(Table *tb) {
 }
 
 usize table_size(const Table *tb) {
-    if (!tb)
-        return 0;
+    assert(tb);
     return tb->size;
 }
 
 bool table_empty(const Table *tb) {
-    if (!tb)
-        return true;
+    assert(tb);
     return tb->size == 0 || tb->slot_count == 0;
 }
 
 bool table_contains(const Table *tb, Bytes key) {
-    if (!tb || !key.p)
+    assert(tb);
+    if (!key.p)
         return false;
     return table_lookup(tb, key) != nullptr;
 }

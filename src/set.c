@@ -142,7 +142,9 @@ void set_destroy(Set *s) {
 }
 
 bool set_put(Set *s, Bytes elm) {
-    if (!s || bytes_is_null(elm))
+    assert(s);
+
+    if (bytes_is_null(elm))
         return false;
 
     f64 load;
@@ -176,7 +178,8 @@ bool set_put(Set *s, Bytes elm) {
 }
 
 bool set_remove(Set *s, Bytes elm) {
-    if (!s || bytes_is_null(elm))
+    assert(s);
+    if (bytes_is_null(elm))
         return false;
 
     SetBucket *bucket = set_lookup(s, elm);
@@ -201,7 +204,8 @@ bool set_remove(Set *s, Bytes elm) {
 }
 
 void set_clear(Set *s) {
-    if (!s || s->size == 0) {
+    assert(s);
+    if (s->size == 0) {
         return;
     }
 
@@ -224,8 +228,7 @@ void set_clear(Set *s) {
 }
 
 bool set_shrink(Set *s) {
-    if (!s)
-        return false;
+    assert(s);
 
     if (!set_rehash(s, (usize)((f64)s->size * 1.25))) {
         return false;
@@ -241,19 +244,18 @@ bool set_shrink(Set *s) {
 }
 
 usize set_size(const Set *s) {
-    if (!s)
-        return 0;
+    assert(s);
     return s->size;
 }
 
 bool set_empty(const Set *s) {
-    if (!s)
-        return true;
+    assert(s);
     return s->size == 0 || s->slot_count == 0;
 }
 
 bool set_contains(const Set *s, Bytes elm) {
-    if (!s || bytes_is_null(elm))
+    assert(s);
+    if (bytes_is_null(elm))
         return false;
     return set_lookup(s, elm) != nullptr;
 }

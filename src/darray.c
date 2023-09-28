@@ -52,8 +52,7 @@ void darray_destroy(Darray *da) {
 }
 
 bool darray_reserve(Darray *da, usize n) {
-    if (!da)
-        return false;
+    assert(da);
 
     if (n <= da->capacity) {
         return true;
@@ -76,8 +75,7 @@ bool darray_reserve(Darray *da, usize n) {
 }
 
 bool darray_resize(Darray *da, usize n, Bytes fillval) {
-    if (!da)
-        return false;
+    assert(da);
 
     if (!bytes_is_null(fillval) && fillval.size != da->element_size)
         return false;
@@ -104,8 +102,7 @@ bool darray_resize(Darray *da, usize n, Bytes fillval) {
 }
 
 bool darray_shrink(Darray *da) {
-    if (!da)
-        return false;
+    assert(da);
 
     if (da->size == da->capacity)
         return true;
@@ -127,13 +124,13 @@ bool darray_shrink(Darray *da) {
 }
 
 void darray_clear(Darray *da) {
-    if (!da)
-        return;
+    assert(da);
     da->size = 0;
 }
 
 bool darray_pushb(Darray *da, Bytes val) {
-    if (!da || bytes_is_null(val))
+    assert(da);
+    if (bytes_is_null(val))
         return false;
 
     if (val.size != da->element_size)
@@ -150,7 +147,8 @@ bool darray_pushb(Darray *da, Bytes val) {
 }
 
 bool darray_popb(Darray *da) {
-    if (!da || da->size == 0)
+    assert(da);
+    if (da->size == 0)
         return false;
 
     da->size -= 1;
@@ -158,7 +156,8 @@ bool darray_popb(Darray *da) {
 }
 
 bool darray_pushf(Darray *da, Bytes val) {
-    if (!da || bytes_is_null(val))
+    assert(da);
+    if (bytes_is_null(val))
         return false;
 
     if (val.size != da->element_size)
@@ -177,7 +176,8 @@ bool darray_pushf(Darray *da, Bytes val) {
 }
 
 bool darray_popf(Darray *da) {
-    if (!da || da->size == 0)
+    assert(da);
+    if (da->size == 0)
         return false;
 
     if (da->size > 1) {
@@ -188,7 +188,8 @@ bool darray_popf(Darray *da) {
 }
 
 bool darray_insert(Darray *da, usize index, Bytes val) {
-    if (!da || index > da->size || bytes_is_null(val))
+    assert(da);
+    if (index > da->size || bytes_is_null(val))
         return false;
 
     if (index == da->size)
@@ -214,7 +215,8 @@ bool darray_insert(Darray *da, usize index, Bytes val) {
 }
 
 bool darray_remove(Darray *da, usize index) {
-    if (!da || index >= da->size)
+    assert(da);
+    if (index >= da->size)
         return false;
 
     if (index == da->size - 1)
@@ -231,7 +233,8 @@ bool darray_remove(Darray *da, usize index) {
 }
 
 Bytes darray_back(const Darray *da) {
-    if (!da || da->size == 0)
+    assert(da);
+    if (da->size == 0)
         return nullbytes;
 
     usize index = (da->size - 1) * da->element_size;
@@ -239,14 +242,16 @@ Bytes darray_back(const Darray *da) {
 }
 
 Bytes darray_front(const Darray *da) {
-    if (!da || da->size == 0)
+    assert(da);
+    if (da->size == 0)
         return nullbytes;
 
     return (Bytes) { .p = da->data, .size = da->element_size };
 }
 
 Bytes darray_at(const Darray *da, usize index) {
-    if (!da || da->size == 0 || index >= da->size)
+    assert(da);
+    if (da->size == 0 || index >= da->size)
         return nullbytes;
 
     index = index * da->element_size;
@@ -254,19 +259,18 @@ Bytes darray_at(const Darray *da, usize index) {
 }
 
 bool darray_setb(Darray *da, Bytes val) {
-    if (!da)
-        return false;
+    assert(da);
     return darray_set(da, da->size - 1, val);
 }
 
 bool darray_setf(Darray *da, Bytes val) {
-    if (!da)
-        return false;
+    assert(da);
     return darray_set(da, 0, val);
 }
 
 bool darray_set(Darray *da, usize index, Bytes val) {
-    if (!da || da->size == 0 || index >= da->size)
+    assert(da);
+    if (da->size == 0 || index >= da->size)
         return false;
 
     if (val.size != da->element_size)
@@ -278,37 +282,31 @@ bool darray_set(Darray *da, usize index, Bytes val) {
 }
 
 bool darray_empty(const Darray *da) {
-    if (!da)
-        return true;
+    assert(da);
     return da->size == 0;
 }
 
 usize darray_size(const Darray *da) {
-    if (!da)
-        return 0;
+    assert(da);
     return da->size;
 }
 
 usize darray_elm_size(const Darray *da) {
-    if (!da)
-        return 0;
+    assert(da);
     return da->element_size;
 }
 
 usize darray_capacity(const Darray *da) {
-    if (!da)
-        return 0;
+    assert(da);
     return da->capacity;
 }
 
 void *darray_data(Darray *da) {
-    if (!da)
-        return nullptr;
+    assert(da);
     return da->data;
 }
 
 const void *darray_const_data(const Darray *da) {
-    if (!da)
-        return nullptr;
+    assert(da);
     return da->data;
 }

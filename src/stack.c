@@ -70,7 +70,8 @@ void stack_destroy(Stack *sk) {
 }
 
 bool stack_push(Stack *sk, Bytes elm) {
-    if (!sk || bytes_is_null(elm))
+    assert(sk);
+    if (bytes_is_null(elm))
         return false;
 
     StackNode *node;
@@ -93,7 +94,8 @@ bool stack_push(Stack *sk, Bytes elm) {
 }
 
 bool stack_pop(Stack *sk) {
-    if (!sk || !sk->top)
+    assert(sk);
+    if (!sk->top)
         return false;
 
     StackNode *top = sk->top;
@@ -107,15 +109,13 @@ bool stack_pop(Stack *sk) {
 }
 
 void stack_clear(Stack *sk) {
-    if (!sk)
-        return;
+    assert(sk);
     while (!stack_empty(sk))
         stack_pop(sk);
 }
 
 void stack_shrink(Stack *sk) {
-    if (!sk)
-        return;
+    assert(sk);
     while (sk->free_nodes) {
         StackNode *to_free = sk->free_nodes;
         sk->free_nodes = to_free->next;
@@ -124,17 +124,18 @@ void stack_shrink(Stack *sk) {
 }
 
 Bytes stack_top(const Stack *sk) {
-    if (!sk || stack_empty(sk))
+    assert(sk);
+    if (stack_empty(sk))
         return nullbytes;
     return bytes(sk->top->elm, sk->top->elm_size);
 }
 
 bool stack_empty(const Stack *sk) {
-    return (!sk || !sk->top);
+    assert(sk);
+    return (!sk->top);
 }
 
 usize stack_size(const Stack *sk) {
-    if (!sk)
-        return 0;
+    assert(sk);
     return sk->size;
 }
