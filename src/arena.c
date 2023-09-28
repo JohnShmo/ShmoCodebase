@@ -70,7 +70,8 @@ local_fn void arena_page_destroy(LinearArenaPage *p) {
 
 Arena *arena_create(void) {
     Arena *dest = malloc(sizeof(Arena));
-    assert(dest);
+    if (!dest)
+        return nullptr;
     dest->pages = nullptr;
     return dest;
 }

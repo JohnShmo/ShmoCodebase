@@ -58,18 +58,12 @@ bool darray_reserve(Darray *da, usize n) {
         return true;
     }
 
-    void *old_data = da->data;
-    void *new_data = allocator_malloc(da->allocator, n * da->element_size);
+    void *new_data = allocator_realloc(da->allocator, da->data, n * da->element_size);
     if (!new_data)
         return false;
 
     da->data = new_data;
     da->capacity = n;
-
-    if (old_data) {
-        memory_copy(da->data, old_data, da->size * da->element_size);
-        allocator_free(da->allocator, old_data);
-    }
 
     return true;
 }
