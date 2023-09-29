@@ -11,14 +11,14 @@ typedef struct SetBucket SetBucket;
 typedef struct Set Set;
 
 Set *set_create(Allocator *allocator);
-void set_destroy(Set *s);
-bool set_put(Set *s, Bytes elm);
-bool set_remove(Set *s, Bytes elm);
-void set_clear(Set *s);
-bool set_shrink(Set *s);
-usize set_size(const Set *s);
-bool set_empty(const Set *s);
-bool set_contains(const Set *s, Bytes elm);
+void set_destroy(Set *self);
+bool set_put(Set *self, Bytes elm);
+bool set_remove(Set *self, Bytes elm);
+void set_clear(Set *self);
+bool set_shrink(Set *self);
+usize set_size(const Set *self);
+bool set_empty(const Set *self);
+bool set_contains(const Set *self, Bytes elm);
 
 typedef struct SetItr {
     Set *set;

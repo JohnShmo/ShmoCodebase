@@ -10,13 +10,13 @@
 typedef struct Stack Stack;
 
 Stack *stack_create(Allocator *allocator);
-void stack_destroy(Stack *sk);
-bool stack_push(Stack *sk, Bytes elm);
-bool stack_pop(Stack *sk);
-void stack_clear(Stack *sk);
-void stack_shrink(Stack *sk);
-Bytes stack_top(const Stack *sk);
-bool stack_empty(const Stack *sk);
-usize stack_size(const Stack *sk);
+void stack_destroy(Stack *self);
+bool stack_push(Stack *self, Bytes elm);
+bool stack_pop(Stack *self);
+void stack_clear(Stack *self);
+void stack_shrink(Stack *self);
+Bytes stack_top(const Stack *self);
+bool stack_empty(const Stack *self);
+usize stack_size(const Stack *self);
 
 #endif //SHMOCODEBASE_STACK_H

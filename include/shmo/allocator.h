@@ -20,10 +20,10 @@ typedef struct Allocator {
     FreeFunc free_func;
 } Allocator;
 
-void *allocator_malloc(Allocator *a, usize n);
-void *allocator_calloc(Allocator *a, usize n, usize size);
-void *allocator_realloc(Allocator *a, void *p, usize n);
-void allocator_free(Allocator *a, void *p);
+void *allocator_malloc(Allocator *self, usize n);
+void *allocator_calloc(Allocator *self, usize n, usize size);
+void *allocator_realloc(Allocator *self, void *p, usize n);
+void allocator_free(Allocator *self, void *p);
 
 
 
