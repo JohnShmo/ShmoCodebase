@@ -93,12 +93,8 @@ local_fn void table_bucket_destroy(TableBucket *bucket, Allocator *allocator) {
     assert(bucket);
     assert(allocator);
 
-    if (bucket->pair.key) {
-        allocator_free(allocator, bucket->pair.key);
-    }
-    if (bucket->pair.val) {
-        allocator_free(allocator, bucket->pair.val);
-    }
+    allocator_free(allocator, bucket->pair.key);
+    allocator_free(allocator, bucket->pair.val);
 
     bucket->pair.key = nullptr;
     bucket->pair.val = nullptr;
@@ -109,9 +105,7 @@ local_fn bool table_rehash(Table *tb, usize new_count) {
     assert(tb);
 
     if (new_count == 0) {
-        if (tb->slots) {
-            allocator_free(tb->allocator, tb->slots);
-        }
+        allocator_free(tb->allocator, tb->slots);
         tb->slots = nullptr;
         tb->slot_count = 0;
         return true;

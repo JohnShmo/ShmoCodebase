@@ -47,9 +47,7 @@ local_fn void set_bucket_destroy(SetBucket *bucket, Allocator *allocator) {
     assert(bucket);
     assert(allocator);
 
-    if (bucket->elm) {
-        allocator_free(allocator, bucket->elm);
-    }
+    allocator_free(allocator, bucket->elm);
 
     bucket->elm = nullptr;
     bucket->next = nullptr;
@@ -59,9 +57,7 @@ local_fn bool set_rehash(Set *s, usize new_count) {
     assert(s);
 
     if (new_count == 0) {
-        if (s->slots) {
-            allocator_free(s->allocator, s->slots);
-        }
+        allocator_free(s->allocator, s->slots);
         s->slots = nullptr;
         s->slot_count = 0;
         return true;
