@@ -146,10 +146,8 @@ typedef void VoidFunc(void);
 
 #define min(A, B) ((A) < (B) ? (A) : (B))
 #define max(A, B) ((A) > (B) ? (A) : (B))
-#define CLAMP(A, X, B) (((X)<(A))?(A):\
+#define clamp(A, X, B) (((X)<(A))?(A):\
                        ((B)<(X))?(B):(X))
-#define CLAMP_TOP(A, B) min(A, B)
-#define CLAMP_BOT(A, B) max(A, B)
 
 #define memory_zero(Dest, Size) memset((Dest), 0, (Size))
 #define memory_zero_struct(Dest) memory_zero((Dest), sizeof(*(Dest)))
@@ -374,9 +372,6 @@ R2f r2f(V2f begin, V2f end);
 
 // ========================================
 // Utilities
-
-typedef i32 (*CompareFunc)(const void *, const void *);
-typedef u64 (*HashFunc)(const void *);
 
 typedef struct Bytes {
     const u8 * const p;

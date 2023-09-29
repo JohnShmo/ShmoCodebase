@@ -38,8 +38,7 @@ local_fn void stack_node_destruct(StackNode *node, Allocator *allocator) {
     assert(node);
     assert(allocator);
 
-    if (node->elm)
-        allocator_free(allocator, node->elm);
+    allocator_free(allocator, node->elm);
 
     node->elm = nullptr;
     node->elm_size = 0;
@@ -83,8 +82,10 @@ bool stack_push(Stack *sk, Bytes elm) {
         if (!node)
             return false;
     }
-    if (!stack_node_init(node, elm, sk->allocator))
+    if (!stack_node_init(node, elm, sk->allocator)) {
+        allocator_free(sk->allocator, node);
         return false;
+    }
 
     node->next = sk->top;
     sk->top = node;

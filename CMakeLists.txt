@@ -17,6 +17,7 @@ add_library(ShmoCodebase STATIC
         src/set.c
         src/arena.c
         src/stack.c
+        src/queue.c
 )
 
 target_include_directories(ShmoCodebase PUBLIC include)
