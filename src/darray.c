@@ -8,7 +8,7 @@ struct Darray {
     usize size;
     usize capacity;
     usize element_size;
-    void *data;
+    u8 *data;
     Allocator *allocator;
 };
 
@@ -83,10 +83,10 @@ bool darray_resize(Darray *da, usize n, Bytes fillval) {
             for (usize i = 0; i < count; ++i) {
                 usize index = da->size + i;
                 index *= da->element_size;
-                memory_copy(((u8 *)da->data) + index, fillval.p, da->element_size);
+                memory_copy((da->data) + index, fillval.p, da->element_size);
             }
         } else {
-            memory_zero(((u8 *)da->data) + (da->size * da->element_size), count * da->element_size);
+            memory_zero((da->data) + (da->size * da->element_size), count * da->element_size);
         }
     }
 
@@ -134,7 +134,7 @@ bool darray_pushb(Darray *da, Bytes val) {
         return false;
 
     usize index = da->size * da->element_size;
-    memory_copy(((u8 *)da->data) + index, val.p, da->element_size);
+    memory_copy((da->data) + index, val.p, da->element_size);
 
     da->size += 1;
     return true;
@@ -163,7 +163,7 @@ bool darray_pushf(Darray *da, Bytes val) {
     if (da->size > 0)
         memory_copy(((u8 *)da->data) + da->element_size, da->data, da->size * da->element_size);
 
-    memory_copy(((u8 *)da->data), val.p, da->element_size);
+    memory_copy((da->data), val.p, da->element_size);
 
     da->size += 1;
     return true;
@@ -175,7 +175,7 @@ bool darray_popf(Darray *da) {
         return false;
 
     if (da->size > 1) {
-        memory_copy(da->data, ((u8 *) da->data) + da->element_size, (da->size - 1) * da->element_size);
+        memory_copy(da->data, (da->data) + da->element_size, (da->size - 1) * da->element_size);
     }
     da->size -= 1;
     return true;
@@ -200,10 +200,10 @@ bool darray_insert(Darray *da, usize index, Bytes val) {
 
     index = index * da->element_size;
     if (da->size > 0) {
-        memory_copy(((u8 *)da->data) + index + da->element_size, (u8 *)da->data + index, (da->size * da->element_size) - index);
+        memory_copy((da->data) + index + da->element_size, da->data + index, (da->size * da->element_size) - index);
     }
 
-    memory_copy(((u8 *)da->data) + index, val.p, da->element_size);
+    memory_copy((da->data) + index, val.p, da->element_size);
     da->size += 1;
     return true;
 }
@@ -220,7 +220,7 @@ bool darray_remove(Darray *da, usize index) {
         return darray_popf(da);
 
     index = index * da->element_size;
-    memory_copy(((u8 *)da->data) + index, ((u8 *)da->data) + index + da->element_size, (da->size - 1) * da->element_size - index);
+    memory_copy((da->data) + index, (da->data) + index + da->element_size, (da->size - 1) * da->element_size - index);
     da->size -= 1;
 
     return true;
@@ -232,7 +232,7 @@ Bytes darray_back(const Darray *da) {
         return nullbytes;
 
     usize index = (da->size - 1) * da->element_size;
-    return (Bytes) { .p = ((u8 *)da->data) + index, .size = da->element_size };
+    return (Bytes) { .p = (da->data) + index, .size = da->element_size };
 }
 
 Bytes darray_front(const Darray *da) {
@@ -249,7 +249,7 @@ Bytes darray_at(const Darray *da, usize index) {
         return nullbytes;
 
     index = index * da->element_size;
-    return (Bytes) { .p = ((u8 *)da->data) + index, .size = da->element_size };
+    return (Bytes) { .p = (da->data) + index, .size = da->element_size };
 }
 
 bool darray_setb(Darray *da, Bytes val) {
@@ -271,7 +271,7 @@ bool darray_set(Darray *da, usize index, Bytes val) {
         return false;
 
     index = index * da->element_size;
-    memory_copy(((u8 *)da->data) + index, val.p, da->element_size);
+    memory_copy((da->data) + index, val.p, da->element_size);
     return true;
 }
 

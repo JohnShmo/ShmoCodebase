@@ -49,8 +49,8 @@ local_fn bool table_bucket_create(TableBucket *bucket,
     if (!val_copy)
         goto error;
 
-    memory_copy(key_copy, key, key_size);
-    memory_copy(val_copy, val, val_size);
+    memcpy(key_copy, key, key_size);
+    memcpy(val_copy, val, val_size);
 
     bucket->next = nullptr;
     bucket->pair.key = key_copy;
