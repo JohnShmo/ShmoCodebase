@@ -101,40 +101,40 @@ local_fn void table_bucket_destroy(TableBucket *bucket, Allocator *allocator) {
     bucket->next = nullptr;
 }
 
-local_fn bool table_rehash(Table *tb, usize new_count) {
-    assert(tb);
+local_fn bool table_rehash(Table *self, usize new_count) {
+    assert(self);
 
     if (new_count == 0) {
-        allocator_free(tb->allocator, tb->slots);
-        tb->slots = nullptr;
-        tb->slot_count = 0;
+        allocator_free(self->allocator, self->slots);
+        self->slots = nullptr;
+        self->slot_count = 0;
         return true;
     }
 
-    TableBucket **old_slots = tb->slots;
-    usize old_count = tb->slot_count;
+    TableBucket **old_slots = self->slots;
+    usize old_count = self->slot_count;
 
     TableBucket **new_slots = nullptr;
 
-    new_slots = allocator_calloc(tb->allocator, new_count, sizeof(TableBucket *));
+    new_slots = allocator_calloc(self->allocator, new_count, sizeof(TableBucket *));
     if (!new_slots)
         goto error;
-    tb->slots = new_slots;
-    tb->slot_count = new_count;
+    self->slots = new_slots;
+    self->slot_count = new_count;
 
     for (usize i = 0; i < old_count; ++i) {
         TableBucket *bucket = old_slots[i];
         while (bucket) {
             TableBucket *next = bucket->next;
             usize hash = hash_bytes((Bytes) { .p = bucket->pair.key, .size = bucket->pair.key_size } ) % new_count;
-            bucket->next = tb->slots[hash];
-            tb->slots[hash] = bucket;
+            bucket->next = self->slots[hash];
+            self->slots[hash] = bucket;
             bucket = next;
         }
     }
 
     if (old_slots) {
-        allocator_free(tb->allocator, old_slots);
+        allocator_free(self->allocator, old_slots);
     }
 
     return true;
@@ -143,16 +143,16 @@ local_fn bool table_rehash(Table *tb, usize new_count) {
     return false;
 }
 
-local_fn TableBucket *table_lookup(const Table *tb, Bytes key) {
-    assert(tb);
+local_fn TableBucket *table_lookup(const Table *self, Bytes key) {
+    assert(self);
     assert(key.p);
 
-    if (table_empty(tb)) {
+    if (table_empty(self)) {
         return nullptr;
     }
 
-    usize hash = hash_bytes(key) % tb->slot_count;
-    TableBucket *bucket = tb->slots[hash];
+    usize hash = hash_bytes(key) % self->slot_count;
+    TableBucket *bucket = self->slots[hash];
     while(bucket) {
         bool match = compare_bytes((Bytes) { .p = bucket->pair.key, .size = bucket->pair.key_size }, key) == 0;
         if (match) {
@@ -179,67 +179,67 @@ Table *table_create(Allocator *allocator) {
     return dest;
 }
 
-void table_destroy(Table *tb) {
-    if (!tb) {
+void table_destroy(Table *self) {
+    if (!self) {
         return;
     }
 
-    table_clear(tb);
-    table_shrink(tb);
+    table_clear(self);
+    table_shrink(self);
 
-    allocator_free(tb->allocator, tb);
+    allocator_free(self->allocator, self);
 }
 
-bool table_put(Table *tb, Bytes key, Bytes val) {
-    assert(tb);
+bool table_put(Table *self, Bytes key, Bytes val) {
+    assert(self);
     if (!key.p || !val.p)
         return false;
 
     TableBucket *new_bucket = nullptr;
 
     f64 load;
-    if (table_empty(tb)) {
+    if (table_empty(self)) {
         load = 1.0;
     } else {
-        load = (f64)tb->size / (f64)tb->slot_count;
+        load = (f64)self->size / (f64)self->slot_count;
     }
 
     if (load > 0.75) {
-        if (!table_rehash(tb, tb->slot_count * 4 + 16))
+        if (!table_rehash(self, self->slot_count * 4 + 16))
             goto error;
     }
 
-    TableBucket *bucket = table_lookup(tb, key);
+    TableBucket *bucket = table_lookup(self, key);
     
     if (bucket) {
-        table_bucket_put_val(bucket, val.p, val.size, tb->allocator);
+        table_bucket_put_val(bucket, val.p, val.size, self->allocator);
     } else {
-        usize hash = hash_bytes(key) % tb->slot_count;
-        new_bucket = allocator_malloc(tb->allocator, sizeof(TableBucket));
+        usize hash = hash_bytes(key) % self->slot_count;
+        new_bucket = allocator_malloc(self->allocator, sizeof(TableBucket));
         if (!new_bucket)
             goto error;
-        if (!table_bucket_create(new_bucket, key.p, key.size, val.p, val.size, tb->allocator))
+        if (!table_bucket_create(new_bucket, key.p, key.size, val.p, val.size, self->allocator))
             goto error;
-        new_bucket->next = tb->slots[hash];
-        tb->slots[hash] = new_bucket;
-        tb->size++;        
+        new_bucket->next = self->slots[hash];
+        self->slots[hash] = new_bucket;
+        self->size++;        
     }
 
     return true;
 
     error:
     if (new_bucket) {
-        allocator_free(tb->allocator, new_bucket);
+        allocator_free(self->allocator, new_bucket);
     }
     return false;
 }
 
-Bytes table_get(const Table *tb, Bytes key) {
-    assert(tb);
+Bytes table_get(const Table *self, Bytes key) {
+    assert(self);
     if (!key.p)
         return nullbytes;
 
-    TableBucket *bucket = table_lookup(tb, key);
+    TableBucket *bucket = table_lookup(self, key);
     if (bucket) {
         return (Bytes) { .p = bucket->pair.val, .size = bucket->pair.val_size };
     }
@@ -247,92 +247,92 @@ Bytes table_get(const Table *tb, Bytes key) {
     return nullbytes;
 }
 
-bool table_remove(Table *tb, Bytes key) {
-    assert(tb);
+bool table_remove(Table *self, Bytes key) {
+    assert(self);
     if (!key.p)
         return false;
 
-    TableBucket *bucket = table_lookup(tb, key);
+    TableBucket *bucket = table_lookup(self, key);
     if (!bucket) {
         return false;
     }
 
-    usize hash = hash_bytes(key) % tb->slot_count;
-    TableBucket *first_bucket = tb->slots[hash];
+    usize hash = hash_bytes(key) % self->slot_count;
+    TableBucket *first_bucket = self->slots[hash];
 
     TablePairInternal temp = first_bucket->pair;
     first_bucket->pair = bucket->pair;
     bucket->pair = temp;
 
-    tb->slots[hash] = first_bucket->next;
-    table_bucket_destroy(first_bucket, tb->allocator);
+    self->slots[hash] = first_bucket->next;
+    table_bucket_destroy(first_bucket, self->allocator);
 
-    first_bucket->next = tb->free_buckets;
-    tb->free_buckets = first_bucket;
+    first_bucket->next = self->free_buckets;
+    self->free_buckets = first_bucket;
 
     return true;
 }
 
-void table_clear(Table *tb) {
-    assert(tb);
-    if (tb->size == 0) {
+void table_clear(Table *self) {
+    assert(self);
+    if (self->size == 0) {
         return;
     }
 
-    for (usize i = 0; i < tb->slot_count; ++i) {
-        TableBucket *bucket = tb->slots[i];
+    for (usize i = 0; i < self->slot_count; ++i) {
+        TableBucket *bucket = self->slots[i];
         while (bucket) {
             TableBucket *next = bucket->next;
-            tb->slots[i] = next;
+            self->slots[i] = next;
 
-            table_bucket_destroy(bucket, tb->allocator);
+            table_bucket_destroy(bucket, self->allocator);
 
-            bucket->next = tb->free_buckets;
-            tb->free_buckets = bucket;
+            bucket->next = self->free_buckets;
+            self->free_buckets = bucket;
 
             bucket = next;
         }
     }
 
-    tb->size = 0;
+    self->size = 0;
 }
 
-bool table_shrink(Table *tb) {
-    assert(tb);
+bool table_shrink(Table *self) {
+    assert(self);
 
-    if (!table_rehash(tb, (usize)((f64)tb->size * 1.25))) {
+    if (!table_rehash(self, (usize)((f64)self->size * 1.25))) {
         return false;
     }
 
-    while (tb->free_buckets) {
-        TableBucket *to_free = tb->free_buckets;
-        tb->free_buckets = to_free->next;
-        allocator_free(tb->allocator, to_free);
+    while (self->free_buckets) {
+        TableBucket *to_free = self->free_buckets;
+        self->free_buckets = to_free->next;
+        allocator_free(self->allocator, to_free);
     }
 
     return true;
 }
 
-usize table_size(const Table *tb) {
-    assert(tb);
-    return tb->size;
+usize table_size(const Table *self) {
+    assert(self);
+    return self->size;
 }
 
-bool table_empty(const Table *tb) {
-    assert(tb);
-    return tb->size == 0 || tb->slot_count == 0;
+bool table_empty(const Table *self) {
+    assert(self);
+    return self->size == 0 || self->slot_count == 0;
 }
 
-bool table_contains(const Table *tb, Bytes key) {
-    assert(tb);
+bool table_contains(const Table *self, Bytes key) {
+    assert(self);
     if (!key.p)
         return false;
-    return table_lookup(tb, key) != nullptr;
+    return table_lookup(self, key) != nullptr;
 }
 
-TableItr table_itr(Table *tb) {
+TableItr table_itr(Table *self) {
     TableItr itr;
-    itr.table = tb;
+    itr.table = self;
     itr.slot = 0;
     itr.bucket = nullptr;
 

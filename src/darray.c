@@ -12,9 +12,9 @@ struct Darray {
     Allocator *allocator;
 };
 
-local_fn bool darray_reserve_if_full(Darray *da) {
-    if (da->size == da->capacity) {
-        return darray_reserve(da, da->capacity * 4 + 1);
+local_fn bool darray_reserve_if_full(Darray *self) {
+    if (self->size == self->capacity) {
+        return darray_reserve(self, self->capacity * 4 + 1);
     }
     return true;
 }
@@ -38,269 +38,269 @@ Darray *darray_create(usize element_size, Allocator *allocator) {
     return dest;
 }
 
-void darray_destroy(Darray *da) {
-    if (!da)
+void darray_destroy(Darray *self) {
+    if (!self)
         return;
 
-    allocator_free(da->allocator, da->data);
-    da->size = 0;
-    da->capacity = 0;
-    da->element_size = 0;
-    da->data = nullptr;
+    allocator_free(self->allocator, self->data);
+    self->size = 0;
+    self->capacity = 0;
+    self->element_size = 0;
+    self->data = nullptr;
 
-    allocator_free(da->allocator, da);
+    allocator_free(self->allocator, self);
 }
 
-bool darray_reserve(Darray *da, usize n) {
-    assert(da);
+bool darray_reserve(Darray *self, usize n) {
+    assert(self);
 
-    if (n <= da->capacity) {
+    if (n <= self->capacity) {
         return true;
     }
 
-    void *new_data = allocator_realloc(da->allocator, da->data, n * da->element_size);
+    void *new_data = allocator_realloc(self->allocator, self->data, n * self->element_size);
     if (!new_data)
         return false;
 
-    da->data = new_data;
-    da->capacity = n;
+    self->data = new_data;
+    self->capacity = n;
 
     return true;
 }
 
-bool darray_resize(Darray *da, usize n, Bytes fillval) {
-    assert(da);
+bool darray_resize(Darray *self, usize n, Bytes fillval) {
+    assert(self);
 
-    if (!bytes_is_null(fillval) && fillval.size != da->element_size)
+    if (!bytes_is_null(fillval) && fillval.size != self->element_size)
         return false;
 
-    if (!darray_reserve(da, n))
+    if (!darray_reserve(self, n))
         return false;
 
-    if (n > da->size) {
-        usize count = n - da->size;
+    if (n > self->size) {
+        usize count = n - self->size;
         if (!bytes_is_null(fillval)) {
             for (usize i = 0; i < count; ++i) {
-                usize index = da->size + i;
-                index *= da->element_size;
-                memory_copy((da->data) + index, fillval.p, da->element_size);
+                usize index = self->size + i;
+                index *= self->element_size;
+                memory_copy((self->data) + index, fillval.p, self->element_size);
             }
         } else {
-            memory_zero((da->data) + (da->size * da->element_size), count * da->element_size);
+            memory_zero((self->data) + (self->size * self->element_size), count * self->element_size);
         }
     }
 
-    da->size = n;
+    self->size = n;
 
     return true;
 }
 
-bool darray_shrink(Darray *da) {
-    assert(da);
+bool darray_shrink(Darray *self) {
+    assert(self);
 
-    if (da->size == da->capacity)
+    if (self->size == self->capacity)
         return true;
 
-    void *old_data = da->data;
-    void *new_data = allocator_malloc(da->allocator, da->size * da->element_size);
+    void *old_data = self->data;
+    void *new_data = allocator_malloc(self->allocator, self->size * self->element_size);
     if (!new_data)
         return false;
 
-    da->data = new_data;
-    da->capacity = da->size;
+    self->data = new_data;
+    self->capacity = self->size;
 
     if (old_data) {
-        memory_copy(da->data, old_data, da->size * da->element_size);
-        allocator_free(da->allocator, old_data);
+        memory_copy(self->data, old_data, self->size * self->element_size);
+        allocator_free(self->allocator, old_data);
     }
 
     return true;
 }
 
-void darray_clear(Darray *da) {
-    assert(da);
-    da->size = 0;
+void darray_clear(Darray *self) {
+    assert(self);
+    self->size = 0;
 }
 
-bool darray_pushb(Darray *da, Bytes val) {
-    assert(da);
+bool darray_pushb(Darray *self, Bytes val) {
+    assert(self);
     if (bytes_is_null(val))
         return false;
 
-    if (val.size != da->element_size)
+    if (val.size != self->element_size)
         return false;
 
-    if (!darray_reserve_if_full(da))
+    if (!darray_reserve_if_full(self))
         return false;
 
-    usize index = da->size * da->element_size;
-    memory_copy((da->data) + index, val.p, da->element_size);
+    usize index = self->size * self->element_size;
+    memory_copy((self->data) + index, val.p, self->element_size);
 
-    da->size += 1;
+    self->size += 1;
     return true;
 }
 
-bool darray_popb(Darray *da) {
-    assert(da);
-    if (da->size == 0)
+bool darray_popb(Darray *self) {
+    assert(self);
+    if (self->size == 0)
         return false;
 
-    da->size -= 1;
+    self->size -= 1;
     return true;
 }
 
-bool darray_pushf(Darray *da, Bytes val) {
-    assert(da);
+bool darray_pushf(Darray *self, Bytes val) {
+    assert(self);
     if (bytes_is_null(val))
         return false;
 
-    if (val.size != da->element_size)
+    if (val.size != self->element_size)
         return false;
 
-    if (!darray_reserve_if_full(da))
+    if (!darray_reserve_if_full(self))
         return false;
 
-    if (da->size > 0)
-        memory_copy(((u8 *)da->data) + da->element_size, da->data, da->size * da->element_size);
+    if (self->size > 0)
+        memory_copy(((u8 *)self->data) + self->element_size, self->data, self->size * self->element_size);
 
-    memory_copy((da->data), val.p, da->element_size);
+    memory_copy((self->data), val.p, self->element_size);
 
-    da->size += 1;
+    self->size += 1;
     return true;
 }
 
-bool darray_popf(Darray *da) {
-    assert(da);
-    if (da->size == 0)
+bool darray_popf(Darray *self) {
+    assert(self);
+    if (self->size == 0)
         return false;
 
-    if (da->size > 1) {
-        memory_copy(da->data, (da->data) + da->element_size, (da->size - 1) * da->element_size);
+    if (self->size > 1) {
+        memory_copy(self->data, (self->data) + self->element_size, (self->size - 1) * self->element_size);
     }
-    da->size -= 1;
+    self->size -= 1;
     return true;
 }
 
-bool darray_insert(Darray *da, usize index, Bytes val) {
-    assert(da);
-    if (index > da->size || bytes_is_null(val))
+bool darray_insert(Darray *self, usize index, Bytes val) {
+    assert(self);
+    if (index > self->size || bytes_is_null(val))
         return false;
 
-    if (index == da->size)
-        return darray_pushb(da, val);
+    if (index == self->size)
+        return darray_pushb(self, val);
 
     if (index == 0)
-        return darray_pushf(da, val);
+        return darray_pushf(self, val);
 
-    if (val.size != da->element_size)
+    if (val.size != self->element_size)
         return false;
 
-    if (!darray_reserve_if_full(da))
+    if (!darray_reserve_if_full(self))
         return false;
 
-    index = index * da->element_size;
-    if (da->size > 0) {
-        memory_copy((da->data) + index + da->element_size, da->data + index, (da->size * da->element_size) - index);
+    index = index * self->element_size;
+    if (self->size > 0) {
+        memory_copy((self->data) + index + self->element_size, self->data + index, (self->size * self->element_size) - index);
     }
 
-    memory_copy((da->data) + index, val.p, da->element_size);
-    da->size += 1;
+    memory_copy((self->data) + index, val.p, self->element_size);
+    self->size += 1;
     return true;
 }
 
-bool darray_remove(Darray *da, usize index) {
-    assert(da);
-    if (index >= da->size)
+bool darray_remove(Darray *self, usize index) {
+    assert(self);
+    if (index >= self->size)
         return false;
 
-    if (index == da->size - 1)
-        return darray_popb(da);
+    if (index == self->size - 1)
+        return darray_popb(self);
 
     if (index == 0)
-        return darray_popf(da);
+        return darray_popf(self);
 
-    index = index * da->element_size;
-    memory_copy((da->data) + index, (da->data) + index + da->element_size, (da->size - 1) * da->element_size - index);
-    da->size -= 1;
+    index = index * self->element_size;
+    memory_copy((self->data) + index, (self->data) + index + self->element_size, (self->size - 1) * self->element_size - index);
+    self->size -= 1;
 
     return true;
 }
 
-Bytes darray_back(const Darray *da) {
-    assert(da);
-    if (da->size == 0)
+Bytes darray_back(const Darray *self) {
+    assert(self);
+    if (self->size == 0)
         return nullbytes;
 
-    usize index = (da->size - 1) * da->element_size;
-    return (Bytes) { .p = (da->data) + index, .size = da->element_size };
+    usize index = (self->size - 1) * self->element_size;
+    return (Bytes) { .p = (self->data) + index, .size = self->element_size };
 }
 
-Bytes darray_front(const Darray *da) {
-    assert(da);
-    if (da->size == 0)
+Bytes darray_front(const Darray *self) {
+    assert(self);
+    if (self->size == 0)
         return nullbytes;
 
-    return (Bytes) { .p = da->data, .size = da->element_size };
+    return (Bytes) { .p = self->data, .size = self->element_size };
 }
 
-Bytes darray_at(const Darray *da, usize index) {
-    assert(da);
-    if (da->size == 0 || index >= da->size)
+Bytes darray_at(const Darray *self, usize index) {
+    assert(self);
+    if (self->size == 0 || index >= self->size)
         return nullbytes;
 
-    index = index * da->element_size;
-    return (Bytes) { .p = (da->data) + index, .size = da->element_size };
+    index = index * self->element_size;
+    return (Bytes) { .p = (self->data) + index, .size = self->element_size };
 }
 
-bool darray_setb(Darray *da, Bytes val) {
-    assert(da);
-    return darray_set(da, da->size - 1, val);
+bool darray_setb(Darray *self, Bytes val) {
+    assert(self);
+    return darray_set(self, self->size - 1, val);
 }
 
-bool darray_setf(Darray *da, Bytes val) {
-    assert(da);
-    return darray_set(da, 0, val);
+bool darray_setf(Darray *self, Bytes val) {
+    assert(self);
+    return darray_set(self, 0, val);
 }
 
-bool darray_set(Darray *da, usize index, Bytes val) {
-    assert(da);
-    if (da->size == 0 || index >= da->size)
+bool darray_set(Darray *self, usize index, Bytes val) {
+    assert(self);
+    if (self->size == 0 || index >= self->size)
         return false;
 
-    if (val.size != da->element_size)
+    if (val.size != self->element_size)
         return false;
 
-    index = index * da->element_size;
-    memory_copy((da->data) + index, val.p, da->element_size);
+    index = index * self->element_size;
+    memory_copy((self->data) + index, val.p, self->element_size);
     return true;
 }
 
-bool darray_empty(const Darray *da) {
-    assert(da);
-    return da->size == 0;
+bool darray_empty(const Darray *self) {
+    assert(self);
+    return self->size == 0;
 }
 
-usize darray_size(const Darray *da) {
-    assert(da);
-    return da->size;
+usize darray_size(const Darray *self) {
+    assert(self);
+    return self->size;
 }
 
-usize darray_elm_size(const Darray *da) {
-    assert(da);
-    return da->element_size;
+usize darray_elm_size(const Darray *self) {
+    assert(self);
+    return self->element_size;
 }
 
-usize darray_capacity(const Darray *da) {
-    assert(da);
-    return da->capacity;
+usize darray_capacity(const Darray *self) {
+    assert(self);
+    return self->capacity;
 }
 
-void *darray_data(Darray *da) {
-    assert(da);
-    return da->data;
+void *darray_data(Darray *self) {
+    assert(self);
+    return self->data;
 }
 
-const void *darray_const_data(const Darray *da) {
-    assert(da);
-    return da->data;
+const void *darray_const_data(const Darray *self) {
+    assert(self);
+    return self->data;
 }

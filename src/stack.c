@@ -48,95 +48,95 @@ local_fn void stack_node_destruct(StackNode *node, Allocator *allocator) {
 Stack *stack_create(Allocator *allocator) {
     if (!allocator)
         allocator = stdalloc;
-    Stack *sk = allocator_malloc(allocator, sizeof(Stack));
-    if (!sk)
+    Stack *self = allocator_malloc(allocator, sizeof(Stack));
+    if (!self)
         return nullptr;
 
-    sk->top = nullptr;
-    sk->free_nodes = nullptr;
-    sk->size = 0;
-    sk->allocator = allocator;
+    self->top = nullptr;
+    self->free_nodes = nullptr;
+    self->size = 0;
+    self->allocator = allocator;
 
-    return sk;
+    return self;
 }
 
-void stack_destroy(Stack *sk) {
-    if (!sk)
+void stack_destroy(Stack *self) {
+    if (!self)
         return;
-    stack_clear(sk);
-    stack_shrink(sk);
-    allocator_free(sk->allocator, sk);
+    stack_clear(self);
+    stack_shrink(self);
+    allocator_free(self->allocator, self);
 }
 
-bool stack_push(Stack *sk, Bytes elm) {
-    assert(sk);
+bool stack_push(Stack *self, Bytes elm) {
+    assert(self);
     if (bytes_is_null(elm))
         return false;
 
     StackNode *node;
-    if (sk->free_nodes) {
-        node = sk->free_nodes;
-        sk->free_nodes = node->next;
+    if (self->free_nodes) {
+        node = self->free_nodes;
+        self->free_nodes = node->next;
     } else {
-        node = allocator_malloc(sk->allocator, sizeof(StackNode));
+        node = allocator_malloc(self->allocator, sizeof(StackNode));
         if (!node)
             return false;
     }
-    if (!stack_node_init(node, elm, sk->allocator)) {
-        allocator_free(sk->allocator, node);
+    if (!stack_node_init(node, elm, self->allocator)) {
+        allocator_free(self->allocator, node);
         return false;
     }
 
-    node->next = sk->top;
-    sk->top = node;
+    node->next = self->top;
+    self->top = node;
 
-    sk->size++;
+    self->size++;
     return true;
 }
 
-bool stack_pop(Stack *sk) {
-    assert(sk);
-    if (!sk->top)
+bool stack_pop(Stack *self) {
+    assert(self);
+    if (!self->top)
         return false;
 
-    StackNode *top = sk->top;
-    sk->top = top->next;
-    stack_node_destruct(top, sk->allocator);
-    top->next = sk->free_nodes;
-    sk->free_nodes = top;
+    StackNode *top = self->top;
+    self->top = top->next;
+    stack_node_destruct(top, self->allocator);
+    top->next = self->free_nodes;
+    self->free_nodes = top;
 
-    sk->size--;
+    self->size--;
     return true;
 }
 
-void stack_clear(Stack *sk) {
-    assert(sk);
-    while (!stack_empty(sk))
-        stack_pop(sk);
+void stack_clear(Stack *self) {
+    assert(self);
+    while (!stack_empty(self))
+        stack_pop(self);
 }
 
-void stack_shrink(Stack *sk) {
-    assert(sk);
-    while (sk->free_nodes) {
-        StackNode *to_free = sk->free_nodes;
-        sk->free_nodes = to_free->next;
-        allocator_free(sk->allocator, to_free);
+void stack_shrink(Stack *self) {
+    assert(self);
+    while (self->free_nodes) {
+        StackNode *to_free = self->free_nodes;
+        self->free_nodes = to_free->next;
+        allocator_free(self->allocator, to_free);
     }
 }
 
-Bytes stack_top(const Stack *sk) {
-    assert(sk);
-    if (stack_empty(sk))
+Bytes stack_top(const Stack *self) {
+    assert(self);
+    if (stack_empty(self))
         return nullbytes;
-    return bytes(sk->top->elm, sk->top->elm_size);
+    return bytes(self->top->elm, self->top->elm_size);
 }
 
-bool stack_empty(const Stack *sk) {
-    assert(sk);
-    return (!sk->top);
+bool stack_empty(const Stack *self) {
+    assert(self);
+    return (!self->top);
 }
 
-usize stack_size(const Stack *sk) {
-    assert(sk);
-    return sk->size;
+usize stack_size(const Stack *self) {
+    assert(self);
+    return self->size;
 }
