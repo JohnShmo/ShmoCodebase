@@ -47,11 +47,10 @@ bool string_builder_insert_char(StringBuilder *self, usize index, char c);
 bool string_builder_insert_str(StringBuilder *self, usize index, const char *s);
 bool string_builder_insert_fmt(StringBuilder *self, usize index, const char *fmt, ...);
 bool string_builder_insert_view(StringBuilder *self, usize index, Strview v);
-bool string_builder_insert_view_fmt(StringBuilder *self, usize index, Strview v_fmt, ...);
 bool string_builder_remove(StringBuilder *self, R1u range);
-const char *string_builder_cstr(const StringBuilder *self);
-char string_builder_get_char(const StringBuilder *self, usize index);
-Strview string_builder_get_view(const StringBuilder *self, R1u range);
-usize string_builder_len(const StringBuilder *self);
+const char *string_builder_cstr(StringBuilder *self);
+char string_builder_get_char(StringBuilder *self, usize index);
+Strview string_builder_get_view(StringBuilder *self, R1u range);
+usize string_builder_len(StringBuilder *self);
 
 #endif //SHMOCODEBASE_STRINGS_H
