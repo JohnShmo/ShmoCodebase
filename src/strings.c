@@ -356,10 +356,17 @@ bool string_builder_insert_str(StringBuilder *self, usize index, const char *s) 
         return false;
     string_builder_strip_null_chars(self);
 
-    while(*s) {
-        if (!string_builder_insert_char(self, index++, *s))
-            return false;
-        ++s;
+    usize len = string_len(s);
+    if (!darray_resize(self->darray, darray_size(self->darray) + len, nullbytes))
+        return false;
+
+    char *data = darray_data(self->darray);
+    data += index;
+
+    memory_copy(data + len, data, darray_size(self->darray) - index);
+
+    for (usize i = 0; i < len; ++i) {
+        data[i] = s[i];
     }
 
     return true;
@@ -385,17 +392,20 @@ bool string_builder_insert_fmt(StringBuilder *self, usize index, const char *fmt
     if (buffer_size == 1)
         return true;
 
-    buffer = allocator_malloc(self->allocator, buffer_size);
-    if (!buffer)
+    if (!darray_resize(self->darray, darray_size(self->darray) + buffer_size, nullbytes))
         return false;
+    buffer = darray_data(self->darray);
+    buffer += index;
+
+    memory_copy(buffer + buffer_size, buffer, darray_size(self->darray) - index);
 
     va_start(vl, fmt);
     vsnprintf(buffer, buffer_size, fmt, vl);
     va_end(vl);
 
-    bool success = string_builder_insert_str(self, index, buffer);
-    allocator_free(self->allocator, buffer);
-    return success;
+    darray_remove(self->darray, index + buffer_size - 1); // remove the null terminator
+
+    return true;
 }
 
 bool string_builder_insert_view(StringBuilder *self, usize index, Strview v) {
