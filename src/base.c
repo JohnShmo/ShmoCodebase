@@ -153,7 +153,7 @@ R2f r2f(V2f begin, V2f end) {
     return (R2f) { .begin = begin, .end = end };
 }
 
-Bytes bytes(const u8 *p, usize size) {
+Bytes bytes(const byte *p, usize size) {
     return (Bytes) { .p = p, .size = size };
 }
 

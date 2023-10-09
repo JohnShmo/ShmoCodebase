@@ -5,9 +5,9 @@
 #include "shmo/table.h"
 
 typedef struct TablePairInternal {
-    void *key;
+    byte *key;
     usize key_size;
-    void *val;
+    byte *val;
     usize val_size;
 } TablePairInternal;
 
@@ -39,8 +39,8 @@ local_fn bool table_bucket_create(TableBucket *bucket,
     assert(val_size);
     assert(allocator);
 
-    u8 *key_copy = nullptr;
-    u8 *val_copy = nullptr;
+    byte *key_copy = nullptr;
+    byte *val_copy = nullptr;
 
     key_copy = allocator_malloc(allocator, key_size);
     if (!key_copy)
@@ -74,7 +74,7 @@ local_fn bool table_bucket_put_val(TableBucket *bucket, const void *val, usize v
     assert(val_size);
     assert(allocator);
 
-    u8 *new_mem = nullptr;
+    byte *new_mem = nullptr;
     new_mem = allocator_realloc(allocator, bucket->pair.val, val_size);
     if (!new_mem)
         goto error;

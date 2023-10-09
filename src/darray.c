@@ -8,7 +8,7 @@ struct Darray {
     usize size;
     usize capacity;
     usize element_size;
-    u8 *data;
+    byte *data;
     Allocator *allocator;
 };
 
@@ -161,7 +161,7 @@ bool darray_pushf(Darray *self, Bytes val) {
         return false;
 
     if (self->size > 0)
-        memory_copy(((u8 *)self->data) + self->element_size, self->data, self->size * self->element_size);
+        memory_copy(self->data + self->element_size, self->data, self->size * self->element_size);
 
     memory_copy((self->data), val.p, self->element_size);
 
@@ -175,7 +175,7 @@ bool darray_popf(Darray *self) {
         return false;
 
     if (self->size > 1) {
-        memory_copy(self->data, (self->data) + self->element_size, (self->size - 1) * self->element_size);
+        memory_copy(self->data, self->data + self->element_size, (self->size - 1) * self->element_size);
     }
     self->size -= 1;
     return true;

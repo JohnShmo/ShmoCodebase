@@ -93,10 +93,12 @@ typedef uint8_t   u8;
 typedef uint16_t  u16;
 typedef uint32_t  u32;
 typedef uint64_t  u64;
+typedef uintptr_t uptr;
 typedef size_t    usize;
 typedef ptrdiff_t isize;
 typedef float     f32;
 typedef double    f64;
+typedef char      byte;
 
 typedef void VoidFunc(void);
 
@@ -374,14 +376,14 @@ R2f r2f(V2f begin, V2f end);
 // Utilities
 
 typedef struct Bytes {
-    const u8 * const p;
+    const byte * const p;
     const usize size;
 } Bytes;
 
-Bytes bytes(const u8 *p, usize size);
-#define bytes_of(V) (Bytes) { .p = (const u8 *)&(V), .size = sizeof(V) }
+Bytes bytes(const byte *p, usize size);
+#define bytes_of(V) (Bytes) { .p = (const byte *)&(V), .size = sizeof(V) }
 #define bof(V) bytes_of(V)
-#define bytes_of_str(Str) (Bytes) { .p = (const u8 *)(Str), .size = (strlen(Str) + 1) }
+#define bytes_of_str(Str) (Bytes) { .p = (const byte *)(Str), .size = (strlen(Str) + 1) }
 #define bofs(Str) bytes_of_str(Str)
 #define bytes_to(T, B) *(const T *)(B).p
 #define bto(T, B) bytes_to(T, B)

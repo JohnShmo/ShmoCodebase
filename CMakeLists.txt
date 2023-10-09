@@ -13,7 +13,6 @@ add_library(ShmoCodebase STATIC
         src/table.c
         src/linear_algebra.c
         src/strings.c
-        src/user_input.c
         src/set.c
         src/arena.c
         src/stack.c

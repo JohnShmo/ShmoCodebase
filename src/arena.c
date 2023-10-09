@@ -13,10 +13,10 @@ struct Arena {
 #define ARENA_MIN_PAGE_SIZE (1024ULL * 8ULL)
 
 struct LinearArenaPage {
-    u8 *start;
-    u8 *end;
-    u8 *current;
-    u8 *previous_alloc;
+    byte *start;
+    byte *end;
+    byte *current;
+    byte *previous_alloc;
     LinearArenaPage *next;
 };
 
@@ -41,17 +41,17 @@ local_fn bool arena_page_create(LinearArenaPage *p, usize size) {
     return true;
 }
 
-local_fn u8 *arena_page_alloc(LinearArenaPage *p, usize size) {
+local_fn byte *arena_page_alloc(LinearArenaPage *p, usize size) {
     assert(p);
     assert(size);
     assert(arena_can_page_fit(p, size));
-    u8 *result = p->current;
+    byte *result = p->current;
     p->previous_alloc = result;
     p->current += size;
     return result;
 }
 
-local_fn u8 *arena_page_realloc(LinearArenaPage *p, usize size) {
+local_fn byte *arena_page_realloc(LinearArenaPage *p, usize size) {
     assert(p);
     assert(size);
     assert(arena_can_page_fit(p, size));
@@ -120,7 +120,7 @@ void *arena_malloc(Arena *a, usize n) {
         a->pages->next = old;
     }
 
-    u8 *fetched = arena_page_alloc(a->pages, n);
+    byte *fetched = arena_page_alloc(a->pages, n);
     return fetched;
 }
 

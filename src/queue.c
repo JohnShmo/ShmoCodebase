@@ -5,7 +5,7 @@
 #include "shmo/queue.h"
 
 typedef struct QueueNode {
-    u8 *elm;
+    byte *elm;
     usize elm_size;
     struct QueueNode *next;
 } QueueNode;
@@ -23,7 +23,7 @@ local_fn bool queue_node_init(QueueNode *node, Bytes elm, Allocator *allocator) 
     assert(allocator);
     assert(!bytes_is_null(elm));
 
-    u8 *new_elm = allocator_malloc(allocator, elm.size);
+    byte *new_elm = allocator_malloc(allocator, elm.size);
     if (!new_elm)
         return false;
     memcpy(new_elm, elm.p, elm.size);

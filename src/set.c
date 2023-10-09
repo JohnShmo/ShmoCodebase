@@ -5,7 +5,7 @@
 #include "shmo/set.h"
 
 struct SetBucket {
-    void *elm;
+    byte *elm;
     usize elm_size;
     struct SetBucket *next;
 };
@@ -29,7 +29,7 @@ local_fn bool set_bucket_create(SetBucket *bucket,
     assert(elm_size);
     assert(allocator);
 
-    u8 *elm_copy = allocator_malloc(allocator, elm_size);
+    byte *elm_copy = allocator_malloc(allocator, elm_size);
     if (!elm_copy) {
         return false;
     }
