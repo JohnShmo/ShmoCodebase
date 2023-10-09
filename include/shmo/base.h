@@ -380,9 +380,13 @@ typedef struct Bytes {
 
 Bytes bytes(const u8 *p, usize size);
 #define bytes_of(V) (Bytes) { .p = (const u8 *)&(V), .size = sizeof(V) }
+#define bof(V) bytes_of(V)
 #define bytes_of_str(Str) (Bytes) { .p = (const u8 *)(Str), .size = (strlen(Str) + 1) }
+#define bofs(Str) bytes_of_str(Str)
 #define bytes_to(T, B) *(const T *)(B).p
+#define bto(T, B) bytes_to(T, B)
 #define bytes_to_str(B) (const char *)(B).p
+#define btos(B) bytes_to_str(B)
 #define nullbytes (Bytes) { .p = nullptr, .size = 0 }
 #define bytes_is_null(B) ((B).p == nullptr || (B).size == 0)
 

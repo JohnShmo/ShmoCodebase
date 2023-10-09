@@ -1,21 +1,18 @@
-#include "shmo/queue.h"
+#include "shmo/darray.h"
 
 int main(void) {
-    Queue *q = queue_create(stdalloc);
+    Darray *arr = darray_create(sizeof(int), stdalloc);
 
-    if (!queue_enqueue(q, bytes_of_str("first"))) {
-        // handle error
-    }
-    queue_enqueue(q, bytes_of_str("second"));
-    queue_enqueue(q, bytes_of_str("third"));
-    queue_enqueue(q, bytes_of_str("fourth"));
-
-    while (!queue_empty(q)) {
-        const char *elm = bytes_to_str(queue_front(q));
-        printf("%s\n", elm);
-        queue_dequeue(q);
+    int i = 100000;
+    while (i > 0) {
+        darray_pushb(arr, bof(i));
+        --i;
     }
 
-    queue_destroy(q);
+    for (i = 0; i < (int)darray_size(arr); ++i) {
+        printf("[%d] : %d\n", i, bto(int, darray_at(arr, i)));
+    }
+
+    darray_destroy(arr);
     return 0;
 }
