@@ -48,6 +48,7 @@ bool string_builder_insert_str(StringBuilder *self, usize index, const char *s);
 bool string_builder_insert_fmt(StringBuilder *self, usize index, const char *fmt, ...);
 bool string_builder_insert_view(StringBuilder *self, usize index, Strview v);
 bool string_builder_remove(StringBuilder *self, R1u range);
+void string_builder_clear(StringBuilder *self);
 const char *string_builder_cstr(StringBuilder *self);
 char string_builder_get_char(StringBuilder *self, usize index);
 Strview string_builder_get_view(StringBuilder *self, R1u range);

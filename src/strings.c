@@ -439,6 +439,11 @@ bool string_builder_remove(StringBuilder *self, R1u range) {
     return true;
 }
 
+void string_builder_clear(StringBuilder *self) {
+    assert(self);
+    darray_clear(self->darray);
+}
+
 const char *string_builder_cstr(StringBuilder *self) {
     assert(self);
     string_builder_strip_null_chars(self);
